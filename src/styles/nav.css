@@ -7,7 +7,7 @@
 .navbutton{
 color: rgb(0, 0, 0);
 background-color: #FFD814;
-
+height: 40px;
 width: 100px;
 border-top-right-radius: 4px !important;
 border-bottom-right-radius: 4px !important;
@@ -117,5 +117,53 @@ border-bottom-right-radius: 4px !important;
   font-weight: 400 !important;
 
 }
+
+
+
+
+/*mediaquery*/
+
+@media (max-width: 770px) {
+
+  
+  .search{
+    height: 30px;
+}
+
+.inputfield{
+  width: 120px;
+  height: 30px;
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+  border: none;
+}
+
+.navbutton{
+  font-size: 8px;
+  width: 60px;
+  height: 30px;
+ 
+  }
+
+  .toggleButton{
+    height: 30px;
+    .activeButton{
+      padding: 10px 15px;
+    }
+    .inactiveButton{
+      padding: 10px 15px;
+
+    }
+  }
+
+ 
+  
+
+
+ 
+}
+
+
+
 
 

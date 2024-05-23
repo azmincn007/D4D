@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import SwiperCore from 'swiper/core';
 import { Navigation } from 'swiper/modules';
-import '../../styles/shopswiper.css'
+import '../../styles/shopswiper.css';
 
 // Initialize Swiper's Navigation module
 SwiperCore.use([Navigation]);
@@ -41,26 +41,54 @@ function Shopswiper() {
   };
 
   return (
-    <div className='py-5 px-5 font-inter font-semibold text-sm ' style={{ position: 'relative' }}>
-      <div className="swiper-button-prev px-5" style={{ zIndex: 1000 ,color:'black' }} onClick={goToPrev}></div>
+    <div className="py-5 px-5 font-inter font-semibold text-sm" style={{ position: 'relative' }}>
+      <div
+        className="swiper-button-prev px-5 Tab:hidden"
+        style={{ zIndex: 1000, color: 'black' }}
+        onClick={goToPrev}
+      ></div>
       <Swiper
         ref={swiperRef}
         spaceBetween={50}
-        slidesPerView={10}
+        slidesPerView={1}
         navigation={false}
         loop={true}
         style={{ maxWidth: '90%', margin: '0 auto' }}
+        breakpoints={{
+
+          300: {
+            slidesPerView: 4,
+            maxWidth: 300, // Set the maximum width to 768px
+          },
+
+          450: {
+            slidesPerView: 5,
+            maxWidth: 450, // Set the maximum width to 768px
+          },
+
+          768: {
+            slidesPerView: 7,
+            maxWidth: 768, // Set the maximum width to 768px
+          },
+          1024: {
+            slidesPerView: 10,
+          },
+        }}
       >
         {swiperdata.map((obj, index) => (
           <SwiperSlide key={index}>
             <div className="swipercard">
-              <img src={obj.img} alt="" />
-              <p className='flex justify-center pt-1'>{obj.title}</p>
+              <img src={obj.img} alt={obj.title} />
+              <p className="flex justify-center pt-1">{obj.title}</p>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
-      <div className="swiper-button-next px-5" style={{  zIndex: 1000 ,color:'black'}} onClick={goToNext}></div>
+      <div
+        className="swiper-button-next px-5 Tab:hidden"
+        style={{ zIndex: 1000, color: 'black' }}
+        onClick={goToNext}
+      ></div>
     </div>
   );
 }

@@ -24,6 +24,13 @@ export default {
          darkblue:'#232F3E'
 
       },
+
+      screens: {
+        'Tab': {'max':'770px'},
+        'Mobile': {'max':'450px'},
+
+      
+      },
       fontFamily: {
         inter: ['Inter', 'sans-serif'], // Inter as the only font
       },

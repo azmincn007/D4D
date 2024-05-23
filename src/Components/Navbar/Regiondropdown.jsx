@@ -17,7 +17,7 @@ function Regiondropdown() {
 
   return (
     <div className="regiondrop flex flex-items-center">
-      <div className="countryimage">
+      <div className="countryimage Tab:hidden">
         <img className="logocountry" src={selectedCountry.Img} alt="" />
       </div>
       <div className="drop">

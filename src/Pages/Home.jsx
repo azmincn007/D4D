@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Component } from '../Components/Navbar';
+import {  NavbarComponent } from '../Components/Navbar';
 import Categorytab from '../Components/Home/Categorytab';
 import Shopswiper from '../Components/Home/Shopswiper';
 import Homecontainer from '../Components/Home/Homecontainer';
@@ -19,7 +19,7 @@ function Home() {
   return (
     <div>
       <NationalityModal isOpen={nationality} onClose={() => selectNationality(false)} />
-      <div className="navbarhome"><Component /></div>
+      <div className="navbarhome"><NavbarComponent /></div>
       <div className="categorytab"><Categorytab /></div>
       <div className="shopswiper"><Shopswiper /></div>
       <div className="homecontainerdiv"><Homecontainer /></div>

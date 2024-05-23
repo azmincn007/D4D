@@ -2,12 +2,9 @@ import React from "react";
 import { Dropdown } from "flowbite-react";
 import "../../styles/categories.css";
 import Accordion from "@mui/material/Accordion";
-import AccordionActions from "@mui/material/AccordionActions";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Button from "@mui/material/Button";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import appstore from '../../assets/appstore.png';
 import playstore from '../../assets/googleplay.png';
 
@@ -26,9 +23,9 @@ function Categories({ selectedValue, onOptionClick }) {
   ];
 
   return (
-    <div className="categories p bg-darkblue pl-4 font-inter">
+    <div className="categories p bg-darkblue pl-4 font-inter Tab:hidden">
       <div className="supermarketbutton py-2 pt-6">
-        <Dropdown label={selectedValue} inline={true}>
+        <Dropdown label={selectedValue} style={{backgroundColor:'#FFD814',color:'black',borderRadius:'2px',fontSize:"18px"}}>
           {options.map((option) => (
             <Dropdown.Item
               key={option.value}

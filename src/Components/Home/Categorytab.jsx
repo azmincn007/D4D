@@ -10,11 +10,11 @@ function Categorytab() {
   };
 
   return (
-    <div className='w-full bg-darkblue flex justify-center text-white py-2 text-small font-inter'>
+    <div className='w-full bg-darkblue flex justify-center text-white py-2 text-small font-inter Mobile:text-[8px]'>
       {caTabs.map((obj, index) => (
         <div
           key={index}
-          className="singletabs py-2 px-7"
+          className="singletabs py-2 px-7  Tab:px-3"
           style={{
             borderBottom: '2px solid rgba(241, 241, 241, 0.5)', 
             borderColor: activeTab === index ? 'white' : ' rgba(241, 241, 241, 0.5)' // Conditionally apply white border to active tab

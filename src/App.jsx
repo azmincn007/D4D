@@ -11,6 +11,7 @@ import Oman from './assets/Countrylogo/Oman.png';
 import Qatar from './assets/Countrylogo/qatar.png';
 import Saudi from './assets/Countrylogo/Saudi.png';
 import Uae from './assets/Countrylogo/Uae.png';
+import RestuarentMenu from './Components/Restuarents/RestuarentMenu';
 
 export const AuthContext = createContext();
 export const Countrycontext = createContext();
@@ -37,7 +38,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path='/' element={<Home />} />
-              <Route path='/login' element={<Loginpopup />} />
+              <Route path='/resto' element={<RestuarentMenu />} />
             </Routes>
           </BrowserRouter>
         </AuthContext.Provider>

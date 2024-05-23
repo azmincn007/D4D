@@ -24,3 +24,10 @@
     background-color: #eab308 !important; /* Darker yellow on hover */
   }
   
+
+
+
+/* baground setting */
+.bgresto{
+    background: url('./assets/Restaurentmenu.png');
+}  

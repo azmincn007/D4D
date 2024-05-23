@@ -89,7 +89,7 @@ const modaltheme=
       }
     },
     "content": {
-      "base": "relative h-full w-full p-4 md:h-auto",
+      "base": "relative  w-full p-4 md:h-auto",
       "inner": "relative flex max-h-[90dvh]  flex-col rounded-lg bg-white shadow dark:bg-gray-700"
     },
     "body": {
