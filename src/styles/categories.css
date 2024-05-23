@@ -1,0 +1,33 @@
+.downloadfield{
+    background-image: url('../assets/categoryimg.png');
+    width: 95%;
+    height: 153px;
+    background-size: cover;
+    border-radius: 15px;
+   
+    
+}
+
+.downloadbuttons{
+    width: 99px;
+    height: 30px;
+}
+
+
+
+
+
+/* cardcontainer.module.css */
+.cardcontainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 2rem 0.5rem;
+  }
+  
+  @media (min-width: 1450px) {
+    .cardcontainer {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+  }
+  
+ 

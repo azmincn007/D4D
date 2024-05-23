@@ -1,0 +1,9 @@
+.swiper-button-next, .swiper-button-prev {
+    font-size: 20px;
+     /* Adjust font size as needed */
+  }
+  
+  .swiper-button-next::after, .swiper-button-prev::after {
+    font-size: 20px; /* Adjust font size as needed */
+  }
+  

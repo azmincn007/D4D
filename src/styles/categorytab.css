@@ -1,0 +1,7 @@
+.flowbite-tabs-item[aria-selected="true"] {
+    border-bottom: 2px solid red;
+  }
+
+  .t{
+    color: red;
+  }
