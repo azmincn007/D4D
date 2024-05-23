@@ -164,6 +164,56 @@ border-bottom-right-radius: 4px !important;
 }
 
 
+@media (max-width: 900px) {
 
+  
+  
+
+.inputfield{
+  width: 120px;
+  height: 30px;
+ 
+}
+
+.navbutton{
+  font-size: 8px;
+  width: 60px;
+  height: 30px;
+ 
+  }
+  .toggleButton{
+    height: 30px;
+    .activeButton{
+      padding: 10px 15px;
+    }
+    .inactiveButton{
+      padding: 10px 15px;
+
+    }
+  }
+
+}
+
+
+@media (max-width: 1035px) {
+
+  
+  
+
+  .inputfield{
+    width: 150px;
+    height: 30px;
+   
+  }
+  
+  .navbutton{
+    font-size: 8px;
+    width: 75px;
+    height: 30px;
+   
+    }
+  
+  }
+  
 
 

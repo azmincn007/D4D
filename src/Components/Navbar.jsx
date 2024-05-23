@@ -13,7 +13,7 @@ import { AiOutlineLogin } from "react-icons/ai";
 export function NavbarComponent() {
   const [openModal, setOpenModal] = useState(false);
   const [authValue, setAuthValue] = useContext(AuthContext);
-  const [Tabscreen, setTabscreen] = useState(window.innerWidth < 770);
+  const [Tabscreen, setTabscreen] = useState(window.innerWidth < 820);
 
   const handleLoginClick = () => {
     setOpenModal(true);
@@ -25,7 +25,7 @@ export function NavbarComponent() {
   };
 
   const handleResize = () => {
-    setTabscreen(window.innerWidth <= 770);
+    setTabscreen(window.innerWidth <= 820);
   };
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export function NavbarComponent() {
           </div>
         </div>
         <div className="right flex items-center">
-          <div className='mr-[20px]'><Toggle /></div>
+          <div className='mr-[20px] Tab:mr-[10px]'><Toggle /></div>
           
           <Regiondropdown />
           {Tabscreen ? (
