@@ -26,8 +26,18 @@ export default {
       },
 
       screens: {
+        'LgTab': {'max':'800px'},
         'Tab': {'max':'770px'},
+        'TabS': {'max':'700px'},
+
+        
         'Mobile': {'max':'450px'},
+        'LgMobile': {'max':'500px'},
+        'LgMobile2': {'max':'550px'},
+
+        
+
+        
 
       
       },

@@ -64,6 +64,8 @@ border-bottom-right-radius: 4px !important;
     color:theme('colors.white') ;
   }
 
+  
+
 /* logintogle button style */
   .activeButtonauth {
     background-color: theme('colors.yellow');
@@ -214,6 +216,3 @@ border-bottom-right-radius: 4px !important;
     }
   
   }
-  
-
-

@@ -3,27 +3,34 @@ import Categories from './Categories';
 import Contents from './Contents';
 import Mobileshop from './Mobileshop';
 import Restuarents from './Restaurents';
+import Categorydropdown from './Components/CategoryDropdown';
 
 function Homecontainer() {
   const [selectedValue, setSelectedValue] = useState('Supermarket');
-  console.log(selectedValue);
+
   const handleOptionClick = (value) => {
     setSelectedValue(value);
   };
 
   return (
-    <div className='homecontainer w-100 flex'>
-      <div className="left " style={{ maxWidth: "330px" }}>
+    <div className='homecontainer w-100 flex Tab:flex-col'>
+      <div className='hidden Tab:block py-4 w-[95%] mx-auto'>
+        <Categorydropdown
+          selectedValue={selectedValue}
+          onOptionClick={handleOptionClick}
+          showInNavbar={true}
+        />
+      </div>
+      <div className='left Tab:hidden' style={{ maxWidth: '330px' }}>
         <Categories
           selectedValue={selectedValue}
           onOptionClick={handleOptionClick}
         />
       </div>
-      <div className="right w-[80%] Tab:w-[100%]">
-        {selectedValue === 'Supermarket' && <Contents />} 
-        {selectedValue === 'MobileShop' && <Mobileshop/>}
-        {selectedValue === 'Restaurant' && <Restuarents/>}
-
+      <div className='right w-[80%] Tab:w-[100%]'>
+        {selectedValue === 'Supermarket' && <Contents />}
+        {selectedValue === 'MobileShop' && <Mobileshop />}
+        {selectedValue === 'Restaurant' && <Restuarents />}
       </div>
     </div>
   );

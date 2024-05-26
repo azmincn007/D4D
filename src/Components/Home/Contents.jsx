@@ -14,8 +14,9 @@ function Contents() {
     const contentcard=[{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'}]
   return (
    <div className="contentsdiv px-8 pb-3p">
-<div className="contentshead font-inter text-black font-semibold text-[20px]">Latest Lulu Hypermarket offers in UAE - Dubai</div>
-<div className="contentscards">
+<div className="contentshead font-inter pb-4 text-black font-semibold text-[20px] Mobile:text-[16px] Mobile:pb-3 LgMobile2:text-[18.5px]">
+  Latest Lulu Hypermarket offers in UAE - Dubai
+</div><div className="contentscards">
 
 
 
@@ -25,7 +26,7 @@ function Contents() {
   <Card
     key={index} // Use index as key, or replace with unique ID if available
     theme={Flowbitecard}
-    className="max-w-[220px] p-1"
+    className="max-w-[220px] p-1 Mobile:w-[166px] LgTab:w-[190px] Tab:w-[200px] Mobile:w[186px]"
     imgAlt="Meaningful alt text for an image that is not purely decorative"
     imgSrc={obj.img}
   >

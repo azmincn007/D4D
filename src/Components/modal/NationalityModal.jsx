@@ -78,7 +78,7 @@ const NationalityModal = ({ isOpen, onClose, onSelect }) => {
           <div className='py-1 w-full border-b border-[#959595]'></div>
           <div className='flex flex-col justify-center items-center'>
             <div className='py-6 text-sm text-[#6D6D6D] font-semibold'>Popular Countries</div>
-            <div className="grid grid-cols-4 gap-x-16 gap-y-5">
+            <div className="grid grid-cols-4 gap-x-16 gap-y-5 Tab:grid-cols-3 LgMobile:grid-cols-2">
               {Nationalities.map((nation, index) => (
                 <div key={index} className="flex flex-col items-center cursor-pointer relative" ref={(el) => (countryDivRefs.current[index] = el)}>
                   <div onClick={() => handleCountrySelect(nation, index)}>

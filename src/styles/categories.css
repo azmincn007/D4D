@@ -30,10 +30,32 @@
     }
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 790px) {
     .cardcontainer {
       gap: 2rem 1rem;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+  }
+
+  @media (max-width: 660px) {
+    .cardcontainer {
+      gap: 2rem 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(189px, 1fr));
+    }
+  }
+
+  
+  @media (max-width: 460px) {
+    .cardcontainer {
+      gap: 2rem 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
+    }
+  }
+  
+  @media (max-width: 390px) {
+    .cardcontainer {
+      gap: 2rem 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
     }
   }
   

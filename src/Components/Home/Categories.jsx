@@ -7,8 +7,9 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import appstore from '../../assets/appstore.png';
 import playstore from '../../assets/googleplay.png';
+import Categorydropdown from "./Components/CategoryDropdown";
 
-function Categories({ selectedValue, onOptionClick }) {
+function Categories({ selectedValue, onOptionClick, showInNavbar = false }) {
   const catdropdata = [
     { title: "electronics", titledata1: ["bakedgoods", "cofee"] },
     { title: "books", titledata1: ["fiction", "non-fiction"] },
@@ -23,19 +24,12 @@ function Categories({ selectedValue, onOptionClick }) {
   ];
 
   return (
-    <div className="categories p bg-darkblue pl-4 font-inter Tab:hidden">
-      <div className="supermarketbutton py-2 pt-6">
-        <Dropdown label={selectedValue} style={{backgroundColor:'#FFD814',color:'black',borderRadius:'2px',fontSize:"18px"}}>
-          {options.map((option) => (
-            <Dropdown.Item
-              key={option.value}
-              onClick={() => onOptionClick(option.value)}
-            >
-              {option.label}
-            </Dropdown.Item>
-          ))}
-        </Dropdown>
-      </div>
+    <div className={`categories p bg-darkblue pl-4 font-inter ${showInNavbar ? 'block' : 'hidden md:block'}`}>
+      {!showInNavbar && (
+        <div className="supermarketbutton py-2 pt-6">
+          <Categorydropdown selectedValue={selectedValue} onOptionClick={onOptionClick} />
+        </div>
+      )}
       <div className="downloadfield my-2 ">
         <p className="text-sm text-white text-center py-2 w-[80%] mx-auto">
           Unlock Exclusive Shopping Offers, Right on Your Mobile! Download the App Now!
@@ -63,12 +57,8 @@ function Categories({ selectedValue, onOptionClick }) {
               aria-controls="panel1-content"
               id="panel1-header"
               sx={{
-                "&.Mui-expanded": {
-                  minHeight: "48px", // Change the min-height to your desired value
-                },
-                ".MuiAccordionSummary-content.Mui-expanded": {
-                  margin: "12px 0", // Adjust the margin for the expanded state
-                },
+                "&.Mui-expanded": { minHeight: "48px" },
+                ".MuiAccordionSummary-content.Mui-expanded": { margin: "12px 0" },
               }}
             >
               {obj.title}

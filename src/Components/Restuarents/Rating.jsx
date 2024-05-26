@@ -11,8 +11,8 @@ const RatingComponent = ({ rating }) => {
           filled={i < rating}
         />
       ))}
-      <p className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-        {rating} out of 5
+      <p className="ml-2 text-[16px] font-medium text-yellow dark:text-gray-400">
+      ({rating})
       </p>
     </Rating>
   );

@@ -1,22 +1,34 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import flowbiteinput from "../../Themes/Flowbiteinput";
 import { Link } from "react-router-dom";
 import buttongoogle from "../../assets/buttongoogle.png";
 import LoginTab from "../../Components/authentication/Togleauthentication";
-import { IoIosClose, IoIosCloseCircle } from "react-icons/io";
+import { IoIosClose } from "react-icons/io";
 import { AuthContext } from "../../App";
+import { useForm } from "react-hook-form";
+import ErrorMessage from "./ErrorValidation";
 
 function Loginpopup({ onClose }) {
-  const [AuthValue,setAuthvalue]=useContext(AuthContext)
+  const [AuthValue, setAuthValue] = useContext(AuthContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const handleClose = () => {
     onClose();
-    setstateauth('signup')
+    setAuthValue("signup");
   };
 
   const handleShowSignupModal = () => {
-       setAuthvalue('signup')
+    setAuthValue("signup");
+  };
+
+  const handleLogin = (data) => {
+    localStorage.setItem('username', data.email);
+    onClose(); // Call the onClose function after storing the username
   };
 
   return (
@@ -26,34 +38,43 @@ function Loginpopup({ onClose }) {
         <LoginTab />
       </div>
       <div className="form py-5">
-        <form className="flex max-w-md flex-col gap-3">
+        <form
+          className="flex max-w-md flex-col gap-3"
+          onSubmit={handleSubmit(handleLogin)}
+        >
           <div>
             <div className="mb-2 block"></div>
             <TextInput
               theme={flowbiteinput}
-              id="email1"
+              id="email"
               type="email"
               placeholder="Username or Email ID"
-              required
+              {...register("email", {
+                required: "Email is required",
+               
+              })}
             />
+            {errors.email && <ErrorMessage message={errors.email.message} />}
           </div>
           <div>
             <div className="mb-2 block"></div>
             <TextInput
               theme={flowbiteinput}
               placeholder="Password"
-              id="password1"
+              id="password"
               type="password"
-              required
+              {...register("password", {
+                required: "Password is required",
+              })}
             />
+            {errors.password && (
+              <ErrorMessage message={errors.password.message} />
+            )}
           </div>
           <div className="flex items-center justify-between gap-2 pb-2">
             <div>
               <Checkbox className="w-[22px] h-[22px] mr-3" id="remember" />
-              <Label
-                htmlFor="remember"
-                className="text-basex font-normal"
-              >
+              <Label htmlFor="remember" className="text-basex font-normal">
                 Remember me
               </Label>
             </div>
@@ -77,8 +98,11 @@ function Loginpopup({ onClose }) {
       </div>
       <div className="py-6">
         <p className="text-sm">
-          Don't have an account yet?
-          <span className="font-semibold cursor-pointer" onClick={handleShowSignupModal}>
+          Don't have an account yet?{" "}
+          <span
+            className="font-semibold cursor-pointer"
+            onClick={handleShowSignupModal}
+          >
             Sign UP
           </span>
         </p>

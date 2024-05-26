@@ -6,15 +6,18 @@ import { AuthContext } from "../../App";
 import SignupPopup from "../../Pages/Authentication/SignupPopup";
 import Otpverify from "../../Pages/Authentication/Otpverify";
 
-export function ModalAuth({ openModal, setOpenModal, onClose }) {
+export function ModalAuth({ openModal, setOpenModal, onClose, onLoginSuccess }) {
   const [AuthValue, setAuthValue] = useContext(AuthContext);
   const [mobileNumber, setMobileNumber] = useState("");
-
-  console.log(AuthValue);
 
   const handleCloseModal = () => {
     setOpenModal(false);
     onClose();
+  };
+
+  const handleLoginSuccess = () => {
+    onLoginSuccess();
+    handleCloseModal();
   };
 
   const handleSubmit = (mobile) => {
@@ -23,10 +26,16 @@ export function ModalAuth({ openModal, setOpenModal, onClose }) {
   };
 
   return (
-    <Modal theme={modaltheme} show={openModal} size="md" onClose={handleCloseModal} popup>
-      <Modal.Body className=" flex flex-col items-center w-[500px] py-3 ">
+    <Modal
+      theme={modaltheme}
+      show={openModal}
+      size="md"
+      onClose={handleCloseModal}
+      popup
+    >
+      <Modal.Body className=" flex flex-col items-center py-3 ">
         {AuthValue === "login" ? (
-          <Loginpopup onClose={handleCloseModal} />
+          <Loginpopup onClose={handleLoginSuccess} />
         ) : AuthValue === "signup" ? (
           <SignupPopup onClose={handleCloseModal} onSubmit={handleSubmit} />
         ) : AuthValue === "otp" ? (
@@ -36,4 +45,3 @@ export function ModalAuth({ openModal, setOpenModal, onClose }) {
     </Modal>
   );
 }
-
