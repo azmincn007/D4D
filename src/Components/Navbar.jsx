@@ -23,6 +23,7 @@ export function NavbarComponent() {
   const handleLoginClick = () => {
     setOpenModal(true);
     setAuthValue('login');
+    setIsNavbarOpen(false); // Close the navbar collapse
   };
 
   const handleModalClose = () => {
