@@ -64,11 +64,11 @@ export function NavbarComponent() {
   return (
     <div>
       <Navbar theme={FlowbiteNav} fluid rounded className="navbar bg-Navbarbg sm:px-10 font-inter">
-        <div className='flex justify-between w-[100%]'>
-        <div className="left flex items-center ">
-          <div className="logo mr-10 Tab:mr-2">
+        <div className='flex justify-between w-[100%] items-center'>
+        <div className="left flex items-center  SmMobile:w-[70px] ">
+          <div className="logo mr-10 SmMobile:mr-0 Tab:mr-2 flex items-center">
             <NavbarBrand as={Link} to="/">
-              <img src={Logo} className="logo" alt="Logo" />
+              <img src={Logo} className="logo  SmMobile:w-[70px] SmMobile:h-[70px]" alt="Logo" />
             </NavbarBrand>
           </div>
           <div className="search flex items-center TabS:hidden">
@@ -81,7 +81,8 @@ export function NavbarComponent() {
         <div className="right flex items-center">
           <div className='mr-[20px] Tab:mr-[0px]'><Toggle /></div>
           <Regiondropdown />
-          {username ? (
+         <div className='log SmMobile:hidden'>
+         {username ? (
             <div onClick={handleLogout}>
               <AvatarComponent username={username} />
             </div>
@@ -94,6 +95,7 @@ export function NavbarComponent() {
               </button>
             )
           )}
+         </div>
           <NavbarToggle className='bg-transparent text-yellow placeholder:' onClick={toggleNavbar}  />
          
           {isNavbarOpen && (

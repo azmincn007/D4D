@@ -29,7 +29,7 @@ function SignupPopup({ onClose, onSubmit }) {
       <div className="py-2">
         <LoginTab />
       </div>
-      <div className="form py-5">
+      <div className="form py-5 w-[90%]">
         <form
           className="flex max-w-md flex-col gap-3"
           onSubmit={handleSubmit(onSubmitHandler)}

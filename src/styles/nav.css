@@ -216,3 +216,34 @@ border-bottom-right-radius: 4px !important;
     }
   
   }
+
+
+
+  
+@media (max-width: 450px) {
+
+  
+  .drop button span{
+    padding: 4px;
+    align-items: center;
+   }
+  
+   
+  }
+
+  @media (max-width: 370px) {
+
+    .toggleButton{
+      height: 25px;
+      .activeButton{
+        padding: 7.5px 10px;
+      }
+      .inactiveButton{
+        padding: 7.5px 10px;
+  
+      }
+    }
+  
+     
+    }
+ 

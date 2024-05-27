@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import '../../styles/nav.css';
 import { Dropdown } from 'flowbite-react';
 import { Countrycontext, NationalityContext } from '../../App';
+import flowbiteDrop from '../../Themes/Flowbitedrop';
 
 function Regiondropdown() {
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
@@ -16,13 +17,15 @@ function Regiondropdown() {
   };
 
   return (
-    <div className="regiondrop flex flex-items-center">
+    <div className="regiondrop flex items-center">
       <div className="countryimage Tab:hidden">
         <img className="logocountry" src={selectedCountry.Img} alt="" />
       </div>
       <div className="drop">
-        <Dropdown
-          style={{ background: 'transparent', fontSize: '12px' }}
+        <Dropdown theme={flowbiteDrop}
+  
+          style={{ background: 'transparent', fontSize: '12px'  }}
+          
           label={selectedCountry.Country}
         >
           {remainingCountries.map((country, index) => (

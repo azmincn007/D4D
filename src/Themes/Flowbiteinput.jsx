@@ -7,7 +7,7 @@ const flowbiteinput=
     "field": {
       "base": "relative w-full",
       "input": {
-        "base": "block w-[350px] overflow-hidden rounded-lg border-none disabled:cursor-not-allowed disabled:opacity-50",
+        "base": "block w-[100%] overflow-hidden rounded-lg border-none disabled:cursor-not-allowed disabled:opacity-50",
         "sizes": {
           "sm": "sm:text-xsm",
           "md": "text-xsm",
