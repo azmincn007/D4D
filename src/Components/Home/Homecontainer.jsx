@@ -4,6 +4,7 @@ import Contents from './Contents';
 import Mobileshop from './Mobileshop';
 import Restuarents from './Restaurents';
 import Categorydropdown from './Components/CategoryDropdown';
+import '../../styles/DropdownStyle.css'
 
 function Homecontainer() {
   const [selectedValue, setSelectedValue] = useState('Supermarket');
@@ -14,7 +15,7 @@ function Homecontainer() {
 
   return (
     <div className='homecontainer w-100 flex Tab:flex-col'>
-      <div className='hidden Tab:block py-4 w-[95%] mx-auto'>
+      <div className='dropdowncontents hidden Tab:block py-4 w-[95%] mx-auto'>
         <Categorydropdown
           selectedValue={selectedValue}
           onOptionClick={handleOptionClick}

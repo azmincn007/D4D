@@ -16,12 +16,29 @@
 
 
 
+.cardfl {
+  position: relative;
+}
+.cardfl:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.721);
+  z-index: 1;
+}
+
+
+
+
 
 /* cardcontainer.module.css */
 .cardcontainer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 2rem 0.5rem;
+    gap: 2rem 1rem;
   }
   
   @media (min-width: 1450px) {
@@ -50,6 +67,10 @@
       gap: 2rem 1rem;
       grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
     }
+    .downloadbuttons{
+      width: 90px;
+      height: 30px;
+  }
   }
   
   @media (max-width: 390px) {

@@ -12,6 +12,7 @@ import AvatarComponent from './Navbar/AvatarComponent';
 import { CgProfile } from "react-icons/cg";
 import FlowbiteNav from '../Themes/FlowbiteNav';
 import Categories from './Home/Categories';
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 export function NavbarComponent() {
   const [openModal, setOpenModal] = useState(false);
@@ -100,7 +101,7 @@ export function NavbarComponent() {
           <NavbarToggle className='bg-transparent text-yellow placeholder:' onClick={toggleNavbar}  />
          
           {isNavbarOpen && (
-            <NavbarCollapse className='absolute top-0 right-0 min-w-[250px] w-[50%] h-[100vh] bg-darkblue z-[10000] flex flex-col'>
+            <NavbarCollapse    className="fixed top-0  right-0 bottom-0 min-w-[250px] w-[50%] bg-darkblue z-[10000] flex flex-col overflow-y-auto">
               <div className="auth bg-[#2C3B4F] text-white py">
                 {/* Render log or loged class based on username */}
                 {username ? (
@@ -120,7 +121,7 @@ export function NavbarComponent() {
                     <CgProfile className='h-[30px] w-[30px] my-3' />
                     <p className='leading-4 my-2'>If you don't have an account yet, please login here.</p>
                     <button
-                      className="my-2 loginbutton px-2 py-2 rounded-[4px]"
+                      className="my-2 loginbutton px-2 py-2 rounded-[4px] text-black"
                       onClick={handleLoginClick}
                     >
                       Login
@@ -133,7 +134,10 @@ export function NavbarComponent() {
                   onOptionClick={() => {}}
                   showInNavbar={true}
                 />
+                   <div className='absolute right-2 top-2 text-yellow'><AiOutlineCloseCircle onClick={()=>setIsNavbarOpen(false)}/></div>
               </div>
+
+           
             
             </NavbarCollapse>
           )}

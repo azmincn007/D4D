@@ -31,13 +31,17 @@ function Categories({ selectedValue, onOptionClick, showInNavbar = false }) {
         </div>
       )}
       <div className="downloadfield my-2 ">
-        <p className="text-sm text-white text-center py-2 w-[80%] mx-auto">
+
+        <div className="py-2">
+        <p className="text-sm text-white text-center  w-[80%] mx-auto my-4 Mobile:text-small LgMobile2:text-[11px]">
           Unlock Exclusive Shopping Offers, Right on Your Mobile! Download the App Now!
         </p>
-        <div className="downloadbuttons flex justify-between w-[80%] mx-auto">
+        <div className="downloadbuttons  flex justify-between w-[80%] mx-auto LgMobile2:w-[90%] ">
           <img className="downloadbuttons" src={appstore} alt="" />
           <img className="downloadbuttons" src={playstore} alt="" />
         </div>
+        </div>
+       
       </div>
       <div className="cathead text-[20px] text-white font-medium py-2 font-inter ">
         Categories

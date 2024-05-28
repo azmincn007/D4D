@@ -25,7 +25,7 @@ function Mobileshop() {
   <Card
     key={index} // Use index as key, or replace with unique ID if available
     theme={Flowbitecard}
-    className="max-w-[220px] p-1"
+    className=" cardfl max-w-[220px] p-1"
     imgAlt="Meaningful alt text for an image that is not purely decorative"
     imgSrc={obj.img}
   >
