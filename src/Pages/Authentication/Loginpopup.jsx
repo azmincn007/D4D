@@ -2,13 +2,12 @@ import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import React, { useContext } from "react";
 import flowbiteinput from "../../Themes/Flowbiteinput";
 import { Link } from "react-router-dom";
-import buttongoogle from "../../assets/buttongoogle.png";
 import LoginTab from "../../Components/authentication/Togleauthentication";
 import { IoIosClose } from "react-icons/io";
 import { AuthContext } from "../../App";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorValidation";
-
+import googleicon from '../../assets/Google.png'
 function Loginpopup({ onClose }) {
   const [AuthValue, setAuthValue] = useContext(AuthContext);
   const {
@@ -34,9 +33,7 @@ function Loginpopup({ onClose }) {
   return (
     <>
       <h1 className="text-base font-semibold py-2">Login</h1>
-      <div className="py-2">
-        <LoginTab />
-      </div>
+     
       <div className="form py-5 w-[90%]">
         <form
           className="flex max-w-md flex-col gap-3"
@@ -92,9 +89,9 @@ function Loginpopup({ onClose }) {
         <div className="px-3">Or</div>
         <div className="w-full border-t border-[#E3E3E6]"></div>
       </div>
-      <div>
-        {" "}
-        <img src={buttongoogle} alt="" />{" "}
+      <div className="flex h-[55px] rounded-[10px] border-2 w-[80%] justify-center items-center Tab:h-[45px]">
+       <img src={googleicon} className="w-[20px] h-[20px]" alt="" />
+       <p className="font-semibold text-sm">Sign in with Google</p>
       </div>
       <div className="py-6">
         <p className="text-sm">

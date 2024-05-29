@@ -12,6 +12,9 @@ import Qatar from './assets/Countrylogo/qatar.png';
 import Saudi from './assets/Countrylogo/Saudi.png';
 import Uae from './assets/Countrylogo/Uae.png';
 import RestuarentMenu from './Components/Restuarents/RestuarentMenu';
+import MobilefilterContainer from './Components/Mobile/MobileFilterContainer';
+import Filter from './Pages/Filter';
+import Mobilessingle from './Components/Mobile/Mobilessingle';
 
 export const AuthContext = createContext();
 export const Countrycontext = createContext();
@@ -39,6 +42,9 @@ function App() {
             <Routes>
               <Route path='/' element={<Home />} />
               <Route path='/resto' element={<RestuarentMenu />} />
+              <Route path='/mobilesingle' element={<Mobilessingle />} />
+
+              <Route path='/mobfilter' element={<Filter />} />
             </Routes>
           </BrowserRouter>
         </AuthContext.Provider>

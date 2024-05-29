@@ -9,6 +9,7 @@ export default {
     
     extend: {
       boxShadow: {
+        card : 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
         custom: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px',
         loginicon: 'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px',
       },
@@ -26,6 +27,10 @@ export default {
       },
 
       screens: {
+
+        'smDesk': {'max':'1250px'},
+        
+
         'LgTab': {'max':'800px'},
         'Tab': {'max':'770px'},
         'TabS': {'max':'700px'},

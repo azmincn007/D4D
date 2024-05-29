@@ -1,28 +1,24 @@
 import React, { useState } from 'react'
 import '../../styles/nav.css'
+import { Tabs } from 'flowbite-react'
+import { toggle } from '../../Themes/FlowbiteTab'
 
 function Toggle() {
 
-    const [activeTab, setActiveTab] = useState('Product'); // State to track active tab
-
-    const handleTabClick = (tabName) => {
-      setActiveTab(tabName);
-    };
+   
   return (
-    <div className="toggleButton text-small">
-    <button
-      className={activeTab === 'Product' ? 'activeButton' : 'inactiveButton'}
-      onClick={() => handleTabClick('Product')}
-    >
-      Product
-    </button>
-    <button
-      className={activeTab === 'Offer' ? 'activeButton' : 'inactiveButton'}
-      onClick={() => handleTabClick('Offer')}
-    >
-      Offer
-    </button>
-  </div>
+    <div className='toggle'>
+<Tabs theme={toggle} aria-label="Pills" style="pills" className='toggle-class'>
+    <Tabs.Item active title="Product">
+    </Tabs.Item>
+    <Tabs.Item title="Offer">
+    </Tabs.Item>
+   
+  
+  
+  </Tabs>
+    </div>
+    
   )
 }
 

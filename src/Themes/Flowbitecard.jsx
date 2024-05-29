@@ -1,7 +1,7 @@
 // Theme.js
 export const Flowbitecard = {
     root: {
-      base: "flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800",
+      base: "flex rounded-lg border border-gray-200 bg-white shadow-card dark:border-gray-700 dark:bg-gray-800",
       children: "flex h-full flex-col justify-center gap-1 p-1",
       horizontal: {
         off: "flex-col",

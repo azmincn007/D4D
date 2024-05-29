@@ -26,46 +26,50 @@ border-bottom-right-radius: 4px !important;
     border-bottom-left-radius: 4px !important;
     border: none;
 }
+/*toggle*/
+.toggle div{
+  display: flex !important;
+  flex-direction: row !important;
+}
 
-.toggleButton {
-    display: flex;
-    border: 2px solid theme('colors.yellow') ;
-    border-radius: 20px;
-    height: 37px;
-  }
-  
-  button {
-   
-    
-    border: none;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.3s ease;
-  }
-  
-  .activeButton {
-    background-color: theme('colors.yellow');
-    color: white;
-    padding: 10px 30px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    color:theme('colors.Black') ;
+.toggle{
+  border-radius: 26px !important;
+  border: 2px solid #FFD814 !important;
+}
+
+.toggle-class div button{
+  padding: 10px 30px !important;
+  height: 40px !important;
+  border: none !important;
+
+}
 
 
 
-  }
-  
-  .inactiveButton {
-    background-color: transparent;
-    color: black;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    color:theme('colors.white') ;
-  }
+.toggle-class div button[aria-selected="true"] {
+  border-radius: 16px !important;
+  background-color: #FFD814 !important;
+  color: black !important;
+}
 
-  
+.toggle-class div button[aria-selected="false"] {
+
+  color: white !important;
+}
+
+
+.toggle-class div button[aria-selected="false"]:hover {
+
+  color: #FFD814 !important;
+  background-color: transparent !important;
+}
+
+
+
+
+
+
+
 
 /* logintogle button style */
   .activeButtonauth {
@@ -148,19 +152,12 @@ border-bottom-right-radius: 4px !important;
  
   }
 
-  .toggleButton{
-    height: 30px;
-    .activeButton{
-      padding: 10px 15px;
-    }
-    .inactiveButton{
-      padding: 10px 15px;
-
-    }
-  }
+  .toggle-class div button{
+    padding: 10px 20px !important;
+    height: 30px !important;
 
  
-  
+  }
 
 
  
@@ -184,17 +181,12 @@ border-bottom-right-radius: 4px !important;
   height: 30px;
  
   }
-  .toggleButton{
-    height: 30px;
-    .activeButton{
-      padding: 10px 15px;
-    }
-    .inactiveButton{
-      padding: 10px 15px;
+  .toggle-class div button{
+    padding: 10px 20px !important;
+    height: 30px !important;
 
-    }
+ 
   }
-
 }
 
 
@@ -234,15 +226,11 @@ border-bottom-right-radius: 4px !important;
 
   @media (max-width: 370px) {
 
-    .toggleButton{
-      height: 25px;
-      .activeButton{
-        padding: 7.5px 10px;
-      }
-      .inactiveButton{
-        padding: 7.5px 10px;
+    .toggle-class div button{
+      padding: 8px 13px !important;
+      height: 25px !important;
   
-      }
+   
     }
   
      

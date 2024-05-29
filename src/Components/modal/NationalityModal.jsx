@@ -68,12 +68,12 @@ const NationalityModal = ({ isOpen, onClose, onSelect }) => {
           <div className='py-1 w-full border border-[#CCCCCC] rounded-md h-[43px]'>
             <div className='px-2 flex items-center'>
               <CiSearch className='text-[#959595]' />
-              <input className='border-none text-xsm h-[33px]' placeholder="Search Country" type="text" />
+              <input className='border-none text-xsm h-[33px]' placeholder="Search your country" type="text" />
             </div>
           </div>
           <div className='pt-3 text-[#E91C25] flex items-center'>
             <LuLocateFixed className='mr-2' />
-            <p className='text-[16px]'>Detect Location</p>
+            <p className='text-[16px]'>Detect my location</p>
           </div>
           <div className='py-1 w-full border-b border-[#959595]'></div>
           <div className='flex flex-col justify-center items-center'>

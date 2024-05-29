@@ -18,6 +18,10 @@ import Beef2 from '../../assets/Resto/Beef2.png';
 import Beef3 from '../../assets/Resto/Beef3.png';
 import Beef4 from '../../assets/Resto/Beef4.png';
 import MenuItemList from './MenuItem';
+import { restorentpagedrop } from '../../Themes/Flowbitedrop';
+import { Link } from 'react-router-dom';
+import { MdKeyboardArrowRight } from "react-icons/md";
+import RestoCard from '../Cards/Restocard';
 
 function RestuarentMenu() {
   const restoData = [
@@ -54,31 +58,46 @@ function RestuarentMenu() {
       <Categorytab />
       {restoData.map((restaurant, index) => (
         <div key={index} className="bgresto w-[100%] h-[300px] bg-cover bg-no-repeat font-inter flex items-center">
+          <div className='w-[100%]'>
           <div className='w-[80%] mx-auto flex items-center'> 
             <div className="text-[32px] font-semibold text-white mr-[5px]">{restaurant.res}</div>
             <div>
               <RatingComponent rating={restaurant.rating} />
             </div>
+
           </div>
+          <div className='text-white w-[80%] mx-auto  items-center'>
+          <div className='text-[24px]'>Menu</div>
+          <div className='flex items-center'><Link>Home</Link> <span><MdKeyboardArrowRight/></span> <Link>Menu</Link></div>
+          </div>
+          </div>
+         
+
+         
         </div>
       ))}
       <div className='relative ml-[5%]'>
         <div className="absolute top-1 right-[2%]">
           <Dropdown 
-            style={{ backgroundColor: '#FFD814', color: 'black', padding: '0rem 1rem', borderRadius: '0px', fontWeight: '700' }} 
+          theme={restorentpagedrop}
+            style={{ backgroundColor: '#FFD814', color: 'black', padding: '0rem 0rem', borderRadius: '0px', fontWeight: '700' ,fontSize:"12px" }} 
             label="All" 
             size="xs"
             className="bg-[#FFD814] text-black border-none font-inter"
           >
-            <DropdownItem style={{ backgroundColor: '#FFD814', color: 'black', padding: '0.2rem 1rem', borderRadius: '0px' }}>Veg</DropdownItem>
-            <DropdownItem style={{ backgroundColor: '#FFD814', color: 'black', padding: '0.2rem 1rem', borderRadius: '0px' }}>NonVeg</DropdownItem>
+            <div className='dropdownss'>
+            <DropdownItem className='dropdownitem' style={{ backgroundColor: '#FFD814', color: 'black', padding: '0.2rem 1rem', borderRadius: '0px',fontWeight: '600' ,fontSize:"12px",display:'flex' ,alignItems:'flex-start'}}>Veg</DropdownItem>
+            <DropdownItem className='dropdownitem' style={{ backgroundColor: '#FFD814', color: 'black', padding: '0.2rem 1rem', borderRadius: '0px',fontWeight: '600',fontSize:"12px",display:'flex' ,alignItems:'flex-start'}}>Non-Veg</DropdownItem>
+            </div>
+           
           </Dropdown>
         </div>
         <div>
           <p className='py-4 text-[24px] font-semibold'>Today's Special</p>
+          <div className='swiper-container'>
           <Swiper
             slidesPerView={1}
-            spaceBetween={2}
+            spaceBetween={0}
             navigation={true}
             pagination={{
               clickable: true,
@@ -86,27 +105,28 @@ function RestuarentMenu() {
             breakpoints={{
               450: {
                 slidesPerView: 3,
-                spaceBetween: 20,
+                spaceBetween: 10,
               },
               640: {
-                slidesPerView: 3.5,
-                spaceBetween: 20,
+                slidesPerView: 3,
+                spaceBetween: 10,
               },
               768: {
-                slidesPerView: 3.5,
-                spaceBetween: 20,
+                slidesPerView: 4,
+                spaceBetween: 10,
               },
               1024: {
-                slidesPerView: 4,
-                spaceBetween: 20,
+                slidesPerView: 4.5,
+                spaceBetween: 10,
               },
               1250: {
-                slidesPerView: 4.5,
-                spaceBetween: 20,
+                slidesPerView: 5,
+                spaceBetween: 10,
               },
               1450: {
                 slidesPerView: 6.5,
-                spaceBetween: 20,
+                spaceBetween: 10,
+                
               },
             }}
             modules={[Navigation, Pagination]}
@@ -114,22 +134,12 @@ function RestuarentMenu() {
           >
             {contentcard.map((obj, index) => (
               <SwiperSlide key={index}>
-                <Card
-                  theme={Flowbitecard}
-                  className="max-w-[220px] p-1"
-                  imgAlt="Meaningful alt text for an image that is not purely decorative"
-                  imgSrc={obj.img}
-                >
-                  <h5 className="text-[13px] font-bold tracking-tight text-gray-900 dark:text-white font-inter">
-                    {obj.title}
-                  </h5>
-                  <p className="font-normal text-[10px] text-[#949494] dark:text-gray-400">
-                    {obj.content}
-                  </p>
-                </Card>
+                 <RestoCard img={obj.img} title={obj.title} content={obj.content} />
               </SwiperSlide>
             ))}
           </Swiper>
+          </div>
+          
         </div>
       </div>
       <div className='w-[90%] mx-auto'>

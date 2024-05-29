@@ -24,7 +24,7 @@ function Categories({ selectedValue, onOptionClick, showInNavbar = false }) {
   ];
 
   return (
-    <div className={`categories p bg-darkblue pl-4 font-inter ${showInNavbar ? 'block' : 'hidden md:block'}`}>
+    <div className={`categories p bg-darkblue pl-4 h-[100vh] font-inter ${showInNavbar ? 'block' : 'hidden md:block'}`}>
       {!showInNavbar && (
         <div className="supermarketbutton py-2 pt-6">
           <Categorydropdown selectedValue={selectedValue} onOptionClick={onOptionClick} />

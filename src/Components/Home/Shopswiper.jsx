@@ -73,7 +73,7 @@ function Shopswiper() {
     <SwiperSlide key={index}>
       <div className="swipercard">
         <img src={obj.img} alt={obj.title} />
-        <p className="flex justify-center pt-1 text-[16px] Mobile: text-[8px]">
+        <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px]">
           {obj.title}
         </p>
       </div>
@@ -82,7 +82,7 @@ function Shopswiper() {
 </Swiper>
       <div
         className="swiper-button-next px-5 Tab:hidden"
-        style={{ zIndex: 1, color: 'black' }}
+        style={{ zIndex: 1, color: 'black', }}
         onClick={goToNext}
       ></div>
     </div>
