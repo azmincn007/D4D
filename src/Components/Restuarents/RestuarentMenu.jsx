@@ -1,6 +1,6 @@
 import React from 'react';
 import Categorytab from '../Home/Categorytab';
-import { NavbarComponent } from '../Navbar';
+import { NavbarComponent } from '../../Pages/Navbar/Navbar';
 import RatingComponent from './Rating';
 import card from '../../assets/card.png';
 import { Card, Dropdown, DropdownItem } from 'flowbite-react';
@@ -28,15 +28,14 @@ function RestuarentMenu() {
     { res: 'Relax Restaurant', rating: 4 },
     // Add more restaurant data objects here
   ];
-
   const contentcard = [
-    { img: card, title: 'Lulu Eranakulam', content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' }
+    { img: card, title: 'Margherita Pizza', rating: 4, price: '$12.99' },
+    { img: card, title: 'Spaghetti ', rating: 5, price: '$10.99' },
+    { img: card, title: 'Chicken Biryani', rating: 4, price: '$14.99' },
+    { img: card, title: 'Falafel Wrap', rating: 3, price: '$8.99' },
+    { img: card, title: 'Beef Burger', rating: 4, price: '$11.99' },
+    { img: card, title: 'Pad Thai', rating: 5, price: '$13.99' },
+    { img: card, title: 'Fish and Chips', rating: 4, price: '$9.99' },
   ];
 
   const Ricedata = [
@@ -60,15 +59,18 @@ function RestuarentMenu() {
         <div key={index} className="bgresto w-[100%] h-[300px] bg-cover bg-no-repeat font-inter flex items-center">
           <div className='w-[100%]'>
           <div className='w-[80%] mx-auto flex items-center'> 
-            <div className="text-[32px] font-semibold text-white mr-[5px]">{restaurant.res}</div>
+            <div className="text-[32px] font-semibold text-white mr-[5px] Mobile:text-[14px] LgMobile:text-[18px]">{restaurant.res}</div>
             <div>
-              <RatingComponent rating={restaurant.rating} />
+              <RatingComponent   rating={restaurant.rating} />
             </div>
 
           </div>
           <div className='text-white w-[80%] mx-auto  items-center'>
-          <div className='text-[24px]'>Menu</div>
-          <div className='flex items-center'><Link>Home</Link> <span><MdKeyboardArrowRight/></span> <Link>Menu</Link></div>
+            <div className='py-2'>
+              <p className='text-[24px] font-semibold'>Menu</p>
+              <div className=' text-yellow text-small flex items-center mt-[-6px]'><Link>Home</Link> <span><MdKeyboardArrowRight/></span> <Link>Menu</Link></div>
+
+            </div>
           </div>
           </div>
          
@@ -98,21 +100,25 @@ function RestuarentMenu() {
           <Swiper
             slidesPerView={1}
             spaceBetween={0}
-            navigation={true}
+            
             pagination={{
               clickable: true,
             }}
             breakpoints={{
+              300: {
+                slidesPerView: 2.5,
+                spaceBetween: 10,
+              },
               450: {
-                slidesPerView: 3,
+                slidesPerView: 2.5,
                 spaceBetween: 10,
               },
               640: {
-                slidesPerView: 3,
+                slidesPerView: 3.5,
                 spaceBetween: 10,
               },
               768: {
-                slidesPerView: 4,
+                slidesPerView: 3.5,
                 spaceBetween: 10,
               },
               1024: {
@@ -120,12 +126,12 @@ function RestuarentMenu() {
                 spaceBetween: 10,
               },
               1250: {
-                slidesPerView: 5,
+                slidesPerView: 4.5,
                 spaceBetween: 10,
               },
               1450: {
                 slidesPerView: 6.5,
-                spaceBetween: 10,
+                spaceBetween: 5,
                 
               },
             }}
@@ -134,7 +140,7 @@ function RestuarentMenu() {
           >
             {contentcard.map((obj, index) => (
               <SwiperSlide key={index}>
-                 <RestoCard img={obj.img} title={obj.title} content={obj.content} />
+                 <RestoCard price={obj.price} img={obj.img} title={obj.title} rating={obj.rating} />
               </SwiperSlide>
             ))}
           </Swiper>

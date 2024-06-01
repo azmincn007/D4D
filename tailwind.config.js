@@ -34,6 +34,7 @@ export default {
         'LgTab': {'max':'800px'},
         'Tab': {'max':'770px'},
         'TabS': {'max':'700px'},
+        'xsmMobile': {'max':'350px'},
 
         'SmMobile': {'max':'390px'},
         'Mobile': {'max':'450px'},

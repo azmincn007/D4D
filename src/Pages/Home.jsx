@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import {  NavbarComponent } from '../Components/Navbar';
+import {  NavbarComponent } from './Navbar/Navbar';
 import Categorytab from '../Components/Home/Categorytab';
 import Shopswiper from '../Components/Home/Shopswiper';
 import Homecontainer from '../Components/Home/Homecontainer';

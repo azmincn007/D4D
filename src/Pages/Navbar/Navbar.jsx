@@ -1,18 +1,20 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from 'flowbite-react';
 import { Link } from 'react-router-dom';
-import Logo from '../assets/Logo.png';
-import '../styles/nav.css';
-import Toggle from './Navbar/Toggle';
-import Regiondropdown from './Navbar/Regiondropdown';
-import { ModalAuth } from './modal/Modallogin';
-import { AuthContext } from '../App';
+import Logo from '../../assets/Logo.png';
+
+import '../../styles/nav.css';
+import Toggle from './navcomponents/Toggle';
+import Regiondropdown from './navcomponents/Regiondropdown';
+import { ModalAuth } from '../../Components/modal/Modallogin';
+import { AuthContext } from '../../App';
 import { AiOutlineLogin } from "react-icons/ai";
-import AvatarComponent from './Navbar/AvatarComponent';
+import AvatarComponent from './navcomponents/AvatarComponent';
 import { CgProfile } from "react-icons/cg";
-import FlowbiteNav from '../Themes/FlowbiteNav';
-import Categories from './Home/Categories';
+import FlowbiteNav from '../../Themes/FlowbiteNav';
+import Categories from '../../Components/Home/Categories';
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import Search from './navcomponents/Search';
 
 export function NavbarComponent() {
   const [openModal, setOpenModal] = useState(false);
@@ -74,8 +76,7 @@ export function NavbarComponent() {
             </NavbarBrand>
           </div>
           <div className="search flex items-center TabS:hidden">
-            <input type="text" className="inputfield" placeholder={!Tabscreen ? "Search products" : ""} />
-            <button className='navbutton text-black text-semibold'>Search</button>
+           <Search/>
           </div>
         </div>
 
@@ -146,8 +147,7 @@ export function NavbarComponent() {
         </div>
         <div className='midle  mx-auto my-2'>
         <div className="search  items-center justify-center TabS:flex hidden ">
-            <input type="text" className="inputfield w-[80%]" placeholder={!Tabscreen ? "Search products" : ""} />
-            <button className='navbutton text-black text-semibold'>Search</button>
+           <Search/>
           </div>
         </div>
         

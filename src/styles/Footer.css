@@ -1,0 +1,15 @@
+.footerfl{
+    padding: 22px !important;
+    color: black !important;
+    box-shadow: 4px -10px 25px 0px #0000001A;
+    display: flex !important;
+    justify-content: space-between !important;
+}
+
+@media (max-width: 500px) {
+  
+    .footerfl div[data-testid="flowbite-footer-copyright"],.footerfl ul[data-testid="footer-groupLink"]{
+        font-size: 8px !important;
+    }
+  }
+  

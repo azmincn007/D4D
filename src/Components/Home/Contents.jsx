@@ -1,28 +1,29 @@
-import React from 'react';
-import { Label, Radio } from 'flowbite-react';
-import card from '../../assets/card.png';
-import Homecards from '../Cards/Homecards';
-import cardlogo from '../../assets/supermarketcardlogo.png'
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Label, Radio } from "flowbite-react";
+import card from "../../assets/card.png";
+import Homecards from "../Cards/Homecards";
+import cardlogo from "../../assets/supermarketcardlogo.png";
+import { Link } from "react-router-dom";
+import "../../styles/Containers.css";
 
 function Contents() {
   const contentcard = [
-    { img: card, title: 'Lulu Eranakulam', cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam',  cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam', cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam',  cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam',  cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam',  cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam',  cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam',  cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
-    { img: card, title: 'Lulu Eranakulam',  cardlogo:cardlogo, content: 'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...' },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
+    { img: card, title: "Lulu Eranakulam", cardlogo: cardlogo, content: "Sprawling, residential Ernakulam is known for Marine Drive, a busy ..." },
     // ... other card objects
   ];
 
   return (
     <div className="contentsdiv px-8 pb-3p border-t-2 border-[#232F3E]">
-      <div className='flex justify-between py-2 items-center'>
+      <div className=" cnd flex justify-between py-2 items-center">
         <div className="contentshead font-inter text-black font-semibold text-[20px] Mobile:text-[12px] py-2">
           Latest Lulu Hypermarket offers in UAE - Dubai
         </div>
@@ -38,14 +39,8 @@ function Contents() {
       <div className="contentscards">
         <div className="cardcontainer justify-center">
           {contentcard.map((obj, index) => (
-            <Link key={index} to={'/resto'} >
-            <Homecards
-              key={index}
-              img={obj.img}
-              logo={obj.cardlogo}
-              title={obj.title}
-              content={obj.content}
-            />
+            <Link key={index} to={"/flyer"} state={{ source: "supermarket" }}>
+              <Homecards key={index} img={obj.img} logo={obj.cardlogo} title={obj.title} content={obj.content} />
             </Link>
           ))}
         </div>

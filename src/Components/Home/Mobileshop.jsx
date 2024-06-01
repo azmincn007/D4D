@@ -1,14 +1,10 @@
-
 import React from 'react'
-
 import card from '../../assets/mobilecard.png'
-import '../../styles/categories.css'
+import '../../styles/Cards.css'
 import { Link } from 'react-router-dom';
 import cardlogo from '../../assets/mobilecardlogo.png'
 import Homecards from '../Cards/Homecards';
 import { Label, Radio } from 'flowbite-react';
-
-
 
 
 function Mobileshop() {
@@ -36,7 +32,7 @@ function Mobileshop() {
         <div className="contentscards">
           <div className="cardcontainer ">
             {contentcard.map((obj, index) => (
-              <Link key={index} to={'/mobilesingle'} >
+              <Link key={index} to={'/mobilesingle'}  >
               <Homecards
               key={index}
               img={obj.img}

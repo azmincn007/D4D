@@ -8,6 +8,10 @@
     
 }
 
+.supermarketbutton button span{
+   padding:3px 6px !important;
+}
+
 .downloadbuttons{
     width: 99px;
     height: 30px;
@@ -19,124 +23,4 @@
 .cardfl {
   position: relative;
 }
-.cardfl:hover::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.721);
-  z-index: 1;
-}
 
-
-
-
-
-/* cardcontainer.module.css */
-.cardcontainer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Create 4 equal-width columns */
-  gap: 0.5rem;
-}
-
-.cardsdiv {
-  display: flex;
-  flex-direction: column;
-  width: auto; /* Allow the card to adjust its width */
-  max-width: 100%; /* Prevent the card from exceeding the container width */
-}
-  
-@media (min-width: 1450px) {
-  .cardcontainer {
-    grid-template-columns: repeat(5, 1fr); /* Show only 4 cards in a row */
-  }
-
-  .cardsdiv {
-    width: calc(25% - 0.375rem) !important;  /* Calculate the card width to maintain the 0.5rem gap */
-    max-width: calc(25% - 0.375rem) !important; /* Prevent the card from exceeding its calculated width */
-  }
-}
-
-@media (max-width: 1450px) {
-  .cardcontainer {
-    grid-template-columns: repeat(4, 1fr); /* Show only 4 cards in a row */
-  }
-
-  .cardsdiv {
-    width: calc(25% - 0.375rem) !important;  /* Calculate the card width to maintain the 0.5rem gap */
-    max-width: calc(25% - 0.375rem) !important; /* Prevent the card from exceeding its calculated width */
-  }
-}
-
-@media (max-width: 1100px) {
-  .cardcontainer {
-    grid-template-columns: repeat(3, 1fr) !important; /* Show 3 cards in a row */
-  }
-
-  .cardsdiv {
-    width: calc(33.33% - 0.333rem) !important; /* Calculate the card width to maintain the 0.5rem gap */
-    max-width: calc(33.33% - 0.333rem) !important; /* Prevent the card from exceeding its calculated width */
-  }
-}
-
-
-@media (max-width: 900px) {
-  .cardcontainer {
-    grid-template-columns: repeat(2, 1fr) !important; /* Show 3 cards in a row */
-  }
-
-  .cardsdiv {
-    width: calc(50% - 0.333rem) !important; /* Calculate the card width to maintain the 0.5rem gap */
-    max-width: calc(50% - 0.333rem) !important; /* Prevent the card from exceeding its calculated width */
-  }
-}
-
-@media (max-width: 770px) {
-  .cardcontainer {
-    grid-template-columns: repeat(3, 1fr) !important; /* Show 3 cards in a row */
-  }
-
-  .cardsdiv {
-    width: calc(33.33% - 0.333rem) !important; /* Calculate the card width to maintain the 0.5rem gap */
-    max-width: calc(33.33% - 0.333rem) !important; /* Prevent the card from exceeding its calculated width */
-  }
-}
-
-@media (max-width: 600px) {
-  .cardcontainer {
-    grid-template-columns: repeat(2, 1fr) !important; /* Show 3 cards in a row */
-  }
-
-  .cardsdiv {
-    width: calc(50% - 0.333rem) !important; /* Calculate the card width to maintain the 0.5rem gap */
-    max-width: calc(50% - 0.333rem) !important; /* Prevent the card from exceeding its calculated width */
-  }
-}
-
-
-
- 
-
-  
-  @media (max-width: 460px) {
-
-    .contentsdiv{
-      padding: 0rem 4px !important;
-    }
-    
-    .downloadbuttons{
-      width: 90px;
-      height: 30px;
-  }
-  }
-  
-  @media (max-width: 390px) {
-  }
-
-
- .tabmob button{
-  font-size: 12px !important;
-  color: #6B6B6B !important;
- }

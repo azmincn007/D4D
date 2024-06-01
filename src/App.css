@@ -5,54 +5,48 @@
 .flowbite-accordion:focus {
   outline: none; /* Remove default focus effect */
 }
-.css-1kbanwn-MuiPaper-root-MuiAccordion-root.Mui-expanded,.css-1sux7e6-MuiPaper-root-MuiAccordion-root.Mui-expanded {
+.css-1kbanwn-MuiPaper-root-MuiAccordion-root.Mui-expanded,
+.css-1sux7e6-MuiPaper-root-MuiAccordion-root.Mui-expanded {
   margin: 0px !important; /* Set margin to 0 */
 }
-
 
 /* ButtonStyles */
 
 .auth-button {
-    color: black !important; /* Text color */
-    font-weight: bold !important; /* Bold text */
-    padding: 0.2rem 0.5rem !important; /* Padding */
-    border-radius: 0.375rem !important; /* Rounded corners */
-    transition: background-color 0.3s !important; /* Smooth background-color transition */
-  }
-  
-  .auth-button:hover {
-    background-color: #eab308 !important; /* Darker yellow on hover */
-  }
-  
+  color: black !important; /* Text color */
+  font-weight: bold !important; /* Bold text */
+  padding: 0.2rem 0.5rem !important; /* Padding */
+  border-radius: 0.375rem !important; /* Rounded corners */
+  transition: background-color 0.3s !important; /* Smooth background-color transition */
+}
 
-
+.auth-button:hover {
+  background-color: #eab308 !important; /* Darker yellow on hover */
+}
 
 /* baground setting */
-.bgresto{
-    background: url('./assets/Restaurentmenu.png');
-}  
-
-
-
-
-.nearby input:focus{
-  background-color: yellow;
-}
-.nearby input:hover{
-  background-color: yellow;
+.bgresto {
+  background: url("./assets/Restaurentmenu.png");
 }
 
-
+.nearby input:focus {
+  background-color: yellow;
+}
+.nearby input:hover {
+  background-color: yellow;
+}
 
 /*swiperbutton*/
 
-.swiper-button-next::after ,.swiper-button-prev::after{
+.swiper-button-next::after,
+.swiper-button-prev::after {
   font-size: 21px !important;
 }
 
-.swiper-button-next,.swiper-button-prev{
+.swiper-button-next,
+.swiper-button-prev {
   border-radius: 50%;
-  border: 0.2px solid #F1F1F1;
+  border: 0.2px solid #f1f1f1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -64,11 +58,124 @@
   border-radius: 20px !important;
 }
 
+.cardres div {
+  padding: 0 !important;
+}
 
+/* src/styles/nav.css */
 
+@media (max-width: 450px) {
+  .Flyercomp {
+    min-width: 360px !important;
+  }
+  .flyrcard {
+    max-width: 220px !important;
+  }
+}
 
+@media (max-width: 350px) {
+  .Flyercomp {
+    min-width: 300px !important;
+  }
+  .flyrcard {
+    max-width: 200px !important;
+  }
+}
 
+.swiper-button-disabled button {
+  opacity: 60%;
+}
 
+.otpbox div input:focus {
+  border-color: #ffd814;
+}
 
+@media (max-width: 1050px) {
+  .righthead div {
+    font-size: 18px !important;
+    padding-bottom: 1px !important;
+    padding-left: 0rem !important;
+    padding-right: 0rem !important;
+  }
 
+  .branch {
+    padding-top: 0rem !important;
+    padding-bottom: 0rem !important;
+  }
 
+  .branchsingle {
+    padding-left: 0.2rem !important;
+    padding-right: 0.2rem !important;
+  }
+}
+
+@media (max-width: 770px) {
+  .righthead div {
+    font-size: 18px !important;
+    padding-bottom: 1px !important;
+    padding-left: 0rem !important;
+    padding-right: 0rem !important;
+  }
+
+  .branch {
+    padding-top: 0rem !important;
+    padding-bottom: 0rem !important;
+  }
+
+  .branchsingle {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
+@media (max-width: 580px) {
+  .righthead div {
+    font-size: 12px !important;
+  }
+
+  .img {
+    min-height: 130px;
+  }
+
+  .branchsingle {
+    font-size: 10px;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+  }
+}
+
+@media (max-width: 410px) {
+  .branchsingle {
+    font-size: 8px;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+  .righthead div {
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .righthead div {
+    font-size: 8px !important;
+  }
+  .butsng {
+    font-size: 10px !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}
+
+iframe {
+  width: 100% !important;
+
+  .haAclf {
+    width: 1000px !important;
+  }
+}
+
+#container {
+  width: 100% !important;
+}

@@ -26,46 +26,38 @@ border-bottom-right-radius: 4px !important;
     border-bottom-left-radius: 4px !important;
     border: none;
 }
-/*toggle*/
-.toggle div{
-  display: flex !important;
-  flex-direction: row !important;
+
+.custom-tabs {
+  width: 100%;
 }
 
-.toggle{
-  border-radius: 26px !important;
-  border: 2px solid #FFD814 !important;
+.tab-titles {
+  display: flex;
+  border: 2px solid #FFD814;
+  border-radius: 20px;
 }
 
-.toggle-class div button{
-  padding: 10px 30px !important;
-  height: 40px !important;
-  border: none !important;
-
+.tab-title {
+  padding: 10px 30px;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
 }
 
-
-
-.toggle-class div button[aria-selected="true"] {
-  border-radius: 16px !important;
-  background-color: #FFD814 !important;
-  color: black !important;
+.tab-title.active {
+  color: black;
+  font-weight: 600;
+  background-color: #FFD814;
+  border-radius: 14px;
 }
 
-.toggle-class div button[aria-selected="false"] {
-
-  color: white !important;
+.tab-content {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-top: none;
 }
-
-
-.toggle-class div button[aria-selected="false"]:hover {
-
-  color: #FFD814 !important;
-  background-color: transparent !important;
-}
-
-
-
 
 
 
@@ -152,11 +144,9 @@ border-bottom-right-radius: 4px !important;
  
   }
 
-  .toggle-class div button{
+  .tab-title {
     padding: 10px 20px !important;
     height: 30px !important;
-
- 
   }
 
 
@@ -181,11 +171,9 @@ border-bottom-right-radius: 4px !important;
   height: 30px;
  
   }
-  .toggle-class div button{
+  .tab-title {
     padding: 10px 20px !important;
     height: 30px !important;
-
- 
   }
 }
 
@@ -220,17 +208,19 @@ border-bottom-right-radius: 4px !important;
     padding: 4px;
     align-items: center;
    }
+   .tab-title {
+    padding: 8px 13px !important;
+    height: 25px !important;
+  }
   
    
   }
 
   @media (max-width: 370px) {
 
-    .toggle-class div button{
+    .tab-title {
       padding: 8px 13px !important;
       height: 25px !important;
-  
-   
     }
   
      

@@ -6,6 +6,7 @@ import '../../styles/categories.css'
 import Homecards from '../Cards/Homecards';
 import cardlogo from '../../assets/restorentcardlogo.png'
 import { Label, Radio } from 'flowbite-react';
+import Categorydropdown from './Components/CategoryDropdown';
 
 
 
@@ -16,7 +17,9 @@ function Restuarents() {
     const contentcard=[{ cardlogo:cardlogo,img:card,title:'Lulu Eranakulam', content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{cardlogo:cardlogo,img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{cardlogo:cardlogo,img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{cardlogo:cardlogo,img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{cardlogo:cardlogo,img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{cardlogo:cardlogo,img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{cardlogo:cardlogo,img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'}]
   return (
    <div className="contentsdiv   px-8 pb-3p border-t-2 border-[#232F3E]">
-    <div className='flex justify-between py-2'>
+    <div className='flex justify-between items-center py-2'>
+        
+      
         <div className="contentshead font-inter text-black font-semibold text-[20px] Mobile:text-[12px] py-2">
           Latest Lulu Hypermarket offers in UAE - Dubai
         </div>
@@ -28,11 +31,11 @@ function Restuarents() {
             </div>
           </fieldset>
         </div>
-      </div><div className="contentscards">
+      </div><div className="contentscards-resto">
 
 
 
-    <div className="cardcontainer ">
+    <div className="cardcontainer-resto ">
 
     {contentcard.map((obj, index) => (
       <Homecards

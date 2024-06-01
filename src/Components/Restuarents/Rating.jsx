@@ -9,6 +9,7 @@ const RatingComponent = ({ rating }) => {
           key={i}
           color={i < rating ? '#FFD814' : 'white'}
           filled={i < rating}
+          className='Mobile:w-[12px] h-[12px]'
         />
       ))}
       <p className="ml-2 text-[16px] font-medium text-yellow dark:text-gray-400">

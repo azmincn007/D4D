@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import '../../styles/nav.css';
+import '../../../styles/nav.css';
 import { Dropdown } from 'flowbite-react';
-import { Countrycontext, NationalityContext } from '../../App';
-import flowbiteDrop from '../../Themes/Flowbitedrop';
+import { Countrycontext, NationalityContext } from '../../../App';
+import flowbiteDrop from '../../../Themes/Flowbitedrop';
 
 function Regiondropdown() {
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
