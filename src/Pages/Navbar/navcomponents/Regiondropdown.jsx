@@ -32,6 +32,7 @@ function Regiondropdown() {
         >
           {remainingCountries.map((country, index) => (
             <Dropdown.Item
+            className='dropitem px-0'
               key={index}
               onClick={() => handleCountrySelect(country)}
             >

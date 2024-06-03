@@ -55,8 +55,7 @@ function Homecontainer() {
       >
         {selectedValue === 'Supermarket' && ActiveToggle === 'Offer' && <Contents />}
         {selectedValue === 'MobileShop' && ActiveToggle === 'Product' && <Mobileshop />}
-        {(selectedValue === 'MobileShop' || selectedValue === 'Supermarket') &&
-          ActiveToggle === 'Offer' && <MobileFilter />}
+
         {isRestaurantAndOffer && (
           <>
             <Categorydropdown

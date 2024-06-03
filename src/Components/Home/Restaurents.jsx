@@ -7,6 +7,7 @@ import Homecards from '../Cards/Homecards';
 import cardlogo from '../../assets/restorentcardlogo.png'
 import { Label, Radio } from 'flowbite-react';
 import Categorydropdown from './Components/CategoryDropdown';
+import { Link } from 'react-router-dom';
 
 
 
@@ -21,8 +22,7 @@ function Restuarents() {
         
       
         <div className="contentshead font-inter text-black font-semibold text-[20px] Mobile:text-[12px] py-2">
-          Latest Lulu Hypermarket offers in UAE - Dubai
-        </div>
+        Latest Atmosphere Restaurant offers in UAE - Dubai        </div>
         <div>
           <fieldset className="flex max-w-md flex-col gap-4">
             <div className=" nearby flex items-center gap-2">
@@ -38,6 +38,8 @@ function Restuarents() {
     <div className="cardcontainer-resto ">
 
     {contentcard.map((obj, index) => (
+                  <Link key={index} to={"/flyer"} state={{ source: "supermarket" }}>
+
       <Homecards
               key={index}
               img={obj.img}
@@ -45,6 +47,7 @@ function Restuarents() {
               title={obj.title}
               content={obj.content}
             />
+            </Link>
 ))}
 
  

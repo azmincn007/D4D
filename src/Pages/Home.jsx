@@ -5,6 +5,7 @@ import Shopswiper from '../Components/Home/Shopswiper';
 import Homecontainer from '../Components/Home/Homecontainer';
 import NationalityModal from '../Components/modal/NationalityModal';
 import { Countrycontext } from '../App';
+import MaxWidthWrapper from '../Components/Maxwidth';
 
 function Home() {
   const [nationality, selectNationality] = useState(true);
@@ -24,6 +25,7 @@ function Home() {
       <div className="shopswiper"><Shopswiper /></div>
       <div className="homecontainerdiv"><Homecontainer /></div>
     </div>
+    
   );
 }
 

@@ -13,20 +13,20 @@ import Shopswiper from '../Home/Shopswiper';
 
 
 
-function MobileFilter() {
+function Filter() {
 
     const contentcard=[{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'}]
   return (
-    <div className="mobileshop">
-       <div className=" font-inter my-6 filter w-[95%] mx-auto  rounded-[10px] shadow-[0_2px_8px_0_rgba(99,99,99,0.2)] py-2 px-3">
-        <div className="  flex items-center py-1">
+    <div className="">
+       <div className=" font-inter my-6 filter  mx-auto  rounded-[10px] shadow-[0_2px_8px_0_rgba(99,99,99,0.2)] py-2 px-3">
+        <div className="  flex items-center py-1 Mobile:items-start ">
           <div className='font-semibold text-18px'>Suggestion:</div>
           <div className='flex ml-2'>
             <Tabs
               theme={MobileTab}
               aria-label="Pills"
               style="pills"
-              className="tabmob "
+              className="tabmob  Mobile:flex-wrap Mobile:gap-1 Mobile:max-h-16"
             >
               <Tabs.Item active title="asd"></Tabs.Item>
               <Tabs.Item  className="text-[13px.tab]" title="rice"></Tabs.Item>
@@ -57,39 +57,14 @@ function MobileFilter() {
 
 
 
-      <div className="shopswipermobile">
-
-        <Shopswiper/>
-      </div>
+     
      
 
-      <div className="contentsdiv px-8 py-2">
-        <div className="contentshead font-inter text-black font-semibold text-[20px]">
-          Latest Lulu Hypermarket offers in UAE - Dubai
-        </div>
-        <div className="contentscards">
-          <div className="cardcontainer ">
-            {contentcard.map((obj, index) => (
-              <Card
-                key={index} // Use index as key, or replace with unique ID if available
-                theme={Flowbitecard}
-                className=" cardfl max-w-[220px] p-1"
-                imgAlt="Meaningful alt text for an image that is not purely decorative"
-                imgSrc={obj.img}
-              >
-                <h5 className="text-[13px] font-bold tracking-tight text-gray-900 dark:text-white font-inter">
-                  {obj.title}
-                </h5>
-                <p className="font-normal text-[10px] text-[#949494] dark:text-gray-400">
-                  {obj.content}
-                </p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </div>
+     
+     
+    
     </div>
   );
 }
 
-export default MobileFilter
+export default Filter

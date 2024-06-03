@@ -34,7 +34,7 @@ function Mobilessingle() {
           <div className="topsingle flex">
           <div className="leftsingle Tab:w-[50%]">
             <div>
-              <img src={mobile.imgSrc} alt="" className='max-w-[325px] h-[314px] Tab:w-[100%] Tab:h-[auto] img' />
+              <img src={mobile.imgSrc} alt="" className='max-w-[350px] h-[314px] Tab:w-[100%] Tab:h-[auto] img' />
             </div>
           
           </div>

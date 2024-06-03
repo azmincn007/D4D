@@ -179,3 +179,37 @@ iframe {
 #container {
   width: 100% !important;
 }
+
+
+.drop div[data-testid="flowbite-dropdown"]{
+  ul{
+    width: 250px;
+  }
+        li{
+          width: 95%;
+          margin: 0.2rem auto !important;
+          
+            button{
+              padding-top: 0.3rem;
+              padding-bottom: 0.3rem;
+              background-color: #F5F3F3;
+              text-align: left;
+              padding-left: .5rem;
+              
+            }
+        }
+}
+
+@media (max-width:770px) {
+  .drop div[data-testid="flowbite-dropdown"]{
+    ul{
+      width: 150px;
+    }
+          li{
+            width: 95%;
+            margin: 0.1rem auto !important;
+            
+             
+          }
+  }
+}
