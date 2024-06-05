@@ -53,9 +53,6 @@ function App() {
                   <Route path="/resto" element={<RestuarentMenu />} />
                   <Route path="/mobilesingle" element={<Mobilessingle />} />
                   <Route path="/flyer" element={<Flyer />} />
-                  <Route path="/timer" element={<Timer />} />
-                  <Route path="/home" element={<HomecontainerRestorent />} />
-                  <Route path="/a" element={<L />} />
                 </Routes>
               </BrowserRouter>
             </AuthContext.Provider>

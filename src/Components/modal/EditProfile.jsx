@@ -1,27 +1,14 @@
-import { Button, Label, Radio, Select, TextInput } from "flowbite-react";
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { Button, Checkbox, Label, Modal, TextInput, Radio, Select } from "flowbite-react";
+import { modalthemeNational } from "../../Themes/Modaltheme";
+import { GrEdit } from "react-icons/gr";
 import flowbiteinput from "../../Themes/Flowbiteinput";
-import LoginTab from "../../Components/authentication/Togleauthentication";
+import AvatarComponent from "../../Pages/Navbar/navcomponents/AvatarComponent";
 import { IoIosClose } from "react-icons/io";
-import Flowbiteradio from "../../Themes/FlowbiteRadiobutton";
-import ErrorMessage from "./ErrorValidation";
 
-function SignupPopup({ onClose, onSubmit }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+const EditProfile = ({ isOpen, onClose }) => {
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
 
-  const onSubmitHandler = (data) => {
-    console.log("Submitted Data:", data);
-    onSubmit(data.mobileNumber);
-  };
-
-  const handleClose = () => {
-    onClose();
-  };
   const countryOptions = [
     { value: "USA", name: "United States" },
     { value: "Canada", name: "Canada" },
@@ -33,13 +20,28 @@ function SignupPopup({ onClose, onSubmit }) {
     { value: "China", name: "China" },
   ];
 
+  const handleProfileModalClose = () => {
+    setIsProfileModalOpen(false);
+    onClose();
+  };
 
   return (
     <>
-      <h1 className="text-base font-semibold py-2">Signup</h1>
-    
-      <div className="form py-5 w-[90%]">
-      <form className="flex flex-col gap-3">
+    <Modal theme={modalthemeNational} show={isOpen} onClose={onClose}>
+      <Modal.Body>
+        <div className="flex justify-center">
+          <div className="w-[70%] mx-auto">
+            <div>
+              <div className="relative w-[120px] h-[120px]">
+                <AvatarComponent height={120} width={120} />
+                <div className="absolute bottom-2 right-[18px] -mb-1 -mr-4 bg-gray-900 text-gray-50 rounded-full p-2 flex items-center justify-center dark:bg-gray-50 dark:text-gray-900">
+                  <GrEdit />
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="form py-5 w-[100%]">
+                <form className="flex flex-col gap-3">
                   <div>
                     <div className="mb-2 block"></div>
                     <TextInput theme={flowbiteinput} id="username" type="text" placeholder="Username" />
@@ -94,18 +96,25 @@ function SignupPopup({ onClose, onSubmit }) {
                       <Label htmlFor="other">Other</Label>
                     </div>
                   </div>
+                  
                   <Button className="bg-yellow auth-button" type="submit">
                     Update Profile
                   </Button>
                 </form>
-      </div>
-      <div className="absolute top-0 right-0 mt-3 mr-3">
-        <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
-          <IoIosClose className="text-base cursor-pointer" onClick={handleClose} />
+              </div>
+            </div>
+          </div>
+          <div className="absolute top-0 right-0 mt-3 mr-3">
+    <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
+      <IoIosClose className="text-base cursor-pointer" onClick={handleProfileModalClose} />
+    </div>
+  </div>
         </div>
-      </div>
-    </>
+      </Modal.Body>
+    </Modal>
+  
+  </>
   );
-}
+};
 
-export default SignupPopup;
+export default EditProfile;

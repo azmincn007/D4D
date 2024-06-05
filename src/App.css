@@ -212,4 +212,30 @@ iframe {
              
           }
   }
+ .homecontainer .left{
+    display: none !important;
+  }
 }
+
+
+
+  .contentshead{
+font-size: clamp(10px, 3vw, 20px);
+  }
+
+
+
+  @media (max-width:450px) {
+    .contentshead{
+      padding-top: 0rem;
+      padding-bottom: 0rem;
+        }
+  }
+
+  .card img[data-testid="flowbite-card-image"] {
+    border-radius: 8px !important;
+  }
+
+  .nearby input{
+    border: 2px solid black;
+  }

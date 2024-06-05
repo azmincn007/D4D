@@ -17,7 +17,7 @@ function Regiondropdown() {
 
   return (
     <div className="regiondrop flex items-center">
-      <div className="countryimage Tab:hidden">
+      <div className="countryimage LgTab2:hidden">
         <img
           className="logocountry rounded-full" // Add the 'rounded-full' class to make the image circular
           src={selectedCountry.Img}

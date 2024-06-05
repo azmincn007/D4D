@@ -1,10 +1,19 @@
-import React from 'react'
-import avatar from '../../../assets/avatarboys.png'
+import React from 'react';
+import avatar from '../../../assets/avatarboys.png';
 
-function AvatarComponent() {
+function AvatarComponent({ height, width }) {
   return (
-    <img className="h-[50px] w-[50px] " src={avatar} alt="" />
-  )
+    <img
+      style={{ height: `${height}px`, width: `${width}px` }}
+      src={avatar}
+      alt=""
+    />
+  );
 }
 
-export default AvatarComponent
+AvatarComponent.defaultProps = {
+  height: 50,
+  width: 50,
+};
+
+export default AvatarComponent;

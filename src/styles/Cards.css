@@ -4,7 +4,7 @@
 .cardcontainer {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* Create 4 equal-width columns */
-    gap: 0.5rem;
+    gap: 1rem  0.5rem;
   }
   
   .cardsdiv {
@@ -93,7 +93,7 @@
 .cardcontainermobsingle{
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 0.5rem; /* Create 4 equal-width columns */
+    gap:  1rem 0.5rem; /* Create 4 equal-width columns */
 
 }
 

@@ -21,13 +21,13 @@ function Restuarents() {
     <div className='flex justify-between items-center py-2'>
         
       
-        <div className="contentshead font-inter text-black font-semibold text-[20px] Mobile:text-[12px] py-2">
+        <div className=" font-inter text-black font-semibold text-[20px] Mobile:text-[12px] py-2">
         Latest Atmosphere Restaurant offers in UAE - Dubai        </div>
         <div>
           <fieldset className="flex max-w-md flex-col gap-4">
             <div className=" nearby flex items-center gap-2">
               <Radio id="united-state" name="nearby" value="Nearby" />
-              <Label htmlFor="Nearby">Nearby</Label>
+              <Label htmlFor="Nearby" className="Mobile:text-xs">Nearby</Label>
             </div>
           </fieldset>
         </div>

@@ -17,7 +17,6 @@ function Toggle() {
   ];
 
   useEffect(() => {
-    console.log(ActiveToggle); // Log the value of the active tab
   }, [ActiveToggle]);
 
   const handleTabClick = (value) => {

@@ -3,8 +3,7 @@ import { Dropdown } from 'flowbite-react';
 
 const Categorydropdown = ({ selectedValue, onOptionClick }) => {
   const options = [
-    { value: 'Supermarket', label: 'Supermarket' },
-    { value: 'MobileShop', label: 'MobileShop' },
+    { value: 'Shops', label: 'Shops' },
     { value: 'Restaurant', label: 'Restaurant' },
   ];
 

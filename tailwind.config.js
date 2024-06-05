@@ -29,8 +29,9 @@ export default {
       screens: {
 
         'smDesk': {'max':'1250px'},
+        'Desk': {'max':'1450px'},
         
-
+        'LgTab2': {'max':'1000px'},
         'LgTab': {'max':'800px'},
         'Tab': {'max':'770px'},
         'TabS': {'max':'700px'},

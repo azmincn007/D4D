@@ -15,6 +15,7 @@ import FlowbiteNav from '../../Themes/FlowbiteNav';
 import Categories from '../../Components/Home/Categories';
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Search from './navcomponents/Search';
+import ProfileModal from '../../Components/modal/Profilemodal';
 
 export function NavbarComponent() {
   const [openModal, setOpenModal] = useState(false);
@@ -22,6 +23,15 @@ export function NavbarComponent() {
   const [Tabscreen, setTabscreen] = useState(window.innerWidth <= 820);
   const [username, setUsername] = useState('');
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const handleProfileModalOpen = () => {
+    setIsProfileModalOpen(true);
+  };
+
+  const handleProfileModalClose = () => {
+    setIsProfileModalOpen(false);
+  };
 
   const handleLoginClick = () => {
     setOpenModal(true);
@@ -75,20 +85,20 @@ export function NavbarComponent() {
               <img src={Logo} className="logo  SmMobile:w-[70px] SmMobile:h-[70px]" alt="Logo" />
             </NavbarBrand>
           </div>
-          <div className="search flex items-center TabS:hidden">
+          <div className="search flex items-center mr-2 TabS:hidden">
            <Search/>
           </div>
         </div>
 
 
         <div className="right flex items-center">
-          <div className='mr-[20px] Tab:mr-[0px]'><Toggle /></div>
+          <div className=' mr-[20px] Tab:mr-[0px] '><Toggle /></div>
           <Regiondropdown />
          <div className='log SmMobile:hidden'>
          {username ? (
-            <div onClick={handleLogout}>
-              <AvatarComponent username={username} />
-            </div>
+             <div onClick={handleProfileModalOpen}>
+             <AvatarComponent username={username} />
+           </div>
           ) : (
             Tabscreen ? (
               <AiOutlineLogin className='text-yellow flex items-center h-[30px] w-[30px]' onClick={handleLoginClick} />
@@ -159,6 +169,14 @@ export function NavbarComponent() {
           setOpenModal={setOpenModal}
           onClose={handleModalClose}
           onLoginSuccess={handleLoginSuccess}
+        />
+      )}
+
+
+{isProfileModalOpen && (
+        <ProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={handleProfileModalClose}
         />
       )}
     </div>

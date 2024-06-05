@@ -16,8 +16,9 @@ function Categorytab() {
           key={index}
           className="singletabs py-2 px-7  Tab:px-2"
           style={{
-            borderBottom: '2px solid rgba(241, 241, 241, 0.5)', 
-            borderColor: activeTab === index ? 'white' : ' rgba(241, 241, 241, 0.5)' // Conditionally apply white border to active tab
+            borderBottom: '2px solid rgba(241, 241, 241, 0.5)',
+            borderColor: activeTab === index ? 'white' : '#F1F1F1A0', // Conditionally apply white border to active tab and red to non-active tabs
+            color: activeTab === index ? 'white' : '#F1F1F1A0', // Set text color to white for active tab and red for non-active tabs
           }}
           onClick={() => handleTabClick(index)} // Set the active tab on click
         >

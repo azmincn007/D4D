@@ -66,7 +66,7 @@ function Loginpopup({ onClose }) {
               theme={flowbiteinput}
               id="email"
               type="email"
-              placeholder="Username or Email ID"
+              placeholder="Username or Email Id"
               {...register("email", {
                 required: "Email is required",
               })}
@@ -94,7 +94,7 @@ function Loginpopup({ onClose }) {
               </Label>
             </div>
             <div className="text-sm underline font-semibold">
-              <Link>Forget?</Link>
+              <Link>Forgot?</Link>
             </div>
           </div>
           <Button className=" bg-yellow auth-button" type="submit">
@@ -109,14 +109,14 @@ function Loginpopup({ onClose }) {
       </div>
 
       <div className="flex h-[55px] rounded-[10px] border-2 w-[80%] justify-center items-center Tab:h-[45px]" onClick={() => login()}>
-        <img src={googleicon} className="w-[20px] h-[20px]" alt="" />
+        <img src={googleicon} className="w-[20px] h-[20px] mr-3" alt="" />
         <p className="font-semibold text-sm">Sign in with Google</p>
       </div>
       <div className="py-6">
         <p className="text-sm">
           Don't have an account yet?{" "}
           <span className="font-semibold cursor-pointer" onClick={handleShowSignupModal}>
-            Sign UP
+            Sign Up
           </span>
         </p>
       </div>

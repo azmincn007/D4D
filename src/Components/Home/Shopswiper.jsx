@@ -9,7 +9,7 @@ import '../../styles/shopswiper.css';
 // Initialize Swiper's Navigation module
 SwiperCore.use([Navigation]);
 
-function Shopswiper() {
+function Shopswiper({ onCardClick }) {
   const swiperRef = useRef(null);
 
   const swiperdata = [
@@ -54,35 +54,35 @@ function Shopswiper() {
         onClick={goToPrev}
       ></div>
       <Swiper
-  ref={swiperRef}
-  slidesPerView={3}
-  spaceBetween={15}
-  navigation={false}
-  loop={true}
-  style={{ maxWidth: '90%', margin: '0 auto' }}
-  breakpoints={{
-    300: { slidesPerView: 6, spaceBetween: 15, maxWidth: 300 },
-    450: { slidesPerView: 7, spaceBetween: 15, maxWidth: 450 },
-    600: { slidesPerView: 9, spaceBetween: 15, maxWidth: 600 },
-    768: { slidesPerView: 10, spaceBetween: 20, maxWidth: 768 },
-    1024: { slidesPerView: 12, spaceBetween: 20, maxWidth: 1024 },
-    1440: { slidesPerView: 14, spaceBetween: 30, maxWidth: 1440 },
-  }}
->
-  {swiperdata.map((obj, index) => (
-    <SwiperSlide key={index}>
-      <div className="swipercard">
-        <img src={obj.img} alt={obj.title} />
-        <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px]">
-          {obj.title}
-        </p>
-      </div>
-    </SwiperSlide>
-  ))}
-</Swiper>
+        ref={swiperRef}
+        slidesPerView={3}
+        spaceBetween={15}
+        navigation={false}
+        loop={true}
+        style={{ maxWidth: '90%', margin: '0 auto' }}
+        breakpoints={{
+          300: { slidesPerView: 6, spaceBetween: 15, maxWidth: 300 },
+          450: { slidesPerView: 7, spaceBetween: 15, maxWidth: 450 },
+          600: { slidesPerView: 9, spaceBetween: 15, maxWidth: 600 },
+          768: { slidesPerView: 10, spaceBetween: 20, maxWidth: 768 },
+          1024: { slidesPerView: 12, spaceBetween: 20, maxWidth: 1024 },
+          1440: { slidesPerView: 14, spaceBetween: 30, maxWidth: 1440 },
+        }}
+      >
+        {swiperdata.map((obj, index) => (
+          <SwiperSlide key={index}>
+            <div className="swipercard" onClick={onCardClick}>
+              <img src={obj.img} alt={obj.title} />
+              <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px]">
+                {obj.title}
+              </p>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <div
         className="swiper-button-next px-5 Tab:hidden"
-        style={{ zIndex: 1, color: 'black', }}
+        style={{ zIndex: 1, color: 'black' }}
         onClick={goToNext}
       ></div>
     </div>

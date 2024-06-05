@@ -20,8 +20,8 @@ const Search = () => {
    <>
      <input
         type="text"
-        className="inputfield w-[80%]"
-        placeholder={!Tabscreen ? "Search products" : ""}
+        className="inputfield w-[80%] text-[10px]"
+        placeholder={!Tabscreen ? "Search for items, brands and inspiration " : ""}
       />
       <button className='navbutton text-black text-semibold'>Search</button>
    </>

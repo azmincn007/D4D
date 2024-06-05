@@ -1,7 +1,6 @@
-/* @media (min-width: 1850px) {
-   .cnd, .contentscards{
-    max-width: 1487px;
-   }
-  
-   
-  } */
+ @media (max-width:450px) {
+   .contentsdiv{
+      width: 95%;
+      margin: 0 auto;
+       }
+ }

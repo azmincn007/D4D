@@ -30,11 +30,11 @@ function Mobilessingle() {
       <NavbarComponent />
       <div className='py-3 px-5'>
       {mobileData.map((mobile, index) => (
-        <div key={index} className="singlecarddetails  bg-[#F1F1F1] py-4 px-4 rounded-[20px] font-inter Mobile:px-2 Mobile:py-2">
+        <div key={index} className="singlecarddetails mb-4 bg-[#F1F1F1] py-4 px-4 rounded-[20px] font-inter Mobile:px-2 Mobile:py-2">
           <div className="topsingle flex">
-          <div className="leftsingle Tab:w-[50%]">
+          <div className="leftsingle Tab:w-[50%] mr-4">
             <div>
-              <img src={mobile.imgSrc} alt="" className='max-w-[350px] h-[314px] Tab:w-[100%] Tab:h-[auto] img' />
+              <img src={mobile.imgSrc} alt="" className='max-w-[325px] h-[245px] Tab:w-[100%] Tab:h-[auto] img' />
             </div>
           
           </div>
@@ -51,7 +51,7 @@ function Mobilessingle() {
               <div className='py-3 font-semibold text-[18px] Tab:py-0 Tab:text-small branch Tab:font-[500] LgMobile2:text-xs'> Available Branches</div>
               <div className='flex flex-wrap'>
                 {mobile.branches.map((branch, i) => (
-                  <div className='px-4 rounded-[100px] border-[2px] py-2 mr-2 mt-1 branchsingle text-12px Mobile:mr-1' key={i}>{branch}</div>
+                  <div className='px-4 rounded-[100px] border-[1px] border-black py-2 mr-2 mt-1 branchsingle text-12px Mobile:mr-1' key={i}>{branch}</div>
                 ))}
               </div>
             </div>
@@ -73,7 +73,7 @@ function Mobilessingle() {
   <div className='flex  py-2 items-center justify-between  w-[100%]'>
               <div className='text-[18px] Mobile:text-[14px]'>{mobile.title}</div>
               <div className=' butsng bg-yellow rounded-[100px] px-2 py-2 Mobile:text-[12px] xsmMobile:text-[10px]'>{mobile.price}</div>
-             <Link to={'/flyer'} state={{ source: 'mobile' }}  ><div className= " butsng bg-yellow rounded-[100px] px-2 py-2 font-semibold  flex items-center h-[40px] justify-center Mobile:text-[12px] Mobile:h-[34px] ">Goto flyer</div></Link> 
+             <Link to={'/flyer'} state={{ source: 'mobile' }}  ><div className= " butsng bg-yellow rounded-[100px] px-2 py-2 font-semibold  flex items-center h-[40px] justify-center Mobile:text-[12px] Mobile:h-[34px] ">GO TO FLYER</div></Link> 
 
             </div>
 
