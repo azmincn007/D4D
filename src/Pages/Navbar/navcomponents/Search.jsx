@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {  } from 'react';
 
 const Search = () => {
   
@@ -7,7 +7,7 @@ const Search = () => {
     <>
       <input
         type="text"
-        className="inputfield  text-[10px]"
+        className="inputfield  text-xsm Tab:text-xs"
         placeholder="Search for items, brands and inspiration"
       />
       <button className='navbutton text-black text-semibold'>Search</button>

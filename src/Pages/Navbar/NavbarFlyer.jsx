@@ -7,7 +7,7 @@ import Icon from '../../assets/Nav/luluicon.png'
 
 function NavbarFlyer() {
   return (
-    <div className='navbarfly bg-darkblue py-3'>
+    <div className='navbarfly bg-Navbarbg py-3'>
 
         <div className=' relative w-[90%] mx-auto flex justify-between items-center py-2'>
 

@@ -26,7 +26,7 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
 
   return (
     <div
-      className={`categories p bg-darkblue pl-4 h-[100vh] font-inter ${
+      className={`categories p bg-darkblue pl-4 h-[100%] font-inter ${
         showInNavbar ? 'block' : 'hidden md:block'
       }`}
     >

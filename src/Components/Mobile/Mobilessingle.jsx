@@ -49,7 +49,7 @@ function Mobilessingle() {
   return (
     <div className='mobilessingle'>
       <NavbarComponent />
-      <div className='py-3 px-5'>
+      <div className='py-3 px-5 Pb-16'>
       {renderData.map((mobile, index) => (
         <div key={index} className="singlecarddetails mb-4 bg-[#F1F1F1] py-4 px-4 rounded-[20px] font-inter Mobile:px-2 Mobile:py-2">
           <div className="topsingle flex">
@@ -86,7 +86,7 @@ function Mobilessingle() {
               <div className='bg-yellow rounded-[100px] px-4 py-2'>{mobile.price}</div>
             </div>
 
-           <Link to={'/flyer'} state={{ source: 'mobile' }} ><div className= " bg-yellow rounded-[100px] px-4 py-2 font-semibold  flex items-center h-[40px] justify-center">Goto flyer</div> </Link> 
+           <Link to={'/flyer'} state={{ source: 'mobile' }} ><div className= " bg-yellow rounded-[100px] px-4 py-2 font-semibold  flex items-center h-[40px] justify-center">GO TO FLYERS</div> </Link> 
           </div>
 
 
@@ -94,7 +94,7 @@ function Mobilessingle() {
   <div className='flex  py-2 items-center justify-between  w-[100%]'>
               <div className='text-[18px] Mobile:text-[14px]'>{mobile.title}</div>
               <div className=' butsng bg-yellow rounded-[100px] px-2 py-2 Mobile:text-[12px] xsmMobile:text-[10px]'>{mobile.price}</div>
-             <Link to={'/flyer'} state={{ source: 'mobile' }}  ><div className= " butsng bg-yellow rounded-[100px] px-2 py-2 font-semibold  flex items-center h-[40px] justify-center Mobile:text-[12px] Mobile:h-[34px] ">GO TO FLYER</div></Link> 
+             <Link to={'/flyer'} state={{ source: 'mobile' }}  ><div className= " butsng bg-yellow rounded-[100px] px-2 py-2 font-semibold  flex items-center h-[40px] justify-center Mobile:text-[12px] Mobile:h-[34px] ">GO TO FLYERS</div></Link> 
 
             </div>
 

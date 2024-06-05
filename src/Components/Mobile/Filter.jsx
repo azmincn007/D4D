@@ -48,7 +48,7 @@ function Filter() {
         </div>
 
         <div className="range flex justify-between mt-2 py-3 ">
-          <div className='flex'>   <div className='font-semibold text-18px'>Range Slider:</div>
+          <div className='flex'>   <div className='font-semibold text-18px'>Price Range:</div>
           <div className='ml-8 '><DualRangeSlider/></div></div>
           <div className=' right-6 bottom-6'><ImBin className='text-[#6B6B6B]'/></div>
           </div>

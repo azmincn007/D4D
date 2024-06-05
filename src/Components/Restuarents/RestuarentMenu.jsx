@@ -57,7 +57,7 @@ function RestuarentMenu() {
 
   return (
     <div>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen Tab:min-h-[80vh] flex flex-col">
 
       
       <NavbarComponent />
@@ -65,7 +65,7 @@ function RestuarentMenu() {
 
       
       {restoData.map((restaurant, index) => (
-        <div key={index} className="  w-[100%]  font-inter flex flex-col justify-end ">
+        <div key={index} className="  w-[100%]   font-inter flex flex-col justify-end ">
           <div className="mx-6 w-[432px] backdrop-blur-[3px] rounded-[12px] bg-[#13192180]  ">
             <div className="px-4 text-white flex flex-col  py-2">
               <div className="  flex  items-center">
@@ -86,8 +86,8 @@ function RestuarentMenu() {
               </div>
             </div>
           </div>
-          <div className="backdrop-blur-[3px] mt-[30px] rounded-tl-[60px]  rounded-tr-[60px] bg-[#13192180]">
-          <p className="py-4 text-[24px] font-semibold px-16 text-white">Today's Special</p>
+          <div className="backdrop-blur-[3px] mt-[30px] rounded-tl-[60px]  rounded-tr-[60px] Tab:rounded-tr-[25px] Tab:rounded-tl-[25px] bg-[#13192180]">
+          <p className="py-4 text-[24px] font-semibold px-16 text-white Mobile:text-[12px] Mobile:px-8">Today's Special</p>
           <div className="swiper-container w-[95%] mx-auto pb-4">
             <Swiper
               slidesPerView={1}
@@ -97,23 +97,23 @@ function RestuarentMenu() {
               }}
               breakpoints={{
                 300: {
-                  slidesPerView: 2.5,
+                  slidesPerView: 4.5,
                   spaceBetween: 10,
                 },
                 450: {
-                  slidesPerView: 2.5,
+                  slidesPerView: 5,
                   spaceBetween: 10,
                 },
                 640: {
-                  slidesPerView: 3.5,
+                  slidesPerView: 5,
                   spaceBetween: 10,
                 },
                 768: {
-                  slidesPerView: 3.5,
+                  slidesPerView: 5.5,
                   spaceBetween: 10,
                 },
                 1024: {
-                  slidesPerView: 4.5,
+                  slidesPerView: 6.5,
                   spaceBetween: 10,
                 },
                 1250: {

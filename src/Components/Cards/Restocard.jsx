@@ -12,11 +12,11 @@ const RestoCard = ({ img, title, rating,price }) => {
       imgSrc={img}
     >
       <div className='cardcontentsres'> 
-      <h5 className=" pt-2 text-[13px] font-bold tracking-tight text-gray-900 dark:text-white font-inter Mobile:text-[10px]">
+      <h5 className=" pt-2 text-[13px] font-bold tracking-tight text-gray-900 dark:text-white font-inter Mobile:text-[6px] TabS:text-[6px] ">
         {title}
       </h5>
       <RatingComponent rating={rating}/>
-      <div className='absolute h-[50px] w-[96%] bottom-[55px] p-0 bg-[rgba(0,0,0,0.5)] flex items-center'><p className='text-white text-20px font-semibold  px-[5%]'>{price}</p></div>
+      <div className='absolute h-[50px] Mobile:h-[15px] w-[96%] bottom-[65px] Mobile:bottom-[50px] p-0 bg-[rgba(0,0,0,0.5)] flex items-center'><p className='text-white text-20px font-semibold  px-[5%] Mobile:text-[5px]' >{price}</p></div>
 
       </div>
 

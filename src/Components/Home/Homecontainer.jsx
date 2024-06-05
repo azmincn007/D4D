@@ -61,7 +61,7 @@ function Homecontainer() {
           />
       
       </div>
-      <div className="right min-w-24  Tab:w-[100%]">
+      <div className="right min-w-24  Tab:w-[100%] pb-16">
         {selectedValue === 'Shops' && ActiveToggle === 'Offer' && <Contents />}
         {selectedValue === 'Shops' && ActiveToggle === 'Product' && (
           <Mobileshop selectedSubcategory={selectedSubcategory} />

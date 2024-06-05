@@ -62,7 +62,7 @@ function Flyer() {
   return (
     <div className='flex flex-col min-h-screen'>
       <NavbarFlyer />
-      <div className="flex-grow max-w-[1440px] Flyercomp flex items-center justify-between w-[60%] mx-auto min-w-[700px] Tab:min-w-[500px] LgMobile2:min-w-[420px]">
+      <div className="flex-grow py-20 max-w-[1440px] Flyercomp flex items-center justify-between w-[60%] mx-auto min-w-[700px] Tab:min-w-[500px] LgMobile2:min-w-[420px]">
         <div ref={navigationPrevRef}>
           <button
             className={`bg-yellow rounded-[30px] w-[50px] h-[50px] flex items-center justify-center LgMobile2:w-[35px] LgMobile2:h-[35px] ${prevDisabled ? 'bg-red-500' : ''}`}

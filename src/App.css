@@ -249,3 +249,8 @@ font-size: clamp(10px, 3vw, 20px);
   .search input{
     width: 70% !important;
   }
+
+  .contentsdic{
+    padding-bottom: 50px !important;
+  }
+
