@@ -12,7 +12,7 @@ const RatingComponent = ({ rating }) => {
           className='Mobile:w-[12px] h-[12px]'
         />
       ))}
-      <p className="ml-2 text-[16px] font-medium text-yellow dark:text-gray-400">
+      <p className="ml-2 text-[16px] font-medium text-yellow dark:text-gray-400 Mobile:text-[12px]">
       ({rating})
       </p>
     </Rating>

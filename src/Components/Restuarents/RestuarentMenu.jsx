@@ -56,96 +56,44 @@ function RestuarentMenu() {
   ];
 
   return (
-    <div>
-      <div className="min-h-screen Tab:min-h-[80vh] flex flex-col">
+    <div className="bg-[#131921] ">
+      <div className="min-h-screen Tab:min-h-[80vh] flex flex-col Mobile:min-h-[90vh]">
+        <NavbarComponent />
+        <div className=" bgresto  bg-cover bg-no-repeat flex-grow overflow-auto flex center">
+          {restoData.map((restaurant, index) => (
+            <div key={index} className="  w-[100%]   font-inter flex flex-col justify-end ">
+              <div className="mx-6 w-[432px] backdrop-blur-[3px] rounded-[12px] bg-[#13192180]  Mobile:w-[270px]">
+                <div className="px-4 text-white flex flex-col  py-2">
+                  <div className="  flex  items-center">
+                    <div className="text-[32px] font-semibold text-white mr-[5px] Mobile:text-[12px] LgMobile:text-[18px]">{restaurant.res}</div>
+                    <div>
+                      <RatingComponent rating={restaurant.rating} />
+                    </div>
+                  </div>
 
-      
-      <NavbarComponent />
-      <div className=" bgresto bg-cover bg-no-repeat flex-grow overflow-auto flex center">
+                  <div className="text-xs">
+                    <p>The Walk at - Jumeirah Beach Residence</p>
+                    <p>Dubai - United Arab Emirates</p>
+                  </div>
 
-      
-      {restoData.map((restaurant, index) => (
-        <div key={index} className="  w-[100%]   font-inter flex flex-col justify-end ">
-          <div className="mx-6 w-[432px] backdrop-blur-[3px] rounded-[12px] bg-[#13192180]  ">
-            <div className="px-4 text-white flex flex-col  py-2">
-              <div className="  flex  items-center">
-                <div className="text-[32px] font-semibold text-white mr-[5px] Mobile:text-[14px] LgMobile:text-[18px]">{restaurant.res}</div>
-                <div>
-                  <RatingComponent rating={restaurant.rating} />
+                  <div>
+                    <p className=" text-2xl font-semibold Mobile:text-xs">Menu</p>
+                    <div className="flex items-center  text-xsm text-yellow Mobile:text-xs">
+                      <p >Home</p> <MdKeyboardArrowRight /> <p>menu</p>{" "}
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <div className="text-xs">
-                <p>The Walk at - Jumeirah Beach Residence</p>
-                <p>Dubai - United Arab Emirates</p>
-              </div>
-
-              <div>
-                <p className=" text-2xl font-semibold">Menu</p>
-                <div className="flex items-center  text-xsm text-yellow"><p >Home</p> <MdKeyboardArrowRight/> <p>menu</p> </div>
-              </div>
-            </div>
-          </div>
-          <div className="backdrop-blur-[3px] mt-[30px] rounded-tl-[60px]  rounded-tr-[60px] Tab:rounded-tr-[25px] Tab:rounded-tl-[25px] bg-[#13192180]">
-          <p className="py-4 text-[24px] font-semibold px-16 text-white Mobile:text-[12px] Mobile:px-8">Today's Special</p>
-          <div className="swiper-container w-[95%] mx-auto pb-4">
-            <Swiper
-              slidesPerView={1}
-              spaceBetween={0}
-              pagination={{
-                clickable: true,
-              }}
-              breakpoints={{
-                300: {
-                  slidesPerView: 4.5,
-                  spaceBetween: 10,
-                },
-                450: {
-                  slidesPerView: 5,
-                  spaceBetween: 10,
-                },
-                640: {
-                  slidesPerView: 5,
-                  spaceBetween: 10,
-                },
-                768: {
-                  slidesPerView: 5.5,
-                  spaceBetween: 10,
-                },
-                1024: {
-                  slidesPerView: 6.5,
-                  spaceBetween: 10,
-                },
-                1250: {
-                  slidesPerView: 7.5,
-                  spaceBetween: 15,
-                },
-                1450: {
-                  slidesPerView: 6.5,
-                  spaceBetween: 5,
-                },
-              }}
-              modules={[Navigation, Pagination]}
-              className="mySwiper"
-            >
-              {contentcard.map((obj, index) => (
-                <SwiperSlide key={index}>
-                  <RestoCard price={obj.price} img={obj.img} title={obj.title} rating={obj.rating} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </div>
-        </div>
-        </div>
-      ))}
-      </div>
-      </div>
-      
-      <div className="relative ml-[5%]">
-        <div className="absolute top-1 right-[2%]">
-          <Dropdown
+              <div className="backdrop-blur-[3px] mt-[30px] rounded-tl-[60px]  rounded-tr-[60px] Tab:rounded-tr-[25px] Tab:rounded-tl-[25px] bg-[#13192180]">
+                <div className="flex justify-between items-center">
+                  <div>
+                   
+                    <p className="py-4 text-[24px] font-semibold px-16 text-white Mobile:text-[12px] Mobile:px-8">Today's Special</p>
+                  </div>
+                  <div>
+                  <Dropdown
             theme={restorentpagedrop}
-            style={{ backgroundColor: "#FFD814", color: "black", padding: "0rem 0rem", borderRadius: "0px", fontWeight: "700", fontSize: "12px" }}
+            style={{ backgroundColor: "#FFD814", color: "black", padding: "0rem 0rem", borderRadius: "0px", fontWeight: "700", fontSize: "12px" ,marginRight:'35px'}}
             label="All"
             size="xs"
             className="bg-[#FFD814] text-black border-none font-inter"
@@ -183,9 +131,61 @@ function RestuarentMenu() {
               </DropdownItem>
             </div>
           </Dropdown>
+                  </div>
+                </div>
+                <div className="swiper-container w-[95%] mx-auto pb-4">
+                  <Swiper
+                    slidesPerView={1}
+                    spaceBetween={0}
+                    pagination={{
+                      clickable: true,
+                    }}
+                    breakpoints={{
+                      300: {
+                        slidesPerView: 4.5,
+                        spaceBetween: 10,
+                      },
+                      450: {
+                        slidesPerView: 5,
+                        spaceBetween: 10,
+                      },
+                      640: {
+                        slidesPerView: 5,
+                        spaceBetween: 10,
+                      },
+                      768: {
+                        slidesPerView: 5.5,
+                        spaceBetween: 10,
+                      },
+                      1024: {
+                        slidesPerView: 6.5,
+                        spaceBetween: 10,
+                      },
+                      1250: {
+                        slidesPerView: 7.5,
+                        spaceBetween: 15,
+                      },
+                      1450: {
+                        slidesPerView: 6.5,
+                        spaceBetween: 5,
+                      },
+                    }}
+                    modules={[Navigation, Pagination]}
+                    className="mySwiper"
+                  >
+                    {contentcard.map((obj, index) => (
+                      <SwiperSlide key={index}>
+                        <RestoCard price={obj.price} img={obj.img} title={obj.title} rating={obj.rating} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        
       </div>
+
       <div className="w-[90%] mx-auto">
         <MenuItemList data={Ricedata} title="Rice" />
         <MenuItemList data={NonVegBeefData} title="Non-Veg Dishes(Beef)" />
