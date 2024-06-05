@@ -1,15 +1,20 @@
 import React from 'react';
 import { NavbarComponent } from '../../Pages/Navbar/Navbar';
 import single from '../../assets/singlemobile.png';
+import single2 from '../../assets/resingle.png';
+import re from '../../assets/re.png'
 import logomob from '../../assets/logomob.png';
 import Homecards from '../Cards/Homecards';
 import card from '../../assets/mobs.png'
 import '../../styles/Cards.css'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 
 function Mobilessingle() {
+  const location = useLocation();
+  const source = location.state?.source;
   const contentcard=[{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:card,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'}]
+  const contentcardres=[{img:re,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:re,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:re,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:re,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:re,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:re,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'},{img:re,title:'Lulu Eranakulam',content:'Sprawling, residential Ernakulam is known for Marine Drive, a busy ...'}]
 
   const mobileData = [
     {
@@ -24,12 +29,28 @@ function Mobilessingle() {
     // Add more objects for additional mobile phones if needed
   ];
 
+  const restaurantData = [
+    {
+      imgSrc: single2,
+      title: 'Atmosphere Restaurant',
+      price: 'AED 150',
+      title2: 'ATMOSPHERE RESTAURANT',
+      description: 'Experience the best fine dining experience in the city with our exquisite menu and stunning ambiance.',
+      branches: ['Downtown Dubai', 'Dubai Marina', 'Palm Jumeirah'],
+      logoSrc: 'https://example.com/restaurant-logo.png',
+    },
+    // Add more objects for additional restaurants if needed
+  ];
+
+  const renderData = source === 'restaurant' ? restaurantData : mobileData;
+  const renderData2 = source === 'restaurant' ? contentcardres : contentcard;
+
 
   return (
     <div className='mobilessingle'>
       <NavbarComponent />
       <div className='py-3 px-5'>
-      {mobileData.map((mobile, index) => (
+      {renderData.map((mobile, index) => (
         <div key={index} className="singlecarddetails mb-4 bg-[#F1F1F1] py-4 px-4 rounded-[20px] font-inter Mobile:px-2 Mobile:py-2">
           <div className="topsingle flex">
           <div className="leftsingle Tab:w-[50%] mr-4">
@@ -93,7 +114,7 @@ function Mobilessingle() {
         <div className='font-semibold text-[20px] py-2 font-inter'>Similar Products</div>
       <div className="contentscards">
           <div className="cardcontainermobsingle ">
-            {contentcard.map((obj, index) => (
+            {renderData2.map((obj, index) => (
             
               <Homecards
               key={index}

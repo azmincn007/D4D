@@ -38,7 +38,7 @@ function Restuarents() {
     <div className="cardcontainer-resto ">
 
     {contentcard.map((obj, index) => (
-                  <Link key={index} to={"/flyer"} state={{ source: "supermarket" }}>
+                  <Link key={index} to={"/mobilesingle"} state={{ source: "restaurant" }}>
 
       <Homecards
               key={index}
