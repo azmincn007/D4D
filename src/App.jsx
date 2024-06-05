@@ -15,7 +15,6 @@ import RestuarentMenu from "./Components/Restuarents/RestuarentMenu";
 import Mobilessingle from "./Components/Mobile/Mobilessingle";
 import Flyer from "./Pages/Flyer";
 import Timer from "./Components/authentication/Timer";
-import HomecontainerRestorent from "./Components/Home/HomecontainerRestorent";
 import { QueryClient, QueryClientProvider } from "react-query";
 import L from "./Pages/Authentication/Loginccc";
 

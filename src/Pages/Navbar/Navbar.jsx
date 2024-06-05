@@ -85,7 +85,7 @@ export function NavbarComponent() {
               <img src={Logo} className="logo  SmMobile:w-[70px] SmMobile:h-[70px]" alt="Logo" />
             </NavbarBrand>
           </div>
-          <div className="search flex items-center mr-2 TabS:hidden">
+          <div className="searchs flex items-center mr-2 TabS:hidden">
            <Search/>
           </div>
         </div>
@@ -172,11 +172,11 @@ export function NavbarComponent() {
         />
       )}
 
-
 {isProfileModalOpen && (
         <ProfileModal
           isOpen={isProfileModalOpen}
           onClose={handleProfileModalClose}
+          handleLogout={handleLogout} // Pass the handleLogout function as a prop
         />
       )}
     </div>

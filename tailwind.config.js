@@ -33,7 +33,7 @@ export default {
         
         'LgTab2': {'max':'1000px'},
         'LgTab': {'max':'800px'},
-        'Tab': {'max':'770px'},
+        'Tab': {'max':'767px'},
         'TabS': {'max':'700px'},
         'xsmMobile': {'max':'350px'},
 

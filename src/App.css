@@ -239,3 +239,13 @@ font-size: clamp(10px, 3vw, 20px);
   .nearby input{
     border: 2px solid black;
   }
+
+
+  .drop button span{
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .search input{
+    width: 70% !important;
+  }

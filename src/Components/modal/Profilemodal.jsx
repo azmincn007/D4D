@@ -1,4 +1,3 @@
-// ProfileModal.js
 import React, { useState } from 'react';
 import { Modal } from 'flowbite-react';
 import { modalthemeNational } from '../../Themes/Modaltheme';
@@ -7,17 +6,21 @@ import { IoLocationOutline } from 'react-icons/io5';
 import AvatarComponent from '../../Pages/Navbar/navcomponents/AvatarComponent';
 import EditProfile from './EditProfile';
 
-const ProfileModal = ({ isOpen, onClose }) => {
+const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
 
   const handleEditProfileClick = () => {
-    setIsProfileModalOpen(false);
     setIsEditProfileOpen(true);
   };
 
   const handleEditProfileClose = () => {
     setIsEditProfileOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    handleLogout(); // Call the logout function passed as a prop
+    handleProfileModalClose();
   };
 
   const handleProfileModalClose = () => {
@@ -41,21 +44,20 @@ const ProfileModal = ({ isOpen, onClose }) => {
                   <IoLocationOutline className="text-yellow" />
                 </div>
                 <p className="text-[10px] text-[#7A7A78] mb-3">azminsazz@gmail.com</p>
-              <div className='flex'>
-              <button
-                  className="border-2 border-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px] mr-4"
-                  onClick={handleEditProfileClick}
-                >
-                 Logout
-                </button>
-              <button
-                  className="bg-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px]"
-                  onClick={handleEditProfileClick}
-                >
-                  Edit Profile
-                </button>
-              </div>
-             
+                <div className='flex'>
+                  <button
+                    className="border-2 border-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px] mr-4"
+                    onClick={handleLogoutClick}
+                  >
+                    Logout
+                  </button>
+                  <button
+                    className="bg-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px]"
+                    onClick={handleEditProfileClick}
+                  >
+                    Edit Profile
+                  </button>
+                </div>
               </div>
               <div className="absolute top-0 right-0 mt-3 mr-3">
                 <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
@@ -66,7 +68,6 @@ const ProfileModal = ({ isOpen, onClose }) => {
           </Modal.Body>
         </Modal>
       )}
-
       {isEditProfileOpen && (
         <EditProfile isOpen={isEditProfileOpen} onClose={handleEditProfileClose} />
       )}

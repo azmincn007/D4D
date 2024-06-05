@@ -12,6 +12,7 @@ function Homecontainer() {
   const [selectedValue, setSelectedValue] = useState('Shops');
   const [ActiveToggle, setActiveToggle] = useContext(ToggleContext);
   const [selectedSubcategory, setSelectedSubcategory] = useState('Mobile');
+  console.log(ActiveToggle);
 
   const handleOptionClick = (value) => {
     setSelectedValue(value);
@@ -27,7 +28,6 @@ function Homecontainer() {
     }
   };
 
-  const shouldShowLeftColumn = !(selectedValue === 'Restaurant' && ActiveToggle === 'Offer');
 
   useEffect(() => {
     if (selectedValue === 'Restaurant' && ActiveToggle === 'Product') {
@@ -51,16 +51,15 @@ function Homecontainer() {
         style={{
           minWidth: '280px',
           maxWidth: '330px',
-          display: shouldShowLeftColumn ? 'block' : 'none',
         }}
       >
-        {shouldShowLeftColumn && (
+      
           <Categories
             selectedValue={selectedValue}
             onOptionClick={handleOptionClick}
             onSubcategoryClick={handleSubcategoryClick}
           />
-        )}
+      
       </div>
       <div className="right min-w-24  Tab:w-[100%]">
         {selectedValue === 'Shops' && ActiveToggle === 'Offer' && <Contents />}
@@ -69,11 +68,8 @@ function Homecontainer() {
         )}
         {selectedValue === 'Restaurant' && ActiveToggle === 'Offer' && (
           <>
-            <Categorydropdown
-              selectedValue={selectedValue}
-              onOptionClick={handleOptionClick}
-              showInNavbar={false}
-            />
+         
+            
             <Restuarents />
           </>
         )}
