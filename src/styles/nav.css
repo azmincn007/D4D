@@ -1,4 +1,4 @@
-.logo{
+.logo img{
     width: 90px;
     height: 90px;
     
@@ -226,5 +226,16 @@ border-bottom-right-radius: 4px !important;
      
     }
 
+
+    @media (max-width: 340px) {
+
+      .tab-title {
+        padding: 10px 8px !important;
+        height: 25px !important;
+      }
+    
+       
+      }
+  
    
    

@@ -79,89 +79,92 @@ export function NavbarComponent() {
     <div>
       <Navbar theme={FlowbiteNav} fluid rounded className="navbar bg-Navbarbg sm:px-10 font-inter">
         <div className='flex justify-between w-[100%] items-center'>
-        <div className="left flex items-center  SmMobile:w-[70px] ">
-          <div className="logo mr-10 SmMobile:mr-0 Tab:mr-2 flex items-center">
-            <NavbarBrand as={Link} to="/">
-              <img src={Logo} className="logo  SmMobile:w-[70px] SmMobile:h-[70px]" alt="Logo" />
-            </NavbarBrand>
-          </div>
-          <div className="searchs flex items-center mr-2 TabS:hidden">
-           <Search/>
-          </div>
-        </div>
-
-
-        <div className="right flex items-center">
-          <div className=' mr-[20px] Tab:mr-[0px] '><Toggle /></div>
-          <Regiondropdown />
-         <div className='log SmMobile:hidden'>
-         {username ? (
-             <div onClick={handleProfileModalOpen}>
-             <AvatarComponent username={username} />
-           </div>
-          ) : (
-            Tabscreen ? (
-              <AiOutlineLogin className='text-yellow flex items-center h-[30px] w-[30px]' onClick={handleLoginClick} />
-            ) : (
-              <button className="loginbutton px-2 py-2 rounded-[4px]" onClick={handleLoginClick}>
-                Login
-              </button>
-            )
-          )}
-         </div>
-          <NavbarToggle className='bg-transparent text-yellow placeholder:' onClick={toggleNavbar}  />
-         
-          {isNavbarOpen && (
-            <NavbarCollapse    className="fixed top-0  right-0 bottom-0 min-w-[250px] w-[50%] bg-darkblue z-[10000] flex flex-col overflow-y-auto">
-              <div className="auth bg-[#2C3B4F] text-white py">
-                {/* Render log or loged class based on username */}
-                {username ? (
-                  <div className='loged py-5 w-[90%] mx-auto text-inter text-sm Mobile:text-small'>
-                    <AvatarComponent className='h-[30px] w-[30px] my-3' />
-                    <p className='leading-4 my-2'>{username}</p>
-                    {/* Add user's email or any other information */}
-                    <button
-                      className="my-2 loginbutton px-2 py-2 rounded-[4px] bg-red-500"
-                      onClick={handleLogout}
-                    >
-                      Logout
-                    </button>
-                  </div>
-                ) : (
-                  <div className='log py-5 w-[90%] mx-auto text-inter text-sm Mobile:text-small'>
-                    <CgProfile className='h-[30px] w-[30px] my-3' />
-                    <p className='leading-4 my-2'>If you don't have an account yet, please login here.</p>
-                    <button
-                      className="my-2 loginbutton px-2 py-2 rounded-[4px] text-black"
-                      onClick={handleLoginClick}
-                    >
-                      Login
-                    </button>
+          <div className="left flex items-center SmMobile:w-[70px]">
+            <div className="logo mr-10 SmMobile:mr-0 Tab:mr-2 flex items-center">
+              <div className='flex flex-col items-center'>
+                <div>
+                  <NavbarBrand as={Link} to="/">
+                    <img src={Logo} className="logo SmMobile:w-[70px] SmMobile:h-[70px]" alt="Logo" />
+                  </NavbarBrand>
+                </div>
+                {username && ( // Only render if the user is logged in
+                  <div className='watchtime w-[177px] py-[4px] Tab:mt-[-15px] bg-[#232F3E] text-center text-white rounded-[1000px] Tab:w-[100px]'>
+                    <p className='text-small Tab:text-xs'>Watch Time</p>
+                    <p className='text-xs Tab:text-[6px]'>Last update yesterday 12:00 AM</p>
                   </div>
                 )}
-
-                <Categories
-                  selectedValue="Supermarket"
-                  onOptionClick={() => {}}
-                  showInNavbar={true}
-                />
-                   <div className='absolute right-2 top-2 text-yellow'><AiOutlineCloseCircle onClick={()=>setIsNavbarOpen(false)}/></div>
               </div>
+            </div>
+            <div className="searchs flex items-center mr-2 TabS:hidden">
+              <Search />
+            </div>
+          </div>
 
-           
-            
-            </NavbarCollapse>
-          )}
-        </div>
-        
-        </div>
-        <div className='midle  mx-auto my-2'>
-        <div className="search  items-center justify-center TabS:flex hidden ">
-           <Search/>
+          <div className="right flex items-center">
+            <div className='mr-[20px] Tab:mr-[0px]'><Toggle /></div>
+            <Regiondropdown />
+            <div className='log SmMobile:hidden'>
+              {username ? (
+                <div onClick={handleProfileModalOpen}>
+                  <AvatarComponent username={username} />
+                </div>
+              ) : (
+                Tabscreen ? (
+                  <AiOutlineLogin className='text-yellow flex items-center h-[30px] w-[30px]' onClick={handleLoginClick} />
+                ) : (
+                  <button className="loginbutton px-2 py-2 rounded-[4px]" onClick={handleLoginClick}>
+                    Login
+                  </button>
+                )
+              )}
+            </div>
+            <NavbarToggle className='bg-transparent text-yellow placeholder:' onClick={toggleNavbar} />
+
+            {isNavbarOpen && (
+              <NavbarCollapse className="fixed top-0 right-0 bottom-0 min-w-[250px] w-[50%] bg-darkblue z-[10000] flex flex-col overflow-y-auto">
+                <div className="auth bg-[#2C3B4F] text-white py">
+                  {/* Render log or loged class based on username */}
+                  {username ? (
+                    <div className='loged py-5 w-[90%] mx-auto text-inter text-sm Mobile:text-small'>
+                      <AvatarComponent className='h-[30px] w-[30px] my-3' />
+                      <p className='leading-4 my-2'>{username}</p>
+                      {/* Add user's email or any other information */}
+                      <button
+                        className="my-2 loginbutton px-2 py-2 rounded-[4px] bg-red-500"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  ) : (
+                    <div className='log py-5 w-[90%] mx-auto text-inter text-sm Mobile:text-small'>
+                      <CgProfile className='h-[30px] w-[30px] my-3' />
+                      <p className='leading-4 my-2'>If you don't have an account yet, please login here.</p>
+                      <button
+                        className="my-2 loginbutton px-2 py-2 rounded-[4px] text-black"
+                        onClick={handleLoginClick}
+                      >
+                        Login
+                      </button>
+                    </div>
+                  )}
+
+                  <Categories
+                    selectedValue="Supermarket"
+                    onOptionClick={() => {}}
+                    showInNavbar={true}
+                  />
+                  <div className='absolute right-2 top-2 text-yellow'><AiOutlineCloseCircle onClick={() => setIsNavbarOpen(false)} /></div>
+                </div>
+              </NavbarCollapse>
+            )}
           </div>
         </div>
-        
-       
+        <div className='midle mx-auto my-2'>
+          <div className="search items-center justify-center TabS:flex hidden">
+            <Search />
+          </div>
+        </div>
       </Navbar>
       {openModal && (
         <ModalAuth
@@ -172,7 +175,7 @@ export function NavbarComponent() {
         />
       )}
 
-{isProfileModalOpen && (
+      {isProfileModalOpen && (
         <ProfileModal
           isOpen={isProfileModalOpen}
           onClose={handleProfileModalClose}

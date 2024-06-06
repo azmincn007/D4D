@@ -22,12 +22,21 @@ export const AuthContext = createContext();
 export const Countrycontext = createContext();
 export const NationalityContext = createContext();
 export const ToggleContext = createContext();
+export const RegionContext=createContext();
+export const LanguageContext=createContext();
+
+
 
 const queryClient = new QueryClient();
 
 function App() {
   const [AuthValue, setAuthValue] = useState("login");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+  
+
+
   const Nationalities = [
     { Country: "Bahrain", Img: Bahrain },
     { Country: "Uae", Img: Uae },
@@ -39,9 +48,11 @@ function App() {
     { Country: "Kuwait", Img: Kuwait },
   ];
   const [ActiveToggle, setActiveToggle] = useState("Product");
-
+console.log('Initial selectedLanguage:', selectedLanguage);
   return (
     <QueryClientProvider client={queryClient}>
+      <LanguageContext.Provider value={[selectedLanguage,setSelectedLanguage]}>
+      <RegionContext.Provider value={[selectedRegion,setSelectedRegion]}>
       <ToggleContext.Provider value={[ActiveToggle, setActiveToggle]}>
         <NationalityContext.Provider value={Nationalities}>
           <Countrycontext.Provider value={[selectedCountry, setSelectedCountry]}>
@@ -58,6 +69,8 @@ function App() {
           </Countrycontext.Provider>
         </NationalityContext.Provider>
       </ToggleContext.Provider>
+      </RegionContext.Provider>
+      </LanguageContext.Provider>
     </QueryClientProvider>
   );
 }

@@ -49,7 +49,7 @@ function Mobilessingle() {
   return (
     <div className='mobilessingle'>
       <NavbarComponent />
-      <div className='py-3 px-5 Pb-16'>
+      <div className='py-6 px-5 pb-16'>
       {renderData.map((mobile, index) => (
         <div key={index} className="singlecarddetails mb-4 bg-[#F1F1F1] py-4 px-4 rounded-[20px] font-inter Mobile:px-2 Mobile:py-2">
           <div className="topsingle flex">
@@ -111,8 +111,9 @@ function Mobilessingle() {
 <div>
 
   
-        <div className='font-semibold text-[20px] py-2 font-inter'>Similar Products</div>
-      <div className="contentscards">
+<div className='font-semibold text-[20px] py-2 font-inter'>
+  {source === 'restaurant' ? 'Similar Food Items' : 'Similar Products'}
+</div>      <div className="contentscards">
           <div className="cardcontainermobsingle ">
             {renderData2.map((obj, index) => (
             

@@ -12,7 +12,6 @@ function Homecontainer() {
   const [selectedValue, setSelectedValue] = useState('Shops');
   const [ActiveToggle, setActiveToggle] = useContext(ToggleContext);
   const [selectedSubcategory, setSelectedSubcategory] = useState('Mobile');
-  console.log(ActiveToggle);
 
   const handleOptionClick = (value) => {
     setSelectedValue(value);

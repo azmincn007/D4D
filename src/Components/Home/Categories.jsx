@@ -11,8 +11,17 @@ import Categorydropdown from './Components/CategoryDropdown';
 
 function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNavbar = false }) {
   const catdropdata = [
-    { title: 'electronics', titledata1: ['Mobile', 'Laptop'] },
-    { title: 'books', titledata1: ['fiction', 'non-fiction'] },
+    { title: 'electronics', titledata1: ['Mobile', 'Laptop','Printer','Smartwatch'] },
+    { title: 'Food - Grocery', titledata1: ['fiction', 'non-fiction'] },
+    { title: 'Food - Grocery', titledata1: ['fiction', 'non-fiction'] },
+
+    { title: 'Food - Grocery', titledata1: ['fiction', 'non-fiction'] },
+
+    { title: 'Food - Grocery', titledata1: ['fiction', 'non-fiction'] },
+
+    { title: 'Food - Grocery', titledata1: ['fiction', 'non-fiction'] },
+
+
   ];
 
   const options = [
@@ -26,7 +35,7 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
 
   return (
     <div
-      className={`categories p bg-darkblue pl-4 h-[100%] font-inter ${
+      className={`categories p bg-[#131921] pl-4 h-[100%] font-inter ${
         showInNavbar ? 'block' : 'hidden md:block'
       }`}
     >
@@ -54,9 +63,9 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
           <Accordion
             key={index}
             sx={{
-              backgroundColor: 'transparent',
               color: 'white',
-              border: '1px solid white',
+              margin:'6px 0px',
+              backgroundColor:'#232F3E'
             }}
           >
             <AccordionSummary
@@ -71,11 +80,11 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
             >
               {obj.title}
             </AccordionSummary>
-            <AccordionDetails sx={{ paddingLeft: '36px' }}>
+            <AccordionDetails sx={{ paddingLeft: '26px'}}>
               <ul>
                 {obj.titledata1.map((data, dataIndex) => (
                   <li
-                    className="pb-1 cursor-pointer" // Add cursor pointer for subcategories
+                    className="pb-4 cursor-pointer" // Add cursor pointer for subcategories
                     key={dataIndex}
                     onClick={() => handleSubcategoryClick(data)}
                   >

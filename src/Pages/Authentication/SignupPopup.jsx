@@ -95,7 +95,7 @@ function SignupPopup({ onClose, onSubmit }) {
                     </div>
                   </div>
                   <Button className="bg-yellow auth-button" type="submit">
-                    Update Profile
+                    Continue
                   </Button>
                 </form>
       </div>

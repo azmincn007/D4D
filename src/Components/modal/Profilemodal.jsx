@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Modal } from 'flowbite-react';
+import React, { useState, useEffect } from 'react';
+import { Modal, Dropdown } from 'flowbite-react';
 import { modalthemeNational } from '../../Themes/Modaltheme';
 import { IoIosClose } from 'react-icons/io';
 import { IoLocationOutline } from 'react-icons/io5';
@@ -9,6 +9,12 @@ import EditProfile from './EditProfile';
 const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
+  const languages = ['English', 'Arabic', 'French', 'Turkish', 'Malayalam', 'Hindi', 'Tamil'];
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
+
+  useEffect(() => {
+    setIsProfileModalOpen(isOpen);
+  }, [isOpen]);
 
   const handleEditProfileClick = () => {
     setIsEditProfileOpen(true);
@@ -19,13 +25,17 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
   };
 
   const handleLogoutClick = () => {
-    handleLogout(); // Call the logout function passed as a prop
+    handleLogout();
     handleProfileModalClose();
   };
 
   const handleProfileModalClose = () => {
     setIsProfileModalOpen(false);
     onClose();
+  };
+
+  const handleLanguageChange = (language) => {
+    setSelectedLanguage(language);
   };
 
   return (
@@ -44,15 +54,27 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
                   <IoLocationOutline className="text-yellow" />
                 </div>
                 <p className="text-[10px] text-[#7A7A78] mb-3">azminsazz@gmail.com</p>
-                <div className='flex'>
+                <div className='flex items-center space-x-4'>
                   <button
-                    className="border-2 border-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px] mr-4"
+                    className="border-2 border-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px]"
                     onClick={handleLogoutClick}
                   >
                     Logout
                   </button>
+                  <Dropdown
+                    label={selectedLanguage}
+                    inline
+                  >
+                    {languages.map((language) => (
+                      <Dropdown.Item key={language} onClick={() => handleLanguageChange(language)}>
+                        {language}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown>
+                </div>
+                <div className='mt-20 w-[50%]'>
                   <button
-                    className="bg-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px]"
+                    className="bg-yellow text-[12px] px-2 font-semibold py-2 rounded-[6px] w-[100%]"
                     onClick={handleEditProfileClick}
                   >
                     Edit Profile
