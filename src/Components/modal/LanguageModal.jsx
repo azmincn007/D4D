@@ -9,7 +9,7 @@ const LanguageModal = ({ isOpen, onClose, onSelect }) => {
 
   const handleLanguageSelect = (language) => {
     setSelectedLanguage(language);
-    onselect(language);
+    onSelect(language);
     onClose(); // Close the modal after selecting the region
 
   };

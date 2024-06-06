@@ -48,7 +48,6 @@ function App() {
     { Country: "Kuwait", Img: Kuwait },
   ];
   const [ActiveToggle, setActiveToggle] = useState("Product");
-console.log('Initial selectedLanguage:', selectedLanguage);
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageContext.Provider value={[selectedLanguage,setSelectedLanguage]}>
