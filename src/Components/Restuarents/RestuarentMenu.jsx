@@ -58,7 +58,7 @@ function RestuarentMenu() {
   return (
     <div className="bg-[#131921] ">
       <div className="min-h-screen Tab:min-h-[80vh] flex flex-col Mobile:min-h-[90vh]">
-        <NavbarComponent />
+        <NavbarComponent hideToggle={true} />
         <div className=" bgresto  bg-cover bg-no-repeat flex-grow overflow-auto flex center">
           {restoData.map((restaurant, index) => (
             <div key={index} className="  w-[100%]   font-inter flex flex-col justify-end ">
@@ -79,7 +79,7 @@ function RestuarentMenu() {
                   <div>
                     <p className=" text-2xl font-semibold Mobile:text-xs">Menu</p>
                     <div className="flex items-center  text-xsm text-yellow Mobile:text-xs">
-                      <p >Home</p> <MdKeyboardArrowRight /> <p>menu</p>{" "}
+                      <p>Home</p> <MdKeyboardArrowRight /> <p>menu</p>{" "}
                     </div>
                   </div>
                 </div>
@@ -87,50 +87,57 @@ function RestuarentMenu() {
               <div className="backdrop-blur-[3px] mt-[30px] rounded-tl-[60px]  rounded-tr-[60px] Tab:rounded-tr-[25px] Tab:rounded-tl-[25px] bg-[#13192180]">
                 <div className="flex justify-between items-center">
                   <div>
-                   
-                    <p className="py-4 text-[24px] font-semibold px-16 text-white Mobile:text-[12px] Mobile:px-8">Today's Special</p>
+                    <p className="py-2 text-[24px] font-semibold px-16 text-white Mobile:text-[12px] Mobile:px-8">Today's Special</p>
                   </div>
                   <div>
-                  <Dropdown
-            theme={restorentpagedrop}
-            style={{ backgroundColor: "#FFD814", color: "black", padding: "0rem 0rem", borderRadius: "0px", fontWeight: "700", fontSize: "12px" ,marginRight:'35px'}}
-            label="All"
-            size="xs"
-            className="bg-[#FFD814] text-black border-none font-inter"
-          >
-            <div className="dropdownss">
-              <DropdownItem
-                className="dropdownitem"
-                style={{
-                  backgroundColor: "#FFD814",
-                  color: "black",
-                  padding: "0.2rem 1rem",
-                  borderRadius: "0px",
-                  fontWeight: "600",
-                  fontSize: "12px",
-                  display: "flex",
-                  alignItems: "flex-start",
-                }}
-              >
-                Veg
-              </DropdownItem>
-              <DropdownItem
-                className="dropdownitem"
-                style={{
-                  backgroundColor: "#FFD814",
-                  color: "black",
-                  padding: "0.2rem 1rem",
-                  borderRadius: "0px",
-                  fontWeight: "600",
-                  fontSize: "12px",
-                  display: "flex",
-                  alignItems: "flex-start",
-                }}
-              >
-                Non-Veg
-              </DropdownItem>
-            </div>
-          </Dropdown>
+                    <Dropdown
+                      theme={restorentpagedrop}
+                      style={{
+                        backgroundColor: "#FFD814",
+                        color: "black",
+                        padding: "0rem 0rem",
+                        borderRadius: "0px",
+                        fontWeight: "700",
+                        fontSize: "12px",
+                        marginRight: "35px",
+                      }}
+                      label="All"
+                      size="xs"
+                      className="bg-[#FFD814] text-black border-none font-inter"
+                    >
+                      <div className="dropdownss">
+                        <DropdownItem
+                          className="dropdownitem"
+                          style={{
+                            backgroundColor: "#FFD814",
+                            color: "black",
+                            padding: "0.2rem 1rem",
+                            borderRadius: "0px",
+                            fontWeight: "600",
+                            fontSize: "12px",
+                            display: "flex",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          Veg
+                        </DropdownItem>
+                        <DropdownItem
+                          className="dropdownitem"
+                          style={{
+                            backgroundColor: "#FFD814",
+                            color: "black",
+                            padding: "0.2rem 1rem",
+                            borderRadius: "0px",
+                            fontWeight: "600",
+                            fontSize: "12px",
+                            display: "flex",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          Non-Veg
+                        </DropdownItem>
+                      </div>
+                    </Dropdown>
                   </div>
                 </div>
                 <div className="swiper-container w-[95%] mx-auto pb-4">
@@ -162,11 +169,11 @@ function RestuarentMenu() {
                         spaceBetween: 10,
                       },
                       1250: {
-                        slidesPerView: 7.5,
+                        slidesPerView: 8.5,
                         spaceBetween: 15,
                       },
                       1450: {
-                        slidesPerView: 6.5,
+                        slidesPerView: 9.5,
                         spaceBetween: 5,
                       },
                     }}
@@ -185,8 +192,14 @@ function RestuarentMenu() {
           ))}
         </div>
       </div>
+      <div className="flex items-center justify-center my-8">
+  <div className="h-[1px] flex-grow bg-[#696969]"></div>
+  <p className="mx-4 text-center text-white font-['Marck_Script'] text-[42px]">Menu</p>
+  <div className="h-[1px] flex-grow bg-[#696969]"></div>
+</div>
 
       <div className="w-[90%] mx-auto">
+
         <MenuItemList data={Ricedata} title="Rice" />
         <MenuItemList data={NonVegBeefData} title="Non-Veg Dishes(Beef)" />
       </div>

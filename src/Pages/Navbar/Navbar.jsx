@@ -17,7 +17,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import Search from './navcomponents/Search';
 import ProfileModal from '../../Components/modal/Profilemodal';
 
-export function NavbarComponent() {
+export function NavbarComponent({ hideToggle }) {
   const [openModal, setOpenModal] = useState(false);
   const [authValue, setAuthValue] = useContext(AuthContext);
   const [Tabscreen, setTabscreen] = useState(window.innerWidth <= 820);
@@ -101,7 +101,7 @@ export function NavbarComponent() {
           </div>
 
           <div className="right flex items-center">
-            <div className='mr-[20px] Tab:mr-[0px]'><Toggle /></div>
+          {!hideToggle && <div className='mr-[20px] Tab:mr-[0px]'><Toggle /></div>}
             <Regiondropdown />
             <div className='log SmMobile:hidden'>
               {username ? (
