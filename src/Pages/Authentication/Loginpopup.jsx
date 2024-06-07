@@ -1,5 +1,5 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import flowbiteinput from "../../Themes/Flowbiteinput";
 import { Link } from "react-router-dom";
 import { IoIosClose } from "react-icons/io";
@@ -9,13 +9,15 @@ import ErrorMessage from "./ErrorValidation";
 import googleicon from "../../assets/Google.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import PasswordInput from "../../Components/authentication/PassworInput";
 
 function Loginpopup({ onClose }) {
   const [AuthValue, setAuthValue] = useContext(AuthContext);
+  const [visible, setvisible] = useState(false);
 
   const login = useGoogleLogin({
     onSuccess: async (response) => {
-      
       try {
         const fetchUserInfo = async (accessToken) => {
           const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -50,6 +52,7 @@ function Loginpopup({ onClose }) {
   };
 
   const handleLogin = (data) => {
+    console.log("Form Data:", data);
     localStorage.setItem("username", data.email);
     onClose(); // Call the onClose function after storing the username
   };
@@ -59,7 +62,7 @@ function Loginpopup({ onClose }) {
       <h1 className="text-base font-semibold py-2">Login</h1>
 
       <div className="form py-5 w-[90%]">
-        <form className="flex max-w-md flex-col gap-3" onSubmit={handleSubmit(handleLogin)}>
+        <form className="flex max-w-md flex-col gap-0" onSubmit={handleSubmit(handleLogin)}>
           <div>
             <div className="mb-2 block"></div>
             <TextInput
@@ -75,16 +78,7 @@ function Loginpopup({ onClose }) {
           </div>
           <div>
             <div className="mb-2 block"></div>
-            <TextInput
-              theme={flowbiteinput}
-              placeholder="Password"
-              id="password"
-              type="password"
-              {...register("password", {
-                required: "Password is required",
-              })}
-            />
-            {errors.password && <ErrorMessage message={errors.password.message} />}
+            <PasswordInput register={register} errors={errors} />
           </div>
           <div className="flex items-center justify-between gap-2 pb-2">
             <div>

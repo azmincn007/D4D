@@ -31,7 +31,7 @@ function Contents() {
           <fieldset className="flex max-w-md flex-col gap-4">
             <div className=" nearby flex items-center gap-2">
               <Radio id="united-state" name="nearby" value="Nearby" />
-              <Label htmlFor="Nearby" className="Mobile:text-xs">Near by</Label>
+              <Label htmlFor="Nearby" id="nearbyshop" className="Mobile:text-xs">Near by</Label>
             </div>
           </fieldset>
         </div>

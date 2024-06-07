@@ -10,6 +10,8 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import { modalthemeNational } from '../../Themes/Modaltheme';
+import Lottie from 'lottie-react';
+import swipe from '../SwipeRight.json';
 
 function Contentcopy({ isOpen, onClose, source }) {
   const FLyerimagesSupermarket = [
@@ -42,10 +44,11 @@ function Contentcopy({ isOpen, onClose, source }) {
         className='modal-contentcopy'
       >
         <Modal.Body>
-          <div className='py-2 contentcopymodal'>
+          <div className='py-2 contentcopymodal relative'>
+            <Lottie className='h-[200px] w-[200px] absolute top-0 left-1/2 transform -translate-x-1/2 z-10' animationData={swipe} />
             <Swiper
               modules={[Pagination, Scrollbar, A11y]}
-              spaceBetween={10}
+              spaceBetween={5}
               slidesPerView={5}
               pagination={{ clickable: true }}
               scrollbar={{ draggable: true }}
@@ -53,23 +56,20 @@ function Contentcopy({ isOpen, onClose, source }) {
               onSlideChange={() => console.log('slide change')}
               className='swipercontent'
               breakpoints={{
-
                 300: {
                   slidesPerView: 4,
                 },
-                // Set breakpoint at 450px and below
                 450: {
                   slidesPerView: 4,
                 },
-                // Set breakpoint at 770px and below
                 770: {
-                  slidesPerView:5 ,
+                  slidesPerView: 5,
                 },
               }}
             >
               {imagesToRender.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <img className='h-[100%] Mobile:max-h-[100px] max-h-[300px]' src={image.img} alt={`Flyer ${index}`} />
+                  <img className='h-[100%] Mobile:max-h-[80px] max-h-[300px]' src={image.img} alt={`Flyer ${index}`} />
                 </SwiperSlide>
               ))}
             </Swiper>
