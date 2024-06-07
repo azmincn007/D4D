@@ -342,3 +342,45 @@ font-size: clamp(10px, 3vw, 20px);
   margin-bottom: 20px !important;
 }
 
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-contentcopy {
+  animation: slideUp 0.3s ease-out;
+}
+.branchsingle {
+  position: relative;
+  overflow: hidden;
+}
+
+.branchsingle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background-color: #FFD814; /* 100% yellow */
+  transition: width 0.3s ease-in-out;
+  z-index: 1; /* Ensure background is behind the text */
+}
+
+.branchsingle:hover::before {
+  width: 100%;
+}
+.branchsingle:hover {
+  border: none; /* Remove border on hover */
+}
+
+.branchsingle span {
+  position: relative;
+  z-index: 2; /* Ensure text is above the background */
+}

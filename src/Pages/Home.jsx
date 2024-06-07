@@ -23,6 +23,7 @@ function Home() {
 
   const navigate = useNavigate();
   const [nationalitySelected, setNationalitySelected] = useState(false);
+  const [loading, setLoading] = useState(true); // Add a loading state
 
   useEffect(() => {
     if (selectedCountry) {
@@ -30,6 +31,7 @@ function Home() {
       setNationalitySelected(true);
       selectRegion(true); // Open the RegionModal when the country is updated
     }
+    setLoading(false); // Set loading to false after the initial state setup
   }, [selectedCountry]);
 
   useEffect(() => {
@@ -60,7 +62,9 @@ function Home() {
     setShowLanguageModal(false); // Close the LanguageModal after selection
   };
 
-  console.log(selectedLanguage);
+  if (loading) {
+    return null; // Or a loading spinner or some fallback UI
+  }
 
   return (
     <div>
