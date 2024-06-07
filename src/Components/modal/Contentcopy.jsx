@@ -55,7 +55,7 @@ function Contentcopy({ isOpen, onClose, source }) {
               breakpoints={{
 
                 300: {
-                  slidesPerView: 2,
+                  slidesPerView: 4,
                 },
                 // Set breakpoint at 450px and below
                 450: {
@@ -69,7 +69,7 @@ function Contentcopy({ isOpen, onClose, source }) {
             >
               {imagesToRender.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <img className='h-[100%] max-h-[200px]' src={image.img} alt={`Flyer ${index}`} />
+                  <img className='h-[100%] Mobile:max-h-[100px] max-h-[300px]' src={image.img} alt={`Flyer ${index}`} />
                 </SwiperSlide>
               ))}
             </Swiper>
