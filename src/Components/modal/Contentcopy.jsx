@@ -55,7 +55,7 @@ function Contentcopy({ isOpen, onClose, source }) {
               breakpoints={{
 
                 300: {
-                  slidesPerView: 4,
+                  slidesPerView: 2,
                 },
                 // Set breakpoint at 450px and below
                 450: {
