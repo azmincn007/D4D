@@ -69,7 +69,7 @@ function Contentcopy({ isOpen, onClose, source }) {
             >
               {imagesToRender.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <img className='h-[100%]' src={image.img} alt={`Flyer ${index}`} />
+                  <img className='h-[100%] max-h-[200px]' src={image.img} alt={`Flyer ${index}`} />
                 </SwiperSlide>
               ))}
             </Swiper>
