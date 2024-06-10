@@ -9,7 +9,6 @@ import ErrorMessage from "./ErrorValidation";
 import googleicon from "../../assets/Google.png";
 import { useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import PasswordInput from "../../Components/authentication/PassworInput";
 
 function Loginpopup({ onClose }) {
@@ -64,7 +63,6 @@ function Loginpopup({ onClose }) {
       <div className="form py-5 w-[90%]">
         <form className="flex max-w-md flex-col gap-0" onSubmit={handleSubmit(handleLogin)}>
           <div>
-            <div className="mb-2 block"></div>
             <TextInput
               theme={flowbiteinput}
               id="email"
@@ -74,13 +72,15 @@ function Loginpopup({ onClose }) {
                 required: "Email is required",
               })}
             />
-            {errors.email && <ErrorMessage message={errors.email.message} />}
+         
+              {errors.email && <ErrorMessage message={errors.email.message} />}
+            <div className={`${errors.email ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-            <div className="mb-2 block"></div>
-            <PasswordInput register={register} errors={errors} />
+          <PasswordInput register={register} name="password" placeholder="Enter Password" />            {errors.password && <ErrorMessage message={errors.password.message} />}
+            <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
-          <div className="flex items-center justify-between gap-2 pb-2">
+          <div className="flex items-center justify-between  pb-2">
             <div>
               <Checkbox className="w-[22px] h-[22px] mr-3" id="remember" />
               <Label htmlFor="remember" className="text-basex font-normal">
@@ -91,14 +91,14 @@ function Loginpopup({ onClose }) {
               <Link>Forgot?</Link>
             </div>
           </div>
-          <Button className=" bg-yellow auth-button" type="submit">
+          <Button className=" mt-4 bg-yellow auth-button" type="submit">
             Login
           </Button>
         </form>
       </div>
       <div className="flex items-center w-[80%] pb-7 pt-3">
         <div className="w-full border-t border-[#E3E3E6]"></div>
-        <div className="px-3">Or</div>
+        <div className="px-3 text-[#777E90] font-semibold">OR</div>
         <div className="w-full border-t border-[#E3E3E6]"></div>
       </div>
 
@@ -109,7 +109,7 @@ function Loginpopup({ onClose }) {
       <div className="py-6">
         <p className="text-sm">
           Don't have an account yet?{" "}
-          <span className="font-semibold cursor-pointer" onClick={handleShowSignupModal}>
+          <span className="font-semibold cursor-pointer underline" onClick={handleShowSignupModal}>
             Sign Up
           </span>
         </p>

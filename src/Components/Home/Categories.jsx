@@ -58,7 +58,7 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
       <div className="cathead text-[20px] text-white font-medium py-2 font-inter ">
         Categories
       </div>
-      <div className="categoriesdropdown py-5 w-[95%]">
+      <div className="categoriesdropdown py-1 w-[95%]">
         {catdropdata.map((obj, index) => (
           <Accordion
             key={index}

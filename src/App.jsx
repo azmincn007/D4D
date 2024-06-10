@@ -17,6 +17,7 @@ import Flyer from "./Pages/Flyer";
 import Timer from "./Components/authentication/Timer";
 import { QueryClient, QueryClientProvider } from "react-query";
 import L from "./Pages/Authentication/Loginccc";
+import Favouratemodal from "./Components/modal/Favouratemodal";
 
 export const AuthContext = createContext();
 export const Countrycontext = createContext();
@@ -62,6 +63,7 @@ function App() {
                   <Route path="/resto" element={<RestuarentMenu />} />
                   <Route path="/mobilesingle" element={<Mobilessingle />} />
                   <Route path="/flyer" element={<Flyer />} />
+                  <Route path="/fav" element={<Favouratemodal />} />
                 </Routes>
               </BrowserRouter>
             </AuthContext.Provider>

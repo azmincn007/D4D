@@ -192,7 +192,7 @@ function RestuarentMenu() {
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-center my-8">
+      <div className="flex items-center justify-center my-4">
   <div className="h-[1px] flex-grow bg-[#696969]"></div>
   <p className="mx-4 text-center text-white font-['Marck_Script'] text-[42px]">Menu</p>
   <div className="h-[1px] flex-grow bg-[#696969]"></div>

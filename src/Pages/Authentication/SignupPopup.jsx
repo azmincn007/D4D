@@ -11,11 +11,18 @@ function SignupPopup({ onClose, onSubmit }) {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    trigger,
   } = useForm();
 
-  const onSubmitHandler = (data) => {
-    console.log("Submitted Data:", data);
-    onSubmit(data.mobileNumber);
+  const password = watch("password");
+
+  const onSubmitHandler = async (data) => {
+    const isValid = await trigger("confirmPassword");
+    if (isValid) {
+      console.log("Submitted Data:", data);
+      onSubmit(data.mobileNumber);
+    }
   };
 
   const handleClose = () => {
@@ -33,13 +40,18 @@ function SignupPopup({ onClose, onSubmit }) {
     { value: "China", name: "China" },
   ];
 
+  const handleKeyDown = (e) => {
+    if (!/[0-9]/.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
       <h1 className="text-base font-semibold py-2">Signup</h1>
       <div className="form py-5 w-[90%]">
         <form onSubmit={handleSubmit(onSubmitHandler)} className="flex flex-col gap-0">
           <div>
-            <div className="mb-2 block"></div>
             <TextInput
               theme={flowbiteinput}
               id="username"
@@ -48,9 +60,9 @@ function SignupPopup({ onClose, onSubmit }) {
               {...register("username", { required: "Username is required" })}
             />
             {errors.username && <ErrorMessage message={errors.username.message} />}
+            <div className={`${errors.username ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-            <div className="mb-2 block"></div>
             <TextInput
               theme={flowbiteinput}
               id="email"
@@ -59,28 +71,50 @@ function SignupPopup({ onClose, onSubmit }) {
               {...register("email", { required: "Email is required" })}
             />
             {errors.email && <ErrorMessage message={errors.email.message} />}
+            <div className={`${errors.email ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-            <div className="mb-2 block"></div>
-            <PasswordInput register={register} errors={errors} name="password" />
+            <PasswordInput
+              register={register}
+              name="password"
+              placeholder="Password"
+              rules={{ required: "Password is required" }}
+              error={errors.password}
+            />
+            <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-            <div className="mb-2 block"></div>
-            <PasswordInput register={register} errors={errors} name="confirmPassword" />
+            <PasswordInput
+              register={register}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              rules={{
+                required: "Confirm Password is required",
+                validate: (value) => value === password || "Passwords do not match",
+              }}
+              error={errors.confirmPassword}
+            />
+            <div className={`${errors.confirmPassword ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-            <div className="mb-2 block"></div>
             <TextInput
               theme={flowbiteinput}
               id="mobileNumber"
               type="tel"
               placeholder="Mobile Number"
-              {...register("mobileNumber", { required: "Mobile Number is required" })}
+              {...register("mobileNumber", { 
+                required: "Mobile Number is required",
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: "Mobile Number can only contain numbers"
+                }
+              })}
+              onKeyDown={handleKeyDown}
             />
             {errors.mobileNumber && <ErrorMessage message={errors.mobileNumber.message} />}
+            <div className={`${errors.mobileNumber ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-            <div className="mb-2 block"></div>
             <Select
               theme={flowbiteinput}
               id="nationality"
@@ -100,8 +134,9 @@ function SignupPopup({ onClose, onSubmit }) {
               ))}
             </Select>
             {errors.nationality && <ErrorMessage message={errors.nationality.message} />}
+            <div className={`${errors.nationality ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
-          <div className="flex items-center justify-around">
+          <div className="flex items-center justify-around mb-4 mt-2">
             <div>
               <Radio id="male" name="gender" value="male" className="mr-2" {...register("gender")} />
               <Label htmlFor="male">Male</Label>

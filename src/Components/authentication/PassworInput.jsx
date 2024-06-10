@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { TextInput } from 'flowbite-react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useForm } from 'react-hook-form';
-import ErrorMessage from '../../Pages/Authentication/ErrorValidation';
 
-const PasswordInput = ({ register, errors }) => {
+const PasswordInput = ({ register, name, placeholder, rules, error }) => {
   const [visible, setVisible] = useState(false);
 
   const toggleVisibility = () => {
@@ -17,12 +15,10 @@ const PasswordInput = ({ register, errors }) => {
         <div>
           <TextInput
             className="passtext"
-            placeholder="Password"
-            id="password"
+            placeholder={placeholder}
+            id={name}
             type={visible ? 'text' : 'password'}
-            {...register('password', {
-              required: 'Password is required',
-            })}
+            {...register(name, rules)}
           />
         </div>
         <div className="mr-4">
@@ -39,7 +35,7 @@ const PasswordInput = ({ register, errors }) => {
           )}
         </div>
       </div>
-      {errors.password && <ErrorMessage message={errors.password.message} />}
+      {error && <p className="text-red-500 text-[10px] mt-1">{error.message}</p>}
     </div>
   );
 };

@@ -54,16 +54,12 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
                   <IoLocationOutline className="text-yellow" />
                 </div>
                 <p className="text-[10px] text-[#7A7A78] mb-3">azminsazz@gmail.com</p>
-                <div className='flex items-center space-x-4'>
-                  <button
-                    className="border-2 border-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px]"
-                    onClick={handleLogoutClick}
-                  >
-                    Logout
-                  </button>
+                <div className='flex items-center space-x-2  prf'>
+                 
                   <Dropdown
                     label={selectedLanguage}
-                    inline
+                 
+                    style={{backgroundColor:'#F1F1F1',maxWidth:'145px' ,height:'30px', display:'flex' ,alignItems:'center', borderRadius:'4px' ,color:'#6D6D6D'}}
                   >
                     {languages.map((language) => (
                       <Dropdown.Item key={language} onClick={() => handleLanguageChange(language)}>
@@ -71,6 +67,13 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
                       </Dropdown.Item>
                     ))}
                   </Dropdown>
+
+                  <button
+                    className="border-2 border-yellow text-[12px] px-2 font-semibold py-1 rounded-[6px] w-[80px]"
+                    onClick={handleLogoutClick}
+                  >
+                    Logout
+                  </button>
                 </div>
                 <div className='mt-20 w-[50%]'>
                   <button

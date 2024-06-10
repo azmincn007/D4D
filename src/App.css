@@ -411,3 +411,30 @@ font-size: clamp(10px, 3vw, 20px);
   padding: 8px 12px !important;
   font-size: 13px !important;
 }
+
+.search-fav input{
+  border: none !important;
+  font-size: 13px !important;
+}
+
+.modalfav div[tabindex="-1"] div div{
+  padding: 0px ;
+}
+
+.fav{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FFD814;
+  padding: 2px 12px !important;
+  margin-right: 20px !important;
+  border-radius: 25px;
+
+}
+
+.prf button[data-testid="flowbite-dropdown-target"]{
+  span{
+    display: flex;
+    align-items: center;
+  }
+}

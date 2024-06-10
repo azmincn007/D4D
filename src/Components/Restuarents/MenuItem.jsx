@@ -4,7 +4,7 @@ import './Menuitem.css'
 const MenuItemList = ({ data ,title}) => {
   return (
     <div className=" mx-auto text-white">
-      <p className='font-semibold py-4 text-[26px]'>{title}</p>
+      <p className='font-semibold  text-[26px]'>{title}</p>
       <div className='grid grid-cols-2 md:grid-cols-2 gap-2'>
         
         {data.map((item, index) => (
