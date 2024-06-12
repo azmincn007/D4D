@@ -24,7 +24,7 @@ function Regiondropdown() {
           alt=""
         />
       </div>
-      <div className="drop">
+      <div className="drop mr-[10px]  Tab:mr-0">
         <Dropdown
           theme={flowbiteDrop}
           style={{ background: 'transparent', fontSize: '12px' }}

@@ -39,7 +39,7 @@ function NavbarFlyer() {
 
             </Link>
           </div>
-          <div className='search flex items-center LgTab:hidden'>
+          <div className='search flex items-center w-[400px] LgTab:hidden'>
             <Search />
           </div>
         </div>

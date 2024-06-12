@@ -79,7 +79,7 @@ export function NavbarComponent({ hideToggle }) {
     <div>
       <Navbar theme={FlowbiteNav} fluid rounded className="navbar bg-Navbarbg sm:px-10 font-inter">
         <div className='flex justify-between w-[100%] items-center'>
-          <div className="left flex items-center SmMobile:w-[70px]">
+          <div className="left flex items-center SmMobile:w-[70px] mb-[5px]">
             <div className="logo mr-10 SmMobile:mr-0 Tab:mr-2 flex items-center">
               <div className='flex flex-col items-center'>
                 <div>
@@ -160,7 +160,7 @@ export function NavbarComponent({ hideToggle }) {
             )}
           </div>
         </div>
-        <div className='midle mx-auto my-2'>
+        <div className='midle mx-auto '>
           <div className="search items-center justify-center TabS:flex hidden">
             <Search />
           </div>

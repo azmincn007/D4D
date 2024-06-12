@@ -77,8 +77,13 @@ function Loginpopup({ onClose }) {
             <div className={`${errors.email ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-          <PasswordInput register={register} name="password" placeholder="Enter Password" />            {errors.password && <ErrorMessage message={errors.password.message} />}
-            <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
+          <PasswordInput
+              register={register}
+              name="password"
+              placeholder="Password"
+              rules={{ required: "Password is required" }}
+              error={errors.password}
+            />            <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div className="flex items-center justify-between  pb-2">
             <div>

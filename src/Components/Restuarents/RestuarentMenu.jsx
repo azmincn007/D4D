@@ -65,7 +65,7 @@ function RestuarentMenu() {
               <div className="mx-6 w-[432px] backdrop-blur-[3px] rounded-[12px] bg-[#13192180]  Mobile:w-[270px]">
                 <div className="px-4 text-white flex flex-col  py-2">
                   <div className="  flex  items-center">
-                    <div className="text-[32px] font-semibold text-white mr-[5px] Mobile:text-[12px] LgMobile:text-[18px]">{restaurant.res}</div>
+                    <div className="text-[22px] font-semibold text-white mr-[5px] Mobile:text-[12px] LgMobile:text-[18px]">{restaurant.res}</div>
                     <div>
                       <RatingComponent rating={restaurant.rating} />
                     </div>
@@ -77,9 +77,9 @@ function RestuarentMenu() {
                   </div>
 
                   <div>
-                    <p className=" text-2xl font-semibold Mobile:text-xs">Menu</p>
+                    <p className=" text-[20px] font-semibold Mobile:text-xs">Menu</p>
                     <div className="flex items-center  text-xsm text-yellow Mobile:text-xs">
-                      <p>Home</p> <MdKeyboardArrowRight /> <p>menu</p>{" "}
+                      <p clas>Home</p> <MdKeyboardArrowRight /> <p>menu</p>{" "}
                     </div>
                   </div>
                 </div>

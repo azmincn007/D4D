@@ -137,19 +137,19 @@ function SignupPopup({ onClose, onSubmit }) {
             <div className={`${errors.nationality ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div className="flex items-center justify-around mb-4 mt-2">
-            <div>
-              <Radio id="male" name="gender" value="male" className="mr-2" {...register("gender")} />
-              <Label htmlFor="male">Male</Label>
-            </div>
-            <div>
-              <Radio id="female" name="gender" value="female" className="mr-2" {...register("gender")} />
-              <Label htmlFor="female">Female</Label>
-            </div>
-            <div>
-              <Radio id="other" name="gender" value="other" className="mr-2" {...register("gender")} />
-              <Label htmlFor="other">Other</Label>
-            </div>
-          </div>
+  <div>
+    <Radio id="male" name="gender" value="male" defaultChecked className="mr-2" {...register("gender")} />
+    <Label htmlFor="male">Male</Label>
+  </div>
+  <div>
+    <Radio id="female" name="gender" value="female" className="mr-2" {...register("gender")} />
+    <Label htmlFor="female">Female</Label>
+  </div>
+  <div>
+    <Radio id="other" name="gender" value="other" className="mr-2" {...register("gender")} />
+    <Label htmlFor="other">Other</Label>
+  </div>
+</div>
           <Button className="bg-yellow auth-button" type="submit">
             Continue
           </Button>

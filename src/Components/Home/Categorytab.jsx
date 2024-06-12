@@ -10,11 +10,13 @@ function Categorytab() {
   };
 
   return (
-    <div className='w-full bg-darkblue flex justify-center text-white py-2  Mobile:text-[8px] Tab:text-xs text-small font-inter'>
+    <div className='w-full bg-darkblue flex justify-center text-white py-2 Mobile:text-[8px] Tab:text-xs text-small font-inter'>
       {caTabs.map((obj, index) => (
         <div
           key={index}
-          className="singletabs py-2 px-7  Tab:px-2"
+          className={`singletabs py-2 ${index === 0 ? 'pl-1' : 'pl-7 Tab:pl-2'} ${
+            index === caTabs.length - 1 ? 'pr-1' : 'pr-7 Tab:pr-2'
+          }`}
           style={{
             borderBottom: '2px solid rgba(241, 241, 241, 0.5)',
             borderColor: activeTab === index ? 'white' : '#F1F1F1A0', // Conditionally apply white border to active tab and red to non-active tabs

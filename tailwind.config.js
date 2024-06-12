@@ -26,7 +26,8 @@ export default {
         Navbarbg: '#131921',
          Black:'#000000',
          yellow:'#FFD814',
-         darkblue:'#232F3E'
+         darkblue:'#232F3E',
+         adminbg:'#BBD4C0'
 
       },
 

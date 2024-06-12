@@ -7,10 +7,17 @@ import AvatarComponent from "../../Pages/Navbar/navcomponents/AvatarComponent";
 import { IoIosClose } from "react-icons/io";
 import { useForm } from "react-hook-form";
 
+const ErrorMessage = ({ message }) => (
+  <span className="text-red-500 text-sm">{message}</span>
+);
+
 const EditProfile = ({ isOpen, onClose, initialValues }) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
   const { register, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: initialValues,
+    defaultValues: {
+      ...initialValues,
+      gender: "male", // Set default gender as male
+    },
   });
 
   const countryOptions = [
@@ -38,6 +45,7 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
       }
     }
     console.log(updatedData);
+    handleProfileModalClose();
     // You can perform further actions with the updatedData object
   };
 
@@ -75,10 +83,13 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
                         type="email"
                         placeholder="Email"
                         {...register("email", {
-                          pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                            message: "Invalid email address",
+                          },
                         })}
                       />
-                      {errors.email && <span>Invalid email address</span>}
+                      {errors.email && <ErrorMessage message={errors.email.message} />}
                       <div className="mb-4 block"></div>
                     </div>
                     <div>
@@ -108,10 +119,13 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
                         type="tel"
                         placeholder="Mobile Number"
                         {...register("mobileNumber", {
-                          pattern: /^\d{10}$/,
+                          pattern: {
+                            value: /^\d{10}$/,
+                            message: "Invalid mobile number",
+                          },
                         })}
                       />
-                      {errors.mobileNumber && <span>Invalid mobile number</span>}
+                      {errors.mobileNumber && <ErrorMessage message={errors.mobileNumber.message} />}
                       <div className="mb-4 block"></div>
                     </div>
                     <div>
@@ -135,9 +149,9 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
                       </Select>
                       <div className="mb-4 block"></div>
                     </div>
-                    <div className="flex items-center justify-around">
-                      <div>
-                        <Radio id="male" name="gender" value="male" className="mr-2" {...register("gender")} />
+                    <div className="flex items-center justify-around mb-4">
+                      <div className=""> 
+                        <Radio id="male" name="gender" value="male" className="mr-2" {...register("gender")} defaultChecked />
                         <Label htmlFor="male">Male</Label>
                       </div>
                       <div>
