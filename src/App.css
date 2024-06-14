@@ -2,6 +2,7 @@
   --tw-ring-color: rgb(0 0 0 / 0) !important;
 }
 
+
 /* CSS Reset */
 * {
   margin: 0;
@@ -273,7 +274,7 @@ font-size: clamp(10px, 3vw, 20px);
   .iconnav{
     height: 22px;
     width: 25px;
-    margin-right: 10px;
+    margin-right: 15px;
   }
 
   .info-ul li{

@@ -1,36 +1,37 @@
-.marquee-container {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: #1F416C;
-    color: white;
+
+
+.containers {
+  display: flex;
+  align-items: center;
+ background-color: #1F416C;
+  overflow: hidden;
+  color: white;
+  width: 100%;
+}
+
+.scroll {
+  white-space: nowrap;
+  margin: 0 2em;
+}
+
+.scroll div {
+  display: flex;
+  gap: 2em;
+}
+
+
+
+.RightToLeft {
+  animation: RightToLeft 15s infinite linear;
+}
+
+@keyframes  RightToLeft {
+  from {
+    transform: translateX(0%);
   }
-  
-  .marquee {
-    display: inline-block;
-    padding-left: 100%; /* Show the marquee text initially */
-    animation: marquee 20s linear infinite;
+  to {
+    transform: translateX(-50%);
   }
-  
-  .marquee span {
-    padding-right: 1rem;
-    animation: infinite 2s ease-in-out infinite;
-  }
-  
-  @keyframes marquee {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-  
-  @keyframes bouncing {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
+}
+
+

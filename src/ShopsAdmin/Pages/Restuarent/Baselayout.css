@@ -44,7 +44,7 @@
   
   .frame-image {
     position: absolute;
-    bottom: -169px; /* Ensure it is positioned properly */
+    bottom: 0; /* Ensure it is positioned properly */
     width: 100%;
     height: auto;
     z-index: 0;
@@ -114,6 +114,7 @@
   .orgdrop{
     width: 100%;
   }
+
   .orgdrop button{
     width: 100%;
     background-color: transparent !important;
@@ -131,6 +132,36 @@
         color: black !important;
       }
     }
+  }
+
+  .orgdroptwo{
+    width: 100%;
+  }
+
+  .orgdroptwo button,.orgdroptwo select,.orgdroptwo select:focus{
+    width: 100%;
+    background-color: transparent !important;
+    color: black;
+    border: 1px solid black;
+    border-radius: 4px !important;
+
+
+    span{
+      display: flex;
+      justify-content: space-between;
+      width: 95%;
+      color: #808080;
+      padding: 4px 12px;
+      svg{
+        color: black !important;
+      }
+    }
+  }
+
+  .orgdroptwo select ,.orgdroptwo select:focus{
+    padding: 4px 12px;
+    font-size: 12px;
+    color: #808080;
   }
   
 

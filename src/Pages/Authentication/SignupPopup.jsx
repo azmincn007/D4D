@@ -48,7 +48,7 @@ function SignupPopup({ onClose, onSubmit }) {
 
   return (
     <>
-      <h1 className="text-base font-semibold py-2">Signup</h1>
+      <h1 className="text-base font-semibold py-2">Sign Up</h1>
       <div className="form py-5 w-[90%]">
         <form onSubmit={handleSubmit(onSubmitHandler)} className="flex flex-col gap-0">
           <div>

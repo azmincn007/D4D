@@ -57,7 +57,7 @@ function RestuarentMenu() {
 
   return (
     <div className="bg-[#131921] ">
-      <div className="min-h-screen  flex flex-col Mobile:min-h-[90vh]">
+      <div className="min-h-[124vh]  flex flex-col Mobile:min-h-[90vh]">
         <NavbarComponent hideToggle={true} />
         <div className=" bgresto  bg-cover bg-no-repeat flex-grow overflow-auto flex center">
           {restoData.map((restaurant, index) => (

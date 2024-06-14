@@ -22,6 +22,7 @@ import Signupsecond from "./ShopsAdmin/Components/Signupsecond";
 import VerifyOtp from "./ShopsAdmin/Components/VerifyOtp";
 import SignupDataupload from "./ShopsAdmin/Components/SignupDataupload";
 import Subscription from "./ShopsAdmin/Pages/Restuarent/Subscription";
+import RestuarentDashboard from "./ShopsAdmin/Pages/Restuarent/RestuarentDashboard";
 
 export const AuthContext = createContext();
 export const Countrycontext = createContext();
@@ -103,7 +104,7 @@ function App() {
                         }
                       />
 
-<Route
+                      <Route
                         path="/signupupload"
                         element={
                           <BaseLayoutAuthentication redVector={false} yellowVector={false}>
@@ -112,7 +113,7 @@ function App() {
                         }
                       />
 
-<Route
+                      <Route
                         path="/subscription"
                         element={
                           <BaseLayoutAuthentication redVector={false} yellowVector={false}>
@@ -121,6 +122,12 @@ function App() {
                         }
                       />
 
+<Route
+                        path="/Restorentdashboard"
+                        element={
+                            <RestuarentDashboard />
+                        }
+                      />
                     </Routes>
                   </BrowserRouter>
                 </AuthContext.Provider>

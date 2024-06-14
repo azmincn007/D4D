@@ -30,7 +30,7 @@ function NavbarFlyer() {
   };
 
   return (
-    <div className='navbarfly bg-Navbarbg py-3'>
+    <div className='navbarfly bg-Navbarbg pt-7'>
       <div className='relative w-[90%] mx-auto flex justify-between items-center py-2'>
         <div className="left flex">
           <div className='mr-[30px] flex items-center'>
@@ -44,7 +44,7 @@ function NavbarFlyer() {
           </div>
         </div>
         <div className="right flex items-center">
-          <div className='mr-8 Mobile:mr-4 flex text-white'>
+          <div className='mr-8 Mobile:mr-3 flex text-white'>
             <AiOutlineInfoCircle className='iconnav' onClick={handleInfoIconClick} />
             <MdContentCopy className='iconnav' onClick={handleContentCopyClick} />
             <MdOutlineShare className='iconnav' />

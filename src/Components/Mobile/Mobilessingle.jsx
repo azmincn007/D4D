@@ -63,7 +63,7 @@ function Mobilessingle() {
 
   return (
     <div className="mobilessingle">
-      <NavbarComponent />
+      <NavbarComponent hideToggle={true} />
       <div className="py-6 px-5 pb-16">
         {renderData.map((mobile, index) => (
           <div key={index} className="singlecarddetails mb-4 bg-[#F1F1F1] pt-4 px-4 rounded-[20px] font-inter Mobile:px-2 Mobile:py-2">
@@ -100,7 +100,7 @@ function Mobilessingle() {
               </div>
             </div>
             <div className="bottomsingle flex justify-between items-center  Tab:hidden">
-              <div className="flex  py-2 items-center justify-between  w-[322px]">
+              <div className="flex  py-4 items-center justify-between  w-[322px]">
                 <div className="text-[18px]">{mobile.title}</div>
                 <div className="bg-yellow rounded-[100px] px-4 py-2">{mobile.price}</div>
               </div>

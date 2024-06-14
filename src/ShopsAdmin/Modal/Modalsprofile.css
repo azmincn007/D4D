@@ -1,0 +1,131 @@
+.bgprofilemodal{
+    height: auto;
+    min-height: 200px;
+    background-image: url('../Assets/restdashbg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    
+}
+
+.bgprofilemodal {
+    position: relative;
+}
+
+.circle-image {
+    border: 4px solid #FFD814;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-image: url('../Assets/restdashbg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.shopsadminmodal {
+    padding: 2px !important;
+}
+
+.branches{
+    border: 1px solid #696969;
+    padding: 7px 15px;
+    margin-right: 20px;
+    border-radius: 50px;
+}
+.biodiv{
+    border: 1px solid #696969;
+    border-radius: 6px;
+}
+
+.buttonsprofile{
+    width: 80%;
+    margin: 0 auto;
+    button{
+        padding: 0.5rem 0.5rem;
+        border-radius: 8px;
+    }
+}
+
+.lgout{
+    border: 2px solid black;
+    padding: 0.5rem 2rem !important;
+    -webkit-box-shadow: 4px 7px 12px -3px rgba(255,216,20,1);
+-moz-box-shadow: 4px 7px 12px -3px rgba(255,216,20,1);
+box-shadow: 4px 7px 12px -3px rgba(255,216,20,1);
+}
+
+
+
+
+
+.overflow-y-auto {
+    overflow-y: auto;
+  }
+  
+  .max-h-64 {
+    max-height: 16rem; /* Adjust this value to fit your design */
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.875rem; /* Tailwind class: text-sm */
+  }
+  
+  .formtext {
+    margin-bottom: 1rem;
+  }
+  
+  .w-full {
+    width: 100%;
+  }
+  
+  .py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .bg-blue-600 {
+    background-color: #2563eb; /* Tailwind class for blue color */
+  }
+  
+  .text-white {
+    color: white;
+  }
+  
+  .rounded {
+    border-radius: 0.375rem;
+  }
+  
+  .mt-4 {
+    margin-top: 1rem;
+  }
+  
+  .form-inputdesc input,.form-inputdesc input:hover ,.form-inputdesc input:focus{
+height: 100px;
+border: 1px solid black;
+  }
+
+
+  .form-today{
+    border: 1px solid #808080;
+    border-radius: 6px;
+    input{
+      border: none;
+      padding: 8px 12px;
+      color: #808080;
+    }
+  }
+
+  .form-select, .form-select:focus{
+    select{
+      border: 1px solid #808080;
+      padding: 8px 12px;
+      color: #808080;
+
+    }
+  }

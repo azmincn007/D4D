@@ -6,10 +6,10 @@ import flowbiteinput from "../../Themes/Flowbiteinput";
 import AvatarComponent from "../../Pages/Navbar/navcomponents/AvatarComponent";
 import { IoIosClose } from "react-icons/io";
 import { useForm } from "react-hook-form";
+import PasswordInput from "../authentication/PassworInput";
+import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 
-const ErrorMessage = ({ message }) => (
-  <span className="text-red-500 text-sm">{message}</span>
-);
+
 
 const EditProfile = ({ isOpen, onClose, initialValues }) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
@@ -93,38 +93,41 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
                       <div className="mb-4 block"></div>
                     </div>
                     <div>
-                      <TextInput
-                        theme={flowbiteinput}
-                        id="password"
-                        type="password"
-                        placeholder="Password"
-                        {...register("password")}
-                      />
-                      <div className="mb-4 block"></div>
-                    </div>
+            <PasswordInput
+              register={register}
+              name="password"
+              placeholder="Password"
+              rules={{ required: "Password is required" }}
+              error={errors.password}
+            />
+            <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
+          </div>
+          <div>
+            <PasswordInput
+              register={register}
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              rules={{
+                required: "Confirm Password is required",
+                validate: (value) => value === password || "Passwords do not match",
+              }}
+              error={errors.confirmPassword}
+            />
+            <div className={`${errors.confirmPassword ? 'mb-2' : 'mb-4'} block`}></div>
+          </div>
                     <div>
-                      <TextInput
-                        theme={flowbiteinput}
-                        id="confirmPassword"
-                        type="password"
-                        placeholder="Confirm Password"
-                        {...register("confirmPassword")}
-                      />
-                      <div className="mb-4 block"></div>
-                    </div>
-                    <div>
-                      <TextInput
-                        theme={flowbiteinput}
-                        id="mobileNumber"
-                        type="tel"
-                        placeholder="Mobile Number"
-                        {...register("mobileNumber", {
-                          pattern: {
-                            value: /^\d{10}$/,
-                            message: "Invalid mobile number",
-                          },
-                        })}
-                      />
+                    <TextInput
+  theme={flowbiteinput}
+  id="mobileNumber"
+  type="tel"
+  placeholder="Mobile Number"
+  {...register("mobileNumber", {
+    pattern: {
+      value: /^\d+$/,
+      message: "Invalid mobile number",
+    },
+  })}
+/>
                       {errors.mobileNumber && <ErrorMessage message={errors.mobileNumber.message} />}
                       <div className="mb-4 block"></div>
                     </div>
