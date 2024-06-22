@@ -4,10 +4,8 @@ import { modalthemeNational } from '../../Themes/Modaltheme';
 import { IoIosClose } from 'react-icons/io';
 import { IoLocationOutline } from 'react-icons/io5';
 import AvatarComponent from '../../Pages/Navbar/navcomponents/AvatarComponent';
-import EditProfile from './EditProfile';
 
-const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
-  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+const ProfileModal = ({ isOpen, onClose, onEditProfileClick, handleLogout }) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
   const languages = ['English', 'Arabic', 'French', 'Turkish', 'Malayalam', 'Hindi', 'Tamil'];
   const [selectedLanguage, setSelectedLanguage] = useState('English');
@@ -15,14 +13,6 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
   useEffect(() => {
     setIsProfileModalOpen(isOpen);
   }, [isOpen]);
-
-  const handleEditProfileClick = () => {
-    setIsEditProfileOpen(true);
-  };
-
-  const handleEditProfileClose = () => {
-    setIsEditProfileOpen(false);
-  };
 
   const handleLogoutClick = () => {
     handleLogout();
@@ -58,7 +48,6 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
                  
                   <Dropdown
                     label={selectedLanguage}
-                 
                     style={{backgroundColor:'#F1F1F1',maxWidth:'145px' ,height:'30px', display:'flex' ,alignItems:'center', borderRadius:'4px' ,color:'#6D6D6D'}}
                   >
                     {languages.map((language) => (
@@ -78,7 +67,7 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
                 <div className='mt-20 w-[50%]'>
                   <button
                     className="bg-yellow text-[12px] px-2 font-semibold py-2 rounded-[6px] w-[100%]"
-                    onClick={handleEditProfileClick}
+                    onClick={onEditProfileClick}
                   >
                     Edit Profile
                   </button>
@@ -92,9 +81,6 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
             </div>
           </Modal.Body>
         </Modal>
-      )}
-      {isEditProfileOpen && (
-        <EditProfile isOpen={isEditProfileOpen} onClose={handleEditProfileClose} />
       )}
     </>
   );

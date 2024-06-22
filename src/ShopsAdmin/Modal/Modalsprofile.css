@@ -112,18 +112,19 @@ border: 1px solid black;
 
 
   .form-today{
-    border: 1px solid #808080;
+    border: 1px solid black;
     border-radius: 6px;
     input{
       border: none;
       padding: 8px 12px;
       color: #808080;
+      background-color: transparent;
     }
   }
 
   .form-select, .form-select:focus{
     select{
-      border: 1px solid #808080;
+      border: 1px solid black;
       padding: 8px 12px;
       color: #808080;
 

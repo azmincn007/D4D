@@ -21,3 +21,12 @@ background-image: url('../../Assets/restdashbg.png');
         border-radius: 8px !important;
     }
 }
+
+.packagecard{
+    border-radius: 9999px;
+    padding: 6px 12px ;
+    justify-content: center;
+    max-width: 190px;
+    border: 2px solid white;
+background: linear-gradient(90deg, #121F2E 0%, #0174C8 100%);
+}

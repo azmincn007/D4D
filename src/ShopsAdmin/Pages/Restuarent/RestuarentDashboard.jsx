@@ -5,14 +5,14 @@ import LanguageModal from '../../../Components/modal/LanguageModal';
 import { Countrycontext, LanguageContext, RegionContext } from '../../../App';
 import Navbardashboard from '../../Components/Navbardashboard';
 import './restuarentdashboard.css';
-import { IoMdAdd } from "react-icons/io";
+import { IoMdAdd } from 'react-icons/io';
 import ProfileModal from '../../Modal/Profile';
 import EditDetailsModal from '../../Modal/EditDetailsmodal';
 import Todayspecial from '../../Modal/TodaySpecial';
-import foodimage from '../../Assets/foodimage.png'
-import { Card } from 'flowbite-react';
-import Flowbitecard from '../../../Themes/Flowbitecard';
-import { MdEdit } from "react-icons/md";
+import foodimage from '../../Assets/foodimage.png';
+import MenuCardsAdmin from './Components/Menucardicon';
+import CategoryAdmin from '../../Modal/Categoryadmin';
+import { IoStar } from "react-icons/io5";
 
 function RestuarentDashboard() {
   const [nationality, selectNationality] = useState(false);
@@ -20,15 +20,24 @@ function RestuarentDashboard() {
   const [showLanguageModal, setShowLanguageModal] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [isEditDetailsModalOpen, setIsEditDetailsModalOpen] = useState(false);
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const [isTodaysSpecialModalOpen, setIsTodaysSpecialModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
   const [loading, setLoading] = useState(true);
-  const [modalType, setModalType] = useState('');
-  const toggleTodaysSpecialModal = (type) => {
-    setModalType(type);
+
+  const toggleMenuModal = () => {
+    setIsMenuModalOpen(!isMenuModalOpen);
+  };
+
+  const toggleTodaysSpecialModal = () => {
     setIsTodaysSpecialModalOpen(!isTodaysSpecialModalOpen);
+  };
+
+  const toggleCategoryModal = () => {
+    setIsCategoryModalOpen(!isCategoryModalOpen);
   };
 
   useEffect(() => {
@@ -65,22 +74,20 @@ function RestuarentDashboard() {
     setShowProfileModal(false);
   };
 
+  const openEditDetailsModal = () => {
+    setShowProfileModal(false);
+    setIsEditDetailsModalOpen(true);
+  };
+
+  const closeEditDetailsModal = () => {
+    setIsEditDetailsModalOpen(false);
+  };
+
   if (loading) {
     return null;
   }
 
-  const toggleEditDetailsModal = () => {
-    setIsEditDetailsModalOpen(!isEditDetailsModalOpen);
-  };
-
-  const handleEditProfileClick = () => {
-    console.log('asdasdas');
-    setShowProfileModal(false); // Close the ProfileModal
-    setIsEditDetailsModalOpen(true); // Open the EditDetailsModal
-  };
-
-  const foodcardadmin =[{img:foodimage,price:10 ,title:'Kerala porotta'}]
-
+  const foodcardadmin = [{ img: foodimage, price: 10, title: 'Kerala porotta' }];
 
   return (
     <div>
@@ -98,91 +105,68 @@ function RestuarentDashboard() {
       <ProfileModal
         isOpen={showProfileModal}
         onClose={handleProfileModalClose}
-        onEditProfileClick={handleEditProfileClick}
+        onEditProfileClick={openEditDetailsModal}
       />
-        <EditDetailsModal
-        isOpen={isEditDetailsModalOpen}
-        onClose={toggleEditDetailsModal}
+      <EditDetailsModal 
+        isOpen={isEditDetailsModalOpen} 
+        onClose={closeEditDetailsModal} 
       />
 
-<Todayspecial
-  isOpen={isTodaysSpecialModalOpen}
-  onClose={toggleTodaysSpecialModal}
-  modalType={modalType}
-/>
-      <div className=''>
+      <Todayspecial
+        isOpen={isTodaysSpecialModalOpen}
+        onClose={toggleTodaysSpecialModal}
+        modalType="todaySpecial"
+      />
+
+      <Todayspecial
+        isOpen={isMenuModalOpen}
+        onClose={toggleMenuModal}
+        modalType="Menu"
+      />
+
+      <CategoryAdmin
+        isOpen={isCategoryModalOpen}
+        onClose={toggleCategoryModal}
+      />
+
+      <div className="">
         <Navbardashboard onAvatarClick={handleProfileModalOpen} />
       </div>
-      <div className='dashrestbg'></div>
-      <div className='addres py-8  mx-auto w-[80%]'>
-        <div className='tdtags '>
-          <div className='flex justify-between items-center'>
-          <p>add todays special</p>
-          <IoMdAdd className='h-5 w-5' onClick={() => toggleTodaysSpecialModal('todaySpecial')} />
-          </div>
-
-          <div className='cardrestoadmin'>
-      {foodcardadmin.map((item, index) => (
-        <Card
-          key={index}
-          theme={Flowbitecard}
-          className="cardres relative max-w-[220px] p-1 shadow-[rgba(0,0,0,0.1)_0px_20px_25px_-5px,_rgba(0,0,0,0.04)_0px_10px_10px_-5px]"
-          imgAlt="Meaningful alt text for an image that is not purely decorative"
-          imgSrc={item.img}
-        >
-          <div className="cardcontentsres">
-            <div className='flex justify-between items-center px-4'>
-            <h5 className=" text-[13px] py-4 font-bold tracking-tight text-gray-900 dark:text-white font-inter Mobile:text-[6px] TabS:text-[6px]">
-              {item.title}
-            </h5>
-            <div className='bg-yellow rounded-full'><MdEdit className='text-black h-[20px] w-[20px] m-1'/></div>
-            </div>
-           
-      
-            <div className="absolute h-[50px] Mobile:h-[15px] w-[96%] bottom-[65px] Mobile:bottom-[50px] p-0 bg-[rgba(0,0,0,0.5)] flex items-center">
-              <p className="text-white text-20px font-semibold px-[5%] Mobile:text-[5px]">
-                {item.price}
-              </p>
-            </div>
-          </div>
-        </Card>
-      ))}
-    </div>
-         
+      <div className="dashrestbg relative">
+        <div className='packagecard flex absolute top-8 right-8'> 
+          <IoStar className='w-6 h-6 text-[#FFD814] mr-2'/>
+          <p className='text-[16px] font-semibold text-white'>Premium Account</p>
         </div>
-        <div className='tdtags'>
-        <div className='flex justify-between items-center'>
-        <p>add Your Restuarent Menu</p>
-          <IoMdAdd className='h-5 w-5' onClick={() => toggleTodaysSpecialModal('Menu')} />
+      </div>
+      <div className="addres py-8 mx-auto w-[80%]">
+        <div className="tdtags">
+          <div className="flex justify-between items-center">
+            <p>Add your Categories</p>
+            <IoMdAdd
+              className="h-5 w-5 cursor-pointer"
+              onClick={toggleCategoryModal}
+            />
           </div>
-          <div className='cardrestoadmin'>
-      {foodcardadmin.map((item, index) => (
-        <Card
-          key={index}
-          theme={Flowbitecard}
-          className="cardres relative max-w-[220px] p-1 shadow-[rgba(0,0,0,0.1)_0px_20px_25px_-5px,_rgba(0,0,0,0.04)_0px_10px_10px_-5px]"
-          imgAlt="Meaningful alt text for an image that is not purely decorative"
-          imgSrc={item.img}
-        >
-          <div className="cardcontentsres">
-            <div className='flex justify-between items-center px-4'>
-            <h5 className=" text-[13px] py-4 font-bold tracking-tight text-gray-900 dark:text-white font-inter Mobile:text-[6px] TabS:text-[6px]">
-              {item.title}
-            </h5>
-            <div className='bg-yellow rounded-full'><MdEdit className='text-black h-[20px] w-[20px] m-1'/></div>
-            </div>
-           
-      
-            <div className="absolute h-[50px] Mobile:h-[15px] w-[96%] bottom-[65px] Mobile:bottom-[50px] p-0 bg-[rgba(0,0,0,0.5)] flex items-center">
-              <p className="text-white text-20px font-semibold px-[5%] Mobile:text-[5px]">
-                {item.price}
-              </p>
-            </div>
+        </div>
+        <div className="tdtags">
+          <div className="flex justify-between items-center">
+            <p>Add Today's Special</p>
+            <IoMdAdd
+              className="h-5 w-5 cursor-pointer"
+              onClick={toggleTodaysSpecialModal}
+            />
           </div>
-        </Card>
-      ))}
-    </div>
-     
+          <MenuCardsAdmin foodItems={foodcardadmin} />
+        </div>
+        <div className="tdtags">
+          <div className="flex justify-between items-center">
+            <p>Add Your Restaurant Menu</p>
+            <IoMdAdd
+              className="h-5 w-5 cursor-pointer"
+              onClick={toggleMenuModal}
+            />
+          </div>
+          <MenuCardsAdmin foodItems={foodcardadmin} />
         </div>
       </div>
     </div>

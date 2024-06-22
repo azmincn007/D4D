@@ -4,6 +4,7 @@ import './Modalsprofile.css';
 import { modalshop } from '../../Themes/Modaltheme';
 import { IoCloseSharp } from "react-icons/io5";
 import ProfileBanner from '../Components/Profilebanner';
+import RestuarentIcon from '../Assets/Restuarenticon.png'
 
 function ProfileModal({ isOpen, onClose, onEditProfileClick }) {
   const restaurantData = [
@@ -28,8 +29,12 @@ function ProfileModal({ isOpen, onClose, onEditProfileClick }) {
             <React.Fragment key={index}>
               <div className='text-sm font-semibold mb-1'>{obj.name}</div>
               <div className='text-[#696969] text-xs font-semibold mb-1'>{obj.email}</div>
-              <div className='text-[#696969] text-xs flex font-semibold mb-4'>
-                <div>res</div>
+              <div className='text-[#696969] text-xs items-center gap-4 flex font-semibold mb-4'>
+                <div className='flex items-center gap-2'>
+                  <img src={RestuarentIcon} className='w-[29px] h-[25px]' alt="" />
+                  <p>Restuarent</p>
+                </div>
+                <hr className=" bg-black w-[1px] h-[20px]" /> {/* Added horizontal line */}
                 <div>{obj.location}</div>
               </div>
               <div className='flex text-xsm mb-2'>

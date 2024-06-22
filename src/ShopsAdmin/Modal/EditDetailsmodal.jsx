@@ -1,11 +1,13 @@
+// EditDetailsModal.js
 import React from "react";
-import { Label, Modal, TextInput, Dropdown } from "flowbite-react"; // Assuming TextInput and Dropdown components are imported
+import { Label, Modal, TextInput, Dropdown } from "flowbite-react";
 import ProfileBanner from "../Components/Profilebanner";
 import { useForm } from "react-hook-form";
 import "./Modalsprofile.css";
 import PasswordInputAdmin from "../../Components/authentication/Passwordinputadmin";
 import { modalshop } from "../../Themes/Modaltheme";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
+import { IoIosClose } from 'react-icons/io';
 
 function EditDetailsModal({ isOpen, onClose }) {
   const {
@@ -15,8 +17,8 @@ function EditDetailsModal({ isOpen, onClose }) {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data); // Log the form data to the console
-    onClose(); // Call the onClose function to close the modal
+    console.log(data);
+    onClose();
   };
 
   const labels = [
@@ -41,8 +43,13 @@ function EditDetailsModal({ isOpen, onClose }) {
   ];
 
   return (
-    <Modal show={isOpen} onClose={onClose} theme={modalshop}>
+    <Modal show={isOpen} onClose={onClose} theme={modalshop} size="xl">
       <Modal.Body className="shopsadminmodal font-inter relative mb-8">
+        <div className="absolute top-2 right-2">
+          <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
+            <IoIosClose className="text-base cursor-pointer" onClick={onClose} />
+          </div>
+        </div>
         <ProfileBanner />
         <div className="flex flex-col items-center mt-16">
           {restaurantData.map((obj, index) => (
@@ -59,18 +66,16 @@ function EditDetailsModal({ isOpen, onClose }) {
         <div className="h-[1px] bg-black w-[100%] mt-2 mb-8"></div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="w-[50%] mx-auto formtext">
-            <div className="overflow-y-auto max-h-64">
+          <div className="w-full mx-auto formtext">
+            <div className="overflow-y-auto max-h-[60vh]">
               {labels.map((label, index) => (
-                <div key={index} className={`flex flex-col items-baseline ${errors[`org${index}`] ? "mb-1" : "mb-2"}`}>
-                  <div className="mb-1">
-                    <Label htmlFor={`field${index}`} value={label} className="labelstyle" />
-                  </div>
-                  <div className="w-[100%] formtext">
+                <div key={index} className={`flex flex-col items-baseline ${errors[`org${index}`] ? "mb-1" : "mb-4"}`}>
+                  <Label htmlFor={`field${index}`} value={label} className="labelstyle mb-1" />
+                  <div className="w-full formtext">
                     {label === "Password" || label === "Confirm Password" ? (
                       <PasswordInputAdmin
                         register={register}
-                        name={label.toLowerCase().replace(/\s/g, "")} // Convert label to camelCase without spaces
+                        name={label.toLowerCase().replace(/\s/g, "")}
                         placeholder={label}
                         rules={{
                           minLength: {
@@ -79,11 +84,11 @@ function EditDetailsModal({ isOpen, onClose }) {
                           },
                         }}
                         error={errors[label.toLowerCase().replace(/\s/g, "")]}
-                        className="w-[250px]"
+                        className="w-full"
                       />
                     ) : label === "Email Id" ? (
                       <TextInput
-                        className="form-input w-[100%]"
+                        className="form-input w-full"
                         id={`field${index}`}
                         type="email"
                         placeholder={`Enter your ${label}`}
@@ -96,134 +101,117 @@ function EditDetailsModal({ isOpen, onClose }) {
                       />
                     ) : (
                       <TextInput
-                        className="form-input w-[100%]"
+                        className="form-input w-full"
                         id={`field${index}`}
                         type="text"
                         placeholder={`Enter your ${label}`}
                         {...register(`org${index}`)}
                       />
                     )}
-                      {errors[`org${index}`] && <ErrorMessage message={errors[`org${index}`].message} />}
+                    {errors[`org${index}`] && <ErrorMessage message={errors[`org${index}`].message} />}
                   </div>
-                
                 </div>
               ))}
-              <div className="orgdroptwo  mb-8">
-                <Dropdown label="Types Of organisation" dismissOnClick={false}>
-                  <Dropdown.Item>Dashboard</Dropdown.Item>
-                  <Dropdown.Item>Settings</Dropdown.Item>
-                  <Dropdown.Item>Earnings</Dropdown.Item>
-                  <Dropdown.Item>Sign out</Dropdown.Item>
+              
+              {/* Types of Organisation Dropdown */}
+              <div className="mb-4">
+                <Label value="Types Of organisation" className="labelstyle mb-1" />
+                <Dropdown label="Select type" dismissOnClick={false} className="w-full">
+                  <Dropdown.Item>Restaurant</Dropdown.Item>
+                  <Dropdown.Item>Cafe</Dropdown.Item>
+                  <Dropdown.Item>Bakery</Dropdown.Item>
+                  <Dropdown.Item>Food Truck</Dropdown.Item>
                 </Dropdown>
               </div>
 
-              <div className="flex justify-between gap-4 mb-8">
-                <div className="orgdroptwo">
-                  <Dropdown label="Country" dismissOnClick={false}>
-                    <Dropdown.Item>Dashboard</Dropdown.Item>
-                    <Dropdown.Item>Settings</Dropdown.Item>
-                    <Dropdown.Item>Earnings</Dropdown.Item>
-                    <Dropdown.Item>Sign out</Dropdown.Item>
+              {/* Country and Region Dropdowns */}
+              <div className="flex justify-between gap-4 mb-4">
+                <div className="w-1/2">
+                  <Label value="Country" className="labelstyle mb-1" />
+                  <Dropdown label="Select country" dismissOnClick={false} className="w-full">
+                    <Dropdown.Item>USA</Dropdown.Item>
+                    <Dropdown.Item>UK</Dropdown.Item>
+                    <Dropdown.Item>Canada</Dropdown.Item>
+                    <Dropdown.Item>Australia</Dropdown.Item>
                   </Dropdown>
                 </div>
-                <div className="orgdroptwo">
-                  <Dropdown label="Region" dismissOnClick={false}>
-                    <Dropdown.Item>Dashboard</Dropdown.Item>
-                    <Dropdown.Item>Settings</Dropdown.Item>
-                    <Dropdown.Item>Earnings</Dropdown.Item>
-                    <Dropdown.Item>Sign out</Dropdown.Item>
+                <div className="w-1/2">
+                  <Label value="Region" className="labelstyle mb-1" />
+                  <Dropdown label="Select region" dismissOnClick={false} className="w-full">
+                    <Dropdown.Item>North</Dropdown.Item>
+                    <Dropdown.Item>South</Dropdown.Item>
+                    <Dropdown.Item>East</Dropdown.Item>
+                    <Dropdown.Item>West</Dropdown.Item>
                   </Dropdown>
                 </div>
               </div>
-              <div className={`flex flex-col items-baseline ${errors.proprietorName ? "mb-1" : "mb-2"}`}>
-                <div className="mb-2 ">
-                  <Label htmlFor="proprietorName" value="Proprietor's Name" className="labelstyle" />
-                </div>
-                <div className="w-[100%] formtext">
-                  <TextInput
-                    className="form-input w-[100%]"
-                    id="proprietorName"
-                    type="text"
-                    placeholder="Enter Proprietor's Name"
-                    {...register("proprietorName")}
-                  />
-                </div>
+
+              {/* Proprietor's Name */}
+              <div className={`flex flex-col items-baseline ${errors.proprietorName ? "mb-1" : "mb-4"}`}>
+                <Label htmlFor="proprietorName" value="Proprietor's Name" className="labelstyle mb-1" />
+                <TextInput
+                  className="form-input w-full"
+                  id="proprietorName"
+                  type="text"
+                  placeholder="Enter Proprietor's Name"
+                  {...register("proprietorName")}
+                />
                 {errors.proprietorName && <ErrorMessage message={errors.proprietorName.message} />}
               </div>
 
-              <div>
-                <div className="mb-2">
-                  <Label htmlFor="Mobile Number" value="Mobile Number" className="labelstyle" />
+              {/* Mobile Number */}
+              <div className="mb-4">
+                <Label htmlFor="mobileNumber" value="Mobile Number" className="labelstyle mb-1" />
+                <div className="flex">
+                  <Dropdown label="+91" dismissOnClick={false} className="w-1/4 mr-2">
+                    <Dropdown.Item>+1</Dropdown.Item>
+                    <Dropdown.Item>+44</Dropdown.Item>
+                    <Dropdown.Item>+61</Dropdown.Item>
+                  </Dropdown>
+                  <TextInput
+                    className="form-input w-3/4"
+                    id="mobileNumber"
+                    type="tel"
+                    placeholder="Enter Mobile Number"
+                    {...register("mobileNumber")}
+                  />
                 </div>
-                <div className="flex ">
-                  <div className="orgdroptwo w-[20%] mr-4 ">
-                    <Dropdown label="+91" dismissOnClick={false}>
-                      <Dropdown.Item>+62</Dropdown.Item>
-                      <Dropdown.Item>+45</Dropdown.Item>
-                      <Dropdown.Item>+87</Dropdown.Item>
-                      <Dropdown.Item>+45</Dropdown.Item>
-                    </Dropdown>
-                  </div>
-                  <div className="w-[100%]">
-                    {" "}
-                    <div className="w-[100%] formtext">
-                      <TextInput
-                        className="form-input w-[100%]"
-                        id="proprietorName"
-                        type="text"
-                        placeholder="Enter Proprietor's Name"
-                        {...register("proprietorName")}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-
-                <div className="mb-2">
-                  <Label htmlFor="Alternative Mobile Number" value=" AlternativeMobile Number" className="labelstyle" />
-                </div>
-                <div className="flex ">
-                  <div className="orgdroptwo w-[20%] mr-4 ">
-                    <Dropdown label="+91" dismissOnClick={false}>
-                      <Dropdown.Item>8</Dropdown.Item>
-                      <Dropdown.Item>s</Dropdown.Item>
-                      <Dropdown.Item>d</Dropdown.Item>
-                      <Dropdown.Item>d</Dropdown.Item>
-                    </Dropdown>
-                  </div>
-                  <div className="w-[100%]">
-                    {" "}
-                    <div className="w-[100%] formtext">
-                      <TextInput
-                        className="form-input w-[100%]"
-                        id="proprietorName"
-                        type="text"
-                        placeholder="Enter Proprietor's Name"
-                        {...register("proprietorName")}
-                      />
-                    </div>
-                  </div>
-                  
-                </div>
-                <div className="mb-2">
-                  <Label htmlFor="Short description of your organisation" value=" Short description of your organisation" className="labelstyle" />
-                </div>
-                 <div className="w-[100%] formtext">
-                      <TextInput
-                        className="form-inputdesc w-[100%] h-[80px]" // Increased height here
-                        id="shortDescription"
-                        type="text"
-                       
-                        {...register("shortDescription")}
-                      />
-                    </div>
               </div>
 
-              
+              {/* Alternative Mobile Number */}
+              <div className="mb-4">
+                <Label htmlFor="altMobileNumber" value="Alternative Mobile Number" className="labelstyle mb-1" />
+                <div className="flex">
+                  <Dropdown label="+91" dismissOnClick={false} className="w-1/4 mr-2">
+                    <Dropdown.Item>+1</Dropdown.Item>
+                    <Dropdown.Item>+44</Dropdown.Item>
+                    <Dropdown.Item>+61</Dropdown.Item>
+                  </Dropdown>
+                  <TextInput
+                    className="form-input w-3/4"
+                    id="altMobileNumber"
+                    type="tel"
+                    placeholder="Enter Alternative Mobile Number"
+                    {...register("altMobileNumber")}
+                  />
+                </div>
+              </div>
+
+              {/* Short Description */}
+              <div className="mb-4">
+                <Label htmlFor="shortDescription" value="Short description of your organisation" className="labelstyle mb-1" />
+                <textarea
+                  className="form-input w-full h-20"
+                  id="shortDescription"
+                  placeholder="Enter a short description"
+                  {...register("shortDescription")}
+                />
+              </div>
             </div>
+            
             <div className="mt-4">
-              <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded">
-                Submit
+              <button type="submit" className="w-full py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                Save Changes
               </button>
             </div>
           </div>

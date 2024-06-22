@@ -6,10 +6,11 @@ import flowbiteDrop from '../../../Themes/Flowbitedrop';
 
 function Regiondropdown() {
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
-  const Nationalities = useContext(NationalityContext);
-  const remainingCountries = Nationalities.filter(
-    (country) => country.Country !== selectedCountry.Country
-  );
+  const { 0: Nationalities } = useContext(NationalityContext);
+  
+const remainingCountries = Nationalities.filter(
+  (country) => country.country_eng !== selectedCountry.country_eng
+);
 
   const handleCountrySelect = (country) => {
     setSelectedCountry(country);
@@ -20,15 +21,21 @@ function Regiondropdown() {
       <div className="countryimage LgTab2:hidden">
         <img
           className="logocountry rounded-full" // Add the 'rounded-full' class to make the image circular
-          src={selectedCountry.Img}
+           src={`https://hezqa.com/${selectedCountry.image}`} 
           alt=""
         />
       </div>
       <div className="drop mr-[10px]  Tab:mr-0">
         <Dropdown
+        className='regiondropp'
           theme={flowbiteDrop}
-          style={{ background: 'transparent', fontSize: '12px' }}
-          label={selectedCountry.Country}
+          style={{
+            background: 'transparent',
+            fontSize: '12px',
+            outline: 'none', // Add this line
+            ':focus': { outline: 'none' ,border:'none'},
+             // Add this line
+          }}          label={selectedCountry.country_eng}
         >
           {remainingCountries.map((country, index) => (
             <Dropdown.Item
@@ -36,7 +43,7 @@ function Regiondropdown() {
               key={index}
               onClick={() => handleCountrySelect(country)}
             >
-              {country.Country}
+              {country.country_eng}
             </Dropdown.Item>
           ))}
         </Dropdown>

@@ -15,9 +15,7 @@ function Navbardashboard({ onAvatarClick }) {
         </Link>
       </div>
       <div className="flex items-center px-10">
-        <div>
-          <Regiondropdown />
-        </div>
+       
         <div onClick={onAvatarClick}>
           <AvatarComponent showAvatar={showAvatar} />
         </div>

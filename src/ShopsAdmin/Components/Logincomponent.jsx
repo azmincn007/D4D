@@ -1,25 +1,54 @@
-import { Button, TextInput, Label } from "flowbite-react";
+// LoginComponent.js
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
+import { Button, TextInput, Label } from "flowbite-react";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import PasswordInputAdmin from "../../Components/authentication/Passwordinputadmin";
 
+const login = async (data) => {
+  const response = await fetch("https://hezqa.com/api/shop-login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
+};
+
 function LoginComponent() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
+  const mutation = useMutation(login, {
+    onSuccess: (data) => {
+      console.log('API response:', data);
+      navigate('/Restorentdashboard');
+    },
+    onError: (error) => {
+      console.error('API error:', error);
+      // Optionally handle error state, show error message etc.
+    }
+  });
+
   const handleLogin = (data) => {
-    console.log(data);
-    // Handle login logic here
+    mutation.mutate(data);
   };
 
   return (
-    <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px]">
-      <h1 className="text-[26px] font-semibold">Login</h1>
+    <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px] ">
+      <h1 className="text-[32px] font-semibold">Login</h1>
       <form
         className="flex min-w-[400px] flex-col p-6 rounded"
         onSubmit={handleSubmit(handleLogin)}
@@ -34,7 +63,7 @@ function LoginComponent() {
           </div>
           <div className="w-[100%] formtext">
             <TextInput
-              className="form-input w-[100%]" // Added w-[100%] here
+              className="form-input w-[100%]"
               id="email"
               type="email"
               placeholder="Username or Email Id"
@@ -46,17 +75,18 @@ function LoginComponent() {
                 },
               })}
             />
+            <div className="flex justify-start">
+              {errors.email && <ErrorMessage message={errors.email.message} />}
+            </div>
           </div>
-          {errors.email && <ErrorMessage message={errors.email.message} />}
         </div>
         <div className={`flex flex-col items-baseline ${errors.password ? 'mb-2' : 'mb-2'}`}>
           <div className="flex justify-between w-[100%]">
             <div className="mb-1">
-              {" "}
               <Label htmlFor="password" value="Password" className="labelstyle" />
             </div>
             <div className="text-sm underline font-semibold">
-              <Link to="/forgot-password">Forgot?</Link>
+              <Link to="/forgetpassword">Forgot?</Link>
             </div>
           </div>
           <div className="w-[100%]">

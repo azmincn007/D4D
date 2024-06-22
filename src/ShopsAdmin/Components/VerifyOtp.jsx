@@ -4,10 +4,10 @@ import { Button, TextInput } from 'flowbite-react';
 import Timer from '../../Components/authentication/Timer';
 
 function VerifyOtp() {
-    const navigate=useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
   const formData = location.state;
-  const mobileNumber = formData.phoneNumber; // Assuming the phone number is stored in 'phoneNumber'
+  const email = formData.email; // Assuming the email is stored in 'email'
 
   const [otp, setOtp] = useState(new Array(4).fill(''));
   const [isValid, setIsValid] = useState(false);
@@ -44,12 +44,15 @@ function VerifyOtp() {
   const handleSubmit = () => {
     if (isValid) {
       const otpValue = otp.join('');
-      console.log('OTP:', otpValue); // Log the OTP value
-      // Add your submit logic here
-      navigate('/signupupload')
+      console.log('OTP:', otpValue);
+      if (formData.isSignup) {
+        // Pass the stored data to SignupdataUpload
+        navigate('/signupupload', { state: { signupData: localStorage.getItem('signupData') } });
+      } else {
+        navigate('/securepass');
+      }
     }
   };
-
   const handleResendOTP = () => {
     if (timer === 0) {
       setTimer(120);
@@ -67,12 +70,12 @@ function VerifyOtp() {
 
   return (
     <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px]">
-      <h1 className="text-[26px] font-semibold mb-4">OTP Verification</h1>
+      <h1 className="text-[32px] font-semibold mb-4">OTP Verification</h1>
       <div className="form max-w-[400px] flex flex-col justify-center items-center w-[85%] py-5 LgMobile:w-[95%]">
         <div className="w-[100%]">
           <div className="pb-2 text-left">
-            <p className="text-sm">Enter the OTP sent to your mobile number</p>
-            <p className="text-sm text-[#FF0000] font-semibold">{`+91 ${mobileNumber}`}</p>
+            <p className="text-sm">Enter the OTP sent to your email</p>
+            <p className="text-sm text-[#FF0000] font-semibold">{email}</p>
           </div>
           <div className="pb-[15px] flex justify-between">
             {otp.map((value, index) => (
@@ -85,7 +88,7 @@ function VerifyOtp() {
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 ref={(input) => (inputRefs.current[index] = input)}
                 className="w-12 h-12 text-center focus:outline-none focus:ring-2 otpbox LgMobile:w-10 LgMobile:h-10"
-                style={{ textAlign: 'center',backgroundColor:'transparent',border:'2px solid black'}}
+                style={{ textAlign: 'center', backgroundColor: 'transparent', border: '2px solid black' }}
               />
             ))}
             <div className="flex items-end">
