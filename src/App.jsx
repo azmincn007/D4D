@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Home from "./Pages/Home";
 import "./App.css";
@@ -45,7 +45,7 @@ function App() {
             <NationalityContext.Provider value={[Nationalities, setNationalities]}>
               <Countrycontext.Provider value={[selectedCountry, setSelectedCountry]}>
                 <AuthContext.Provider value={[AuthValue, setAuthValue]}>
-                  <BrowserRouter>
+                  <Router>
                     <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/resto" element={<RestuarentMenu />} />
@@ -130,7 +130,7 @@ function App() {
                       <Route path="/Restorentdashboard" element={<RestuarentDashboard />} />
                       <Route path="*" element={<Errorpage404 />} />
                     </Routes>
-                  </BrowserRouter>
+                  </Router>
                 </AuthContext.Provider>
               </Countrycontext.Provider>
             </NationalityContext.Provider>
