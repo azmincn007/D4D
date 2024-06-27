@@ -47,7 +47,15 @@ function App() {
                 <AuthContext.Provider value={[AuthValue, setAuthValue]}>
                   <BrowserRouter>
                     <Routes>
-                      <Route path="/" element={<Home />} />
+                      {/* <Route path="/" element={<Home />} /> */}
+                      <Route
+                        path="/"
+                        element={
+                          <BaseLayoutAuthentication redVector="top-0 right-0 red-vector" yellowVector="bottom-0 left-0 yellow-vector">
+                            <Logincomponent />
+                          </BaseLayoutAuthentication>
+                        }
+                      />
                       <Route path="/resto" element={<RestuarentMenu />} />
                       <Route path="/mobilesingle" element={<Mobilessingle />} />
                       <Route path="/flyer" element={<Flyer />} />
