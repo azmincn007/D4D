@@ -128,6 +128,7 @@ function App() {
                       />
 
                       <Route path="/Restorentdashboard" element={<RestuarentDashboard />} />
+                      <Route path="*" element={<Errorpage404 />} />
                     </Routes>
                   </BrowserRouter>
                 </AuthContext.Provider>
