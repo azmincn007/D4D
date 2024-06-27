@@ -2,7 +2,7 @@ import React, { createContext, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Home from "./Pages/Home";
-import './App.css'
+import "./App.css";
 import RestuarentMenu from "./Components/Restuarents/RestuarentMenu";
 import Mobilessingle from "./Components/Mobile/Mobilessingle";
 import Flyer from "./Pages/Flyer";
@@ -16,8 +16,8 @@ import SignupDataupload from "./ShopsAdmin/Components/SignupDataupload";
 import Subscription from "./ShopsAdmin/Pages/Restuarent/Subscription";
 import RestuarentDashboard from "./ShopsAdmin/Pages/Restuarent/RestuarentDashboard";
 import CreateSecurepassword from "./ShopsAdmin/Components/CreateSecurepass";
-
-
+import ProfileShowComponent from "./ShopsAdmin/Components/ProfileShowComponent";
+import Errorpage404 from "./api/Errorpage404";
 
 export const AuthContext = createContext();
 export const Countrycontext = createContext();
@@ -25,7 +25,6 @@ export const NationalityContext = createContext();
 export const ToggleContext = createContext();
 export const RegionContext = createContext();
 export const LanguageContext = createContext();
-
 
 const queryClient = new QueryClient();
 
@@ -36,14 +35,14 @@ function App() {
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [ActiveToggle, setActiveToggle] = useState("Product");
 
-  const[Nationalities,setNationalities]=useState([])
+  const [Nationalities, setNationalities] = useState([]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageContext.Provider value={[selectedLanguage, setSelectedLanguage]}>
         <RegionContext.Provider value={[selectedRegion, setSelectedRegion]}>
           <ToggleContext.Provider value={[ActiveToggle, setActiveToggle]}>
-            <NationalityContext.Provider value={[Nationalities,setNationalities]}>
+            <NationalityContext.Provider value={[Nationalities, setNationalities]}>
               <Countrycontext.Provider value={[selectedCountry, setSelectedCountry]}>
                 <AuthContext.Provider value={[AuthValue, setAuthValue]}>
                   <BrowserRouter>
@@ -53,6 +52,7 @@ function App() {
                       <Route path="/mobilesingle" element={<Mobilessingle />} />
                       <Route path="/flyer" element={<Flyer />} />
                       <Route path="/fav" element={<Favouratemodal />} />
+                      <Route path="/404error" element={<Errorpage404 />} />
                       <Route
                         path="/loginadmin"
                         element={
@@ -90,7 +90,6 @@ function App() {
                           </BaseLayoutAuthentication>
                         }
                       />
-                      
 
                       <Route
                         path="/signupupload"
@@ -106,6 +105,15 @@ function App() {
                         element={
                           <BaseLayoutAuthentication redVector={false} yellowVector={false}>
                             <CreateSecurepassword />
+                          </BaseLayoutAuthentication>
+                        }
+                      />
+
+                      <Route
+                        path="/profileshow"
+                        element={
+                          <BaseLayoutAuthentication redVector={false} yellowVector={false}>
+                            <ProfileShowComponent />
                           </BaseLayoutAuthentication>
                         }
                       />

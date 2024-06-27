@@ -3,7 +3,7 @@ import React from 'react';
 import { IoCheckmark } from "react-icons/io5";
 import '../Pages/Restuarent/Baselayout.css'
 
-const SubsCard = ({ title, price, color,image }) => {
+const SubsCard = ({ title, price, color,image,offers,pushnotification,webnotification,logopostion,splashAds  }) => {
   return (
 
 
@@ -13,10 +13,13 @@ const SubsCard = ({ title, price, color,image }) => {
         <div><p className='text-[#696969] font-semibold text-[12px] pt-4 text-left'>MOST POPULAR</p></div>
         <div><p className='text-[16px] font-semibold text-left'>{title}</p></div>
         <div>
-            <ul>
-            <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p >Unlock all features</p></li>
-            <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p >24/7 Support</p></li>
-            <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p >Cancel anytime you want</p></li>
+            <ul className='mr-16'>
+            <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p >{offers} Offers</p></li>
+            <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p >{pushnotification} Push Notification</p></li>
+            <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p >{webnotification} Web Notification</p></li>
+            <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p >{logopostion} Logo Position</p></li>
+            {splashAds && <li className='flex items-center'><IoCheckmark className='text-[#37CC79]'/> <p>{splashAds} Splash Ads</p></li>}
+
 
             </ul>
         </div>

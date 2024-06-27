@@ -1,8 +1,7 @@
 .dashrestbg{
-height: 480px;
 background-size: cover;
 width: 100%;
-background-image: url('../../Assets/restdashbg.png');
+background-position: center;
 }
 
 .tdtags{
@@ -29,4 +28,10 @@ background-image: url('../../Assets/restdashbg.png');
     max-width: 190px;
     border: 2px solid white;
 background: linear-gradient(90deg, #121F2E 0%, #0174C8 100%);
+}
+
+@media (max-width:450px) {
+    .dashrestbg{
+        height: 300px !important;
+    }
 }

@@ -28,6 +28,8 @@ const useLanguageText = (data) => {
         return data.region_ar || 'Default Language';
       case 'Hindi':
         return data.region_hin || 'Default Language';
+        case 'Malayalam':
+          return data.region_mal || 'Default Language';
       default:
         return data.region_eng || 'Default Language';
     }

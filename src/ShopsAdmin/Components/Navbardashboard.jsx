@@ -4,7 +4,7 @@ import Regiondropdown from "../../Pages/Navbar/navcomponents/Regiondropdown";
 import AvatarComponent from "../../Pages/Navbar/navcomponents/AvatarComponent";
 import { Link } from "react-router-dom";
 
-function Navbardashboard({ onAvatarClick }) {
+function Navbardashboard({ onAvatarClick, profileLogo }) {
   const showAvatar = true;
 
   return (
@@ -15,9 +15,8 @@ function Navbardashboard({ onAvatarClick }) {
         </Link>
       </div>
       <div className="flex items-center px-10">
-       
         <div onClick={onAvatarClick}>
-          <AvatarComponent showAvatar={showAvatar} />
+          <AvatarComponent showAvatar={showAvatar} profileLogo={profileLogo} />
         </div>
       </div>
     </div>

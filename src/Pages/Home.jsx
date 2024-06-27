@@ -12,35 +12,38 @@ import LanguageModal from '../Components/modal/LanguageModal';
 import MarqueeComponent from '../Components/Home/Marquee';
 
 function Home() {
-  const [nationality, selectNationality] = useState(true);
-  const [region, selectRegion] = useState(false);
-  const [showLanguageModal, setShowLanguageModal] = useState(false);
-
+  const [showLanguageModal, setShowLanguageModal] = useState(true);
+  const [showNationalityModal, setShowNationalityModal] = useState(false);
+  const [showRegionModal, setShowRegionModal] = useState(false);
+  
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
-  const [selectedValue, setSelectedValue] = useState('Shops');
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
-
+  
+  const [selectedValue, setSelectedValue] = useState('Shops');
   const navigate = useNavigate();
-  const [nationalitySelected, setNationalitySelected] = useState(false);
-  const [loading, setLoading] = useState(true); // Add a loading state
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (selectedLanguage) {
+      setShowLanguageModal(false);
+      setShowNationalityModal(true);
+    }
+  }, [selectedLanguage]);
 
   useEffect(() => {
     if (selectedCountry) {
-      selectNationality(false);
-      setNationalitySelected(true);
-      selectRegion(true); // Open the RegionModal when the country is updated
+      setShowNationalityModal(false);
+      setShowRegionModal(true);
     }
-    setLoading(false); // Set loading to false after the initial state setup
   }, [selectedCountry]);
 
   useEffect(() => {
-    if (selectedCountry && selectedRegion && selectedLanguage === '') {
-      setShowLanguageModal(true);
-    } else {
-      setShowLanguageModal(false);
+    if (selectedRegion) {
+      setShowRegionModal(false);
     }
-  }, [selectedCountry, selectedRegion, selectedLanguage]);
+    setLoading(false);
+  }, [selectedRegion]);
 
   const handleValueChange = (value) => {
     setSelectedValue(value);
@@ -50,16 +53,19 @@ function Home() {
     navigate('/resto');
   };
 
-  const handleRegionSelection = (selectedRegion) => {
-    console.log('Selected Region:', selectedRegion);
-    setSelectedRegion(selectedRegion);
-    selectRegion(false); // Close the RegionModal after selection
-  };
-
   const handleLanguageSelection = (selectedLanguage) => {
     console.log('Selected language:', selectedLanguage);
     setSelectedLanguage(selectedLanguage);
-    setShowLanguageModal(false); // Close the LanguageModal after selection
+  };
+
+  const handleNationalitySelection = (selectedCountry) => {
+    console.log('Selected Country:', selectedCountry);
+    setSelectedCountry(selectedCountry);
+  };
+
+  const handleRegionSelection = (selectedRegion) => {
+    console.log('Selected Region:', selectedRegion);
+    setSelectedRegion(selectedRegion);
   };
 
   if (loading) {
@@ -68,16 +74,20 @@ function Home() {
 
   return (
     <div>
-      <NationalityModal isOpen={nationality} onClose={() => selectNationality(false)} />
-      <RegionModal
-        isOpen={region && !selectedRegion}
-        onClose={() => selectRegion(false)}
-        onSelect={handleRegionSelection}
-      />
       <LanguageModal
         isOpen={showLanguageModal}
         onClose={() => setShowLanguageModal(false)}
         onSelect={handleLanguageSelection}
+      />
+      <NationalityModal
+        isOpen={showNationalityModal}
+        onClose={() => setShowNationalityModal(false)}
+        onSelect={handleNationalitySelection}
+      />
+      <RegionModal
+        isOpen={showRegionModal}
+        onClose={() => setShowRegionModal(false)}
+        onSelect={handleRegionSelection}
       />
       <div className="navbarhome">
         <NavbarComponent />
@@ -85,7 +95,7 @@ function Home() {
       <div className="categorytab">
         <Categorytab />
       </div>
-      <MarqueeComponent/>
+      <MarqueeComponent />
       <div className="shopswiper">
         <Shopswiper onCardClick={handleShopswiperCardClick} />
       </div>

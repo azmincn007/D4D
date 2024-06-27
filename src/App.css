@@ -478,3 +478,20 @@ font-size: clamp(10px, 3vw, 20px);
 background-color: transparent !important;
 border: 1px solid black !important;
   }
+
+  input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgba(185, 178, 178, 0.034) inset !important;
+    -webkit-text-fill-color: inherit !important;
+}
+
+
+.react-tel-input .form-control {
+  padding-left: 8px !important;
+  margin-left: 60px !important;
+ padding-top: 20px !important;
+ padding-bottom: 20px !important;
+}
+

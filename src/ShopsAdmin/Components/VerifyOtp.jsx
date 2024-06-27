@@ -2,33 +2,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, TextInput } from 'flowbite-react';
 import Timer from '../../Components/authentication/Timer';
+import axios from 'axios';
 
 function VerifyOtp() {
   const navigate = useNavigate();
   const location = useLocation();
   const formData = location.state;
-  const email = formData.email; // Assuming the email is stored in 'email'
+  const email = formData.email;
+  const [backendOTP, setBackendOTP] = useState(formData.backendOTP);
 
   const [otp, setOtp] = useState(new Array(4).fill(''));
   const [isValid, setIsValid] = useState(false);
   const inputRefs = useRef(new Array(4).fill(null));
-  const [timer, setTimer] = useState(120); // Initial timer value
-  const [isRunning, setIsRunning] = useState(true); // Start the timer immediately
+  const [timer, setTimer] = useState(120);
+  const [isRunning, setIsRunning] = useState(true);
+  const [error, setError] = useState('');
 
   const handleChange = (index, value) => {
-    const regex = /^[0-9]$/; // Only allow numbers
+    const regex = /^[0-9]$/;
     const newOtp = [...otp];
     if (regex.test(value)) {
       newOtp[index] = value;
       setOtp(newOtp);
-      // Move focus to the next input field
       if (index < 3 && value !== '') {
         inputRefs.current[index + 1].focus();
       }
     } else if (value === '') {
       newOtp[index] = value;
       setOtp(newOtp);
-      // Move focus to the previous input field
       if (index > 0) {
         inputRefs.current[index - 1].focus();
       }
@@ -43,26 +44,40 @@ function VerifyOtp() {
 
   const handleSubmit = () => {
     if (isValid) {
-      const otpValue = otp.join('');
-      console.log('OTP:', otpValue);
-      if (formData.isSignup) {
-        // Pass the stored data to SignupdataUpload
-        navigate('/signupupload', { state: { signupData: localStorage.getItem('signupData') } });
+      const enteredOTP = Number(otp.join('')); 
+      
+      if (enteredOTP === backendOTP) {
+        console.log('OTP matched');
+        if (formData.isSignup) {
+          navigate('/signupupload', { state: { signupData: localStorage.getItem('signupData') } });
+        } else {
+          navigate('/securepass');
+        }
       } else {
-        navigate('/securepass');
+        setError('Incorrect OTP. Please try again.');
       }
     }
   };
-  const handleResendOTP = () => {
+
+  const handleResendOTP = async () => {
     if (timer === 0) {
       setTimer(120);
       setIsRunning(true);
+      try {
+        const response = await axios.post('https://hezqa.com/api/send-reg-otp', { email });
+        console.log('New OTP sent successfully', response.data.data.otp);
+        setBackendOTP(response.data.data.otp);
+        setError('');
+      } catch (error) {
+        console.error('Error resending OTP:', error);
+        setError('Failed to resend OTP. Please try again.');
+      }
     }
   };
 
   useEffect(() => {
     inputRefs.current[0].focus();
-  }, []); // Run only once when the component mounts
+  }, []);
 
   useEffect(() => {
     setIsValid(otp.every(digit => digit !== ''));
@@ -95,6 +110,7 @@ function VerifyOtp() {
               <Timer timer={timer} setTimer={setTimer} isRunning={isRunning} setIsRunning={setIsRunning} />
             </div>
           </div>
+          {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
           <div className="flex w-[100%] justify-between pb-4 text-sm">
             <p>Not received the OTP?</p>
             <p

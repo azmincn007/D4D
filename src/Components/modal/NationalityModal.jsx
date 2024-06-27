@@ -19,11 +19,9 @@ const NationalityModal = ({ isOpen, onClose }) => {
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
   const [Nationalities, setNationalities] = useContext(NationalityContext);
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
-  console.log(selectedLanguage);
 
   const { data: nationalities, isLoading, isError } = useQuery('nationalities', fetchNationalities, {
     onSuccess: (data) => {
-      console.log('API Response:', data);
       setNationalities(data.data.countries);
     },
   });

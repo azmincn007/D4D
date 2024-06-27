@@ -20,6 +20,7 @@ const PasswordInputAdmin = ({ register, name, placeholder, rules, error }) => {
             id={name}
             type={visible ? 'text' : 'password'}
             {...register(name, rules)}
+            autocomplete="new-password" 
           />
         </div>
         <div className="mr-4">

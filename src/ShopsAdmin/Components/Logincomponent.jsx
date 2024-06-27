@@ -3,7 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
-import { Button, TextInput, Label } from "flowbite-react";
+import { Button, TextInput, Label, Spinner } from "flowbite-react";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import PasswordInputAdmin from "../../Components/authentication/Passwordinputadmin";
 
@@ -16,11 +16,11 @@ const login = async (data) => {
     body: JSON.stringify(data),
   });
 
+  const responseData = await response.json();
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    throw { status: response.status, data: responseData };
   }
-
-  return response.json();
+  return responseData;
 };
 
 function LoginComponent() {
@@ -33,12 +33,17 @@ function LoginComponent() {
 
   const mutation = useMutation(login, {
     onSuccess: (data) => {
-      console.log('API response:', data);
+      console.log('API response:', data.data.shop_details.token);
+      localStorage.setItem('authToken', data.data.shop_details.token);
       navigate('/Restorentdashboard');
     },
     onError: (error) => {
       console.error('API error:', error);
-      // Optionally handle error state, show error message etc.
+      if (error.status === 400) {
+        console.log(error.data.message);
+      } else {
+        navigate('/404error', { state: { message: error.message || "An unexpected error occurred" } });
+      }
     }
   });
 
@@ -53,12 +58,13 @@ function LoginComponent() {
         className="flex min-w-[400px] flex-col p-6 rounded"
         onSubmit={handleSubmit(handleLogin)}
       >
+        {mutation.error && <div className="text-red-500 mb-4">{mutation.error.data.message}</div>}
         <div className={`flex flex-col items-baseline ${errors.email ? 'mb-1' : 'mb-2'}`}>
           <div className="mb-1">
             <Label
               htmlFor="Username or Email Id"
               value="Username or Email Id"
-              className="labelstyle"
+              className="labelstyle text-[16px]"
             />
           </div>
           <div className="w-[100%] formtext">
@@ -83,7 +89,7 @@ function LoginComponent() {
         <div className={`flex flex-col items-baseline ${errors.password ? 'mb-2' : 'mb-2'}`}>
           <div className="flex justify-between w-[100%]">
             <div className="mb-1">
-              <Label htmlFor="password" value="Password" className="labelstyle" />
+              <Label htmlFor="password" value="Password" className="labelstyle text-[16px]" />
             </div>
             <div className="text-sm underline font-semibold">
               <Link to="/forgetpassword">Forgot?</Link>
@@ -106,8 +112,19 @@ function LoginComponent() {
             />
           </div>
         </div>
-        <Button className="mt-1 bg-yellow text-white auth-button" type="submit">
-          Login
+        <Button 
+          className="mt-1 bg-yellow text-white auth-button" 
+          type="submit"
+          disabled={mutation.isLoading}
+        >
+          {mutation.isLoading ? (
+            <>
+              <Spinner size="sm" light={true} />
+              <span className="ml-2">Loading...</span>
+            </>
+          ) : (
+            'Login'
+          )}
         </Button>
         <div className="flex items-center justify-between pb-2"></div>
         <div className="signupred text-[12px] font-monrop">

@@ -73,9 +73,12 @@ export default {
         'xsm':'13px',
         'sm': '14px', 
         'basex': '16px', 
+        'base2x': '16px', 
 
         'base': '22px',    // Example custom font size
-        'lg': '20px',  // Example custom font size
+        'lg': '20px',
+        'lgx': '32px',
+          // Example custom font size
         'xl': '1.25rem',   // Example custom font size
         '2xl': '1.5rem', // Example custom font size
         '3xl': '1.875rem', // Example custom font size

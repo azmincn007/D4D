@@ -57,7 +57,7 @@ const modaltheme = {
 
 {
     "root": {
-      "base": "fixed inset-x-0 top-0 z-50 h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full w-[100%]",
+      "base": "fixed inset-x-0 top-0 z-50 h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full w-[100%] h-[100%] ",
       "show": {
         "on": "flex bg-gray-900 bg-opacity-50 dark:bg-opacity-80",
         "off": "hidden"
@@ -110,7 +110,7 @@ const modaltheme = {
   }
 
   const modalshop= {"root": {
-    "base": "fixed inset-x-0 top-0 z-50  overflow-y-auto overflow-x-hidden md:inset-0  w-[100%]",
+    "base": "fixed inset-x-0 top-0 z-50  overflow-y-auto overflow-x-hidden md:inset-0 md-h-full w-[100%]",
     "show": {
       "on": "flex bg-gray-900 bg-opacity-50 dark:bg-opacity-80",
       "off": "hidden"

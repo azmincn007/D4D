@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import './basicstyles.css'
+import './basicstyles.css';
 import { useQuery } from 'react-query';
+import ErrorMessage from '../../Pages/Authentication/ErrorValidation';
+
 
 const fetchShopTypes = async () => {
   const response = await fetch('https://hezqa.com/api/shop-types');
@@ -26,6 +28,8 @@ const fetchRegions = async (countryId) => {
   }
   return response.json();
 };
+
+
 
 const OrgDropdowns = ({ register, errors }) => {
   const [selectedCountry, setSelectedCountry] = useState('');
@@ -71,22 +75,24 @@ const OrgDropdowns = ({ register, errors }) => {
             </option>
           ))}
         </select>
+        {errors.shop_type && <ErrorMessage message={errors.shop_type.message} />}
       </div>
 
       <div className="flex justify-between gap-4">
         <div className="orgdrop">
-          <select
-            id="country"
-            {...register("country", { required: "Country is required" })}
-            onChange={handleCountryChange}
-          >
-            <option value="">Select Country</option>
-            {countries.map((country) => (
-              <option key={country.id} value={country.id}>
-                {country.country_eng}
-              </option>
-            ))}
-          </select>
+        <select
+  id="country"
+  {...register("country", { required: "Country is required" })}
+  onChange={handleCountryChange}
+>
+  <option value="">Select Country</option>
+  {countries.map((country) => (
+    <option key={country.id} value={country.id}>
+      {country.country_eng}
+    </option>
+  ))}
+</select>
+          {errors.country && <ErrorMessage message={errors.country.message} />}
         </div>
         <div className="orgdrop">
           <select
@@ -107,6 +113,7 @@ const OrgDropdowns = ({ register, errors }) => {
               ))
             )}
           </select>
+          {errors.region && <ErrorMessage message={errors.region.message} />}
         </div>
       </div>
     </div>
