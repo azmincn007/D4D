@@ -33,7 +33,6 @@ function LoginComponent() {
 
   const mutation = useMutation(login, {
     onSuccess: (data) => {
-      console.log('API response:', data.data.shop_details.token);
       localStorage.setItem('authToken', data.data.shop_details.token);
       navigate('/Restorentdashboard');
     },
