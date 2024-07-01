@@ -179,24 +179,30 @@ function Signupcomp() {
   {errors.contact_num && <ErrorMessage message={errors.contact_num.message} />}
 </div>
 
-        {/* Checkbox for agreeing to terms and conditions */}
-        <div className="mb-4 mt-2 w-[95%]">
-          <div className="flex items-center">
-            <div>
-              <Checkbox
-                style={{ border: "1px solid black", backgroundColor: "transparent" }}
-                id="agree"
-                {...register("agree", { required: "You must agree to the terms and conditions" })}
-              />
-            </div>
-            <div className="leading-4 ml-2 text-left">
-              <Label htmlFor="agree" className="font-monrope text-[16px] font-semibold">
-                I agree with Hazkart <span className="text-[#880808]">Terms of Service, Privacy Policy</span>, and default settings.
-              </Label>
-            </div>
-          </div>
-          <div className="flex justify-start">{errors.agree && <ErrorMessage message={errors.agree.message} />}</div>
-        </div>
+      {/* Checkbox for agreeing to terms and conditions */}
+<div className="mb-4 mt-2 w-[100%]">
+  <div className="flex items-center">
+    <div className="checkboxx">
+      <Checkbox
+        style={{ 
+          border: "1px solid white",
+          backgroundColor :'#880808',
+          padding:'10px',
+          outline:'none'
+       
+        }}
+        id="agree"
+        {...register("agree", { required: "You must agree to the terms and conditions" })}
+      />
+    </div>
+    <div className="leading-4 ml-2 text-left">
+      <Label htmlFor="agree" className="font-monrope text-[14px] font-semibold">
+        I agree with Hazkart <span className="text-[#880808]">Terms of Service, Privacy Policy</span>, and default settings.
+      </Label>
+    </div>
+  </div>
+  <div className="flex justify-start">{errors.agree && <ErrorMessage message={errors.agree.message} />}</div>
+</div>
 
         {/* Button to submit the form */}
         <Button className="mt-1 bg-yellow text-white auth-button" type="submit" disabled={mutation.isLoading}>

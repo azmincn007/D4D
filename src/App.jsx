@@ -56,7 +56,12 @@ function App() {
                       <Route
                         path="/loginadmin"
                         element={
-                          <BaseLayoutAuthentication redVector="top-0 right-0 red-vector" yellowVector="bottom-0 left-0 yellow-vector">
+                          <BaseLayoutAuthentication
+                            redVector="top-0 right-0 red-vector"
+                            yellowVector="bottom-0 left-0 yellow-vector"
+                            redYellowVector="top-0 right-0 red-yellow"
+                          >
+                            {" "}
                             <Logincomponent />
                           </BaseLayoutAuthentication>
                         }
@@ -76,7 +81,12 @@ function App() {
                       <Route
                         path="/forgetpassword"
                         element={
-                          <BaseLayoutAuthentication redVector={false} yellowVector={false}>
+                          <BaseLayoutAuthentication
+                            redVector="top-0 right-0 red-vector"
+                            yellowVector="bottom-0 left-0 yellow-vector"
+                            redYellowVector="top-0 right-0 red-yellow"
+                          >
+                            {" "}
                             <Signupsecond />
                           </BaseLayoutAuthentication>
                         }
@@ -85,7 +95,12 @@ function App() {
                       <Route
                         path="/verifyotp"
                         element={
-                          <BaseLayoutAuthentication redVector={false} yellowVector={false}>
+                          <BaseLayoutAuthentication
+                            redVector="top-0 right-0 red-vector"
+                            yellowVector="bottom-0 left-0 yellow-vector"
+                            redYellowVector="top-0 right-0 red-yellow"
+                          >
+                            {" "}
                             <VerifyOtp />
                           </BaseLayoutAuthentication>
                         }
@@ -94,7 +109,12 @@ function App() {
                       <Route
                         path="/signupupload"
                         element={
-                          <BaseLayoutAuthentication redVector={false} yellowVector={false}>
+                          <BaseLayoutAuthentication
+                            redVector="top-0 right-0 red-vector"
+                            yellowVector="bottom-0 left-0 yellow-vector"
+                            redYellowVector="top-0 right-0 red-yellow"
+                          >
+                            {" "}
                             <SignupDataupload />
                           </BaseLayoutAuthentication>
                         }
@@ -103,7 +123,12 @@ function App() {
                       <Route
                         path="/securepass"
                         element={
-                          <BaseLayoutAuthentication redVector={false} yellowVector={false}>
+                          <BaseLayoutAuthentication
+                            redVector="top-0 right-0 red-vector"
+                            yellowVector="bottom-0 left-0 yellow-vector"
+                            redYellowVector="top-0 right-0 red-yellow"
+                          >
+                            {" "}
                             <CreateSecurepassword />
                           </BaseLayoutAuthentication>
                         }
@@ -112,7 +137,12 @@ function App() {
                       <Route
                         path="/profileshow"
                         element={
-                          <BaseLayoutAuthentication redVector={false} yellowVector={false}>
+                          <BaseLayoutAuthentication
+                            redVector="top-0 right-0 red-vector"
+                            yellowVector="bottom-0 left-0 yellow-vector"
+                            redYellowVector="top-0 right-0 red-yellow"
+                          >
+                            {" "}
                             <ProfileShowComponent />
                           </BaseLayoutAuthentication>
                         }
@@ -121,7 +151,12 @@ function App() {
                       <Route
                         path="/subscription"
                         element={
-                          <BaseLayoutAuthentication redVector={false} yellowVector={false}>
+                          <BaseLayoutAuthentication
+                            redVector="top-0 right-0 red-vector"
+                            yellowVector="bottom-0 left-0 yellow-vector"
+                            redYellowVector="top-0 right-0 red-yellow"
+                          >
+                            {" "}
                             <Subscription />
                           </BaseLayoutAuthentication>
                         }

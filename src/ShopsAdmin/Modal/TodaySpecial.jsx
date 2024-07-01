@@ -30,7 +30,7 @@ function Todayspecial({ isOpen, onClose, modalType }) {
       <Modal.Body className='shopsadminmodal font-inter relative'>
         <form onSubmit={handleSubmit(onSubmit)} className='mb-8'>
           <h1 className='text-[22px] font-semibold mb-4 w-[50%] mx-auto flex justify-center py-2'>
-            {modalType === 'todaySpecial' ? "Today's Special details" : 'Menu Details'}
+            {modalType === 'todaySpecial' ? "Today's Special Details" : 'Menu Details'}
           </h1>
 
           {/* FormFieldLanguage components */}

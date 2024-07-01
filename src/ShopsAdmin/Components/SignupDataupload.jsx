@@ -15,7 +15,8 @@ function SignupdataUpload() {
   const [signupData, setSignupData] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
   const [typingTimer, setTypingTimer] = useState(null);
-   const [phoneError, setPhoneError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [fileName, setFileName] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -82,6 +83,7 @@ function SignupdataUpload() {
   const registerShopMutation = useMutation({
     mutationFn: async (data) => {
       const formData = new FormData();
+     
       for (const key in data) {
         formData.append(key, data[key]);
       }
@@ -99,9 +101,9 @@ function SignupdataUpload() {
       
       return responseData;
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       console.log('API response:', data);
-      navigate('/profileshow');
+      navigate('/profileshow', { state: { formData: variables } });
     },
     onError: (error) => {
       console.error('API error:', error);
@@ -144,7 +146,7 @@ function SignupdataUpload() {
 
   return (
     <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px] mt-[100px]">
-      <h1 className="text-[26px] font-semibold">Signup</h1>
+      <h1 className="text-[26px] font-semibold">Sign Up</h1>
       <form className="flex min-w-[400px] flex-col p-6 rounded" onSubmit={handleSubmit(handleSubmitsignup)}>
         {registerShopMutation.isError && registerShopMutation.error.status === 400 && (
           <div className="text-red-500 mb-4">{registerShopMutation.error.data.message}</div>
@@ -177,11 +179,17 @@ function SignupdataUpload() {
               id="certificate" 
               className="file-input" 
               {...register("certificate")}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setFileName(file.name);
+                }
+              }}
             />
             <label htmlFor="certificate" className="file-label">
-              <span className="placeholder"></span>
+              <span className="placeholder">{fileName || ""}</span>
               <span>
-                <TbFileCertificate />
+                <TbFileCertificate  className="text-black h-[16px] w-[16px]"/>
               </span>
             </label>
           </div>

@@ -128,7 +128,7 @@ function VerifyOtp() {
           onClick={handleSubmit}
           disabled={!isValid}
         >
-          Submit
+          Continue
         </Button>
       </div>
     </div>

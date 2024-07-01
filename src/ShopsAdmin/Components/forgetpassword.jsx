@@ -54,7 +54,7 @@ function ResetPasswordadmin() {
       >
         <div className={`flex flex-col items-baseline ${errors.email ? 'mb-1' : 'mb-2'}`}>
           <div className="mb-1 w-[80%]">
-            <p className="text-16px leading-5 text-[#6D6D6D] text-left pb-2">
+            <p className="text-14px leading-5 text-[#6D6D6D] text-left pb-2">
               Please fill out your email. A OTP to Reset password will be sent there.
             </p>
           </div>

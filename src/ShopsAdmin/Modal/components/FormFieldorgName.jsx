@@ -7,7 +7,7 @@ function FormFieldOrgname({ language, register, errors,defaultValue }) {
     <div className="w-[50%] mx-auto formtext Mobile:w-[70%]">
 
         <div className='mb-1'>
-            <Label className='text-[16px]'>Name Of the Organisation ({language}) </Label>
+            <Label className='text-[16px]'>Name of the Organisation ({language}) </Label>
         </div>
 
       <div className='mb-4'>

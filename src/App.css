@@ -494,4 +494,22 @@ input:-webkit-autofill:active {
  padding-top: 20px !important;
  padding-bottom: 20px !important;
 }
+.date-c input{
+  padding-left: 2rem !important;
+  border: 1px solid black; 
+  cursor: pointer;
+}
 
+.date-c input:focus{
+  border: 1px solid #FFD814; 
+
+}
+.date-c svg{
+  margin-left: 8px !important;
+}
+
+
+.file-upload label span{
+  font-size: 10px;
+  color: green;
+}
