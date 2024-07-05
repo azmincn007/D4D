@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery, useQueryClient } from "react-query";
 import Navbardashboard from "../../Components/Navbardashboard";
@@ -8,7 +8,6 @@ import { IoStar } from "react-icons/io5";
 import ProfileModal from "../../Modal/Profile";
 import EditDetailsModal from "../../Modal/EditDetailsmodal";
 import Todayspecial from "../../Modal/TodaySpecial";
-import foodimage from "../../Assets/foodimage.png";
 import MenuCardsAdmin from "./Components/Menucardicon";
 import CategoryAdmin from "../../Modal/Categoryadmin";
 import Errorpage404 from "../../../api/Errorpage404";
@@ -16,39 +15,71 @@ import Loading from "../../../api/Loading";
 import { useNavigate } from "react-router-dom";
 import restbg from "../../Assets/restdashbg.png";
 import shopbg from "../../Assets/Shopdashbg.png";
-import AddOfferType from "../../Modal/AddOffertype";
-import Addcategoryshop from "../../Modal/components/AddcategoryShop";
+import Addcategoryshop from "../../Modal/components/ShopFLyeradmin";
 import ProductDetailsShop from "../../Modal/components/ProductDetailsShop";
+import Categorymap from "./Components/Categorymap";
+import TodaySpecialCards from "./Components/Todayspecialcard";
+import ShopCardAdmin from "./Components/ShopCardadmin";
+import ShopFlyerAdmin from "../../Modal/components/ShopFLyeradmin";
+import Flyercard from "./Components/Flyercard";
+import Flyer from "../../../Pages/Flyer";
 
 function RestuarentDashboard() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // State for managing various modal visibilities
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [isEditDetailsModalOpen, setIsEditDetailsModalOpen] = useState(false);
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
-  const [isTodaysSpecialModalOpen, setIsTodaysSpecialModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [isOfferTypeModalOpen, setIsOfferTypeModalOpen] = useState(false);
   const [isShopCategoryModalOpen, setIsShopCategoryModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
+  const [productToEdit, setProductToEdit] = useState(null);
+  const [flyerToEdit, setFlyerToEdit] = useState(null);
+  const [isShopFlyerModalOpen, setIsShopFlyerModalOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
 
-  const queryClient = useQueryClient();
+const handleCloseShopFlyerModal = useCallback(() => {
+  setIsShopFlyerModalOpen(false);
+  setFlyerToEdit(null);
+}, []);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await axios.get(`${BASE_URL}/api/categories`);
+        setCategories(data.data.categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleEditFlyer = (flyer) => {
+    setFlyerToEdit(flyer);
+    setIsShopFlyerModalOpen(true);
+  };
   // Function to fetch profile data from API
   const fetchProfileData = async () => {
     try {
       const token = localStorage.getItem("authToken");
-
+      console.log(token);
       const response = await axios.get("https://hezqa.com/api/restaurent/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (response.status === 200) {
-        console.log("API Response:", response.data.data.profile);
-        return response.data.data.profile;
+        const profileData = {
+          ...response.data.data.profile,
+          country: response.data.data.country?.country_eng,
+          region: response.data.data.region?.region_eng,
+          currency_symbol: response.data.data.country?.currency_symbol
+        };
+        return profileData;
       } else {
         navigate("/404error");
         throw new Error("Unexpected response status");
@@ -72,11 +103,20 @@ function RestuarentDashboard() {
 
   // Modal toggle functions
   const toggleMenuModal = () => setIsMenuModalOpen(!isMenuModalOpen);
-  const toggleTodaysSpecialModal = () => setIsTodaysSpecialModalOpen(!isTodaysSpecialModalOpen);
   const toggleCategoryModal = () => setIsCategoryModalOpen(!isCategoryModalOpen);
-  const toggleOfferTypeModal = () => setIsOfferTypeModalOpen(!isOfferTypeModalOpen);
   const toggleShopCategoryModal = () => setIsShopCategoryModalOpen(!isShopCategoryModalOpen);
-  const toggleProductModal = () => setIsProductModalOpen(!isProductModalOpen);
+  const toggleShopFlyerModal = () => {
+    setIsShopFlyerModalOpen(!isShopFlyerModalOpen);
+    if (!isShopFlyerModalOpen) {
+      setFlyerToEdit(null);
+    }
+  };
+  const toggleProductModal = () => {
+    setIsProductModalOpen(!isProductModalOpen);
+    if (!isProductModalOpen) {
+      setProductToEdit(null);
+    }
+  };
 
   // Profile modal functions
   const handleProfileModalOpen = () => setShowProfileModal(true);
@@ -90,48 +130,64 @@ function RestuarentDashboard() {
 
   const closeEditDetailsModal = () => {
     setIsEditDetailsModalOpen(false);
-    // Refetch profile data after closing the edit modal
     queryClient.invalidateQueries(["restaurantProfile"]);
   };
 
-  // Show loading state while fetching profile data
-  if (isProfileLoading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
+  const refetchCategories = () => {
+    queryClient.invalidateQueries('categoriesRestuarent');
+  };
 
-  // Sample food card data
-  const foodcardadmin = [{ img: foodimage, price: 10, title: "Kerala porotta" }];
+  const handleEditCategory = (category) => {
+    setCategoryToEdit(category);
+    setIsCategoryModalOpen(true);
+  };
 
-  // Destructure profile data
-  const { shopname_eng, email, region, country } = profileData || {};
+  const handleEditProduct = (product) => {
+    setProductToEdit(product);
+    setIsProductModalOpen(true);
+  };
 
-  // Determine background image and height based on profile type
-  const backgroundImage = profileData.type === "2" ? restbg : shopbg;
-  const backgroundHeight = profileData.type === "2" ? "400px" : "680px";
+  if (isProfileLoading) return <Loading />;
+  if (isProfileError) return <Errorpage404 />;
+
+  const { shopname_eng, email, region, country, currency_symbol, type } = profileData || {};
+
+  const backgroundImage = type === "2" ? restbg : shopbg;
+  const backgroundHeight = type === "2" ? "400px" : "680px";
+
+  
 
   return (
     <div>
-      {/* Modals */}
       <ProfileModal isOpen={showProfileModal} onClose={handleProfileModalClose} onEditProfileClick={openEditDetailsModal} profileData={profileData} />
       <EditDetailsModal isOpen={isEditDetailsModalOpen} onClose={closeEditDetailsModal} profileData={profileData} />
-      <Todayspecial isOpen={isTodaysSpecialModalOpen} onClose={toggleTodaysSpecialModal} modalType="todaySpecial" />
       <Todayspecial isOpen={isMenuModalOpen} onClose={toggleMenuModal} modalType="Menu" />
-      <CategoryAdmin isOpen={isCategoryModalOpen} onClose={toggleCategoryModal} />
-      <AddOfferType isOpen={isOfferTypeModalOpen} onClose={toggleOfferTypeModal} />
-      <Addcategoryshop isOpen={isShopCategoryModalOpen} onClose={toggleShopCategoryModal} />
+      <ShopFlyerAdmin isOpen={isShopFlyerModalOpen} onClose={toggleShopFlyerModal} flyerToEdit={flyerToEdit} />
+      <CategoryAdmin 
+        isOpen={isCategoryModalOpen} 
+        onClose={() => {
+          setIsCategoryModalOpen(false);
+          setCategoryToEdit(null);
+        }} 
+        onCategoryAdded={refetchCategories}
+        categoryToEdit={categoryToEdit}
+      />
+<ShopFlyerAdmin 
+  isOpen={isShopFlyerModalOpen}
+  onClose={handleCloseShopFlyerModal}
+  flyerToEdit={flyerToEdit}
+/>   
+<ProductDetailsShop 
+      isOpen={isProductModalOpen} 
+      onClose={toggleProductModal} 
+      productToEdit={productToEdit}
+      categories={categories}
+    />
 
-      <ProductDetailsShop isOpen={isProductModalOpen} onClose={toggleProductModal} />
-
-      {/* Navbar */}
       <div className="">
         <Navbardashboard onAvatarClick={handleProfileModalOpen} profileLogo={profileData?.logo} />
       </div>
 
-      {/* Background and Profile Info */}
       <div
         className="dashrestbg relative flex flex-col justify-end min-h-[200px]"
         style={{ backgroundImage: `url(${backgroundImage}`, height: backgroundHeight }}
@@ -150,53 +206,44 @@ function RestuarentDashboard() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="addres py-8 mx-auto w-[80%]">
-        {profileData.type === "2" ? (
-          // Restaurant-specific content
+        {type === "2" ? (
           <>
             <div className="tdtags">
               <div className="flex justify-between items-center">
-                <p>Add your Categories</p>
+                <p className="mb-4">Add your Categories</p>
                 <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleCategoryModal} />
               </div>
+              <Categorymap onEditCategory={handleEditCategory} />
             </div>
             <div className="tdtags">
               <div className="flex justify-between items-center">
-                <p>Add Today's Special</p>
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleTodaysSpecialModal} />
+                <p className="mb-4">Add Today's Special</p>
               </div>
-              <MenuCardsAdmin foodItems={foodcardadmin} />
+              <TodaySpecialCards currencySymbol={currency_symbol} />
             </div>
             <div className="tdtags">
               <div className="flex justify-between items-center">
-                <p>Add Your Restaurant Menu</p>
+                <p className="mb-4">Add Your Restaurant Menu</p>
                 <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleMenuModal} />
               </div>
-              <MenuCardsAdmin foodItems={foodcardadmin} />
+              <MenuCardsAdmin currencySymbol={currency_symbol} />
             </div>
           </>
         ) : (
-          // Shop-specific content
           <>
             <div className="tdtags">
               <div className="flex justify-between items-center">
-                <p>Add Category Type</p>
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleShopCategoryModal} />
-              </div>
-            </div>
-            <div className="tdtags">
-              <div className="flex justify-between items-center">
-                <p>Add offer Type</p>
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleOfferTypeModal} />
-              </div>
-            </div>
-            <div className="tdtags">
-              <div className="flex justify-between items-center">
-                <p>Add your Products</p>
+                <p className="mb-4">Add your Products</p>
                 <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleProductModal} />
               </div>
+              <ShopCardAdmin currencySymbol={currency_symbol} onEditProduct={handleEditProduct} />
             </div>
+            <div className="tdtags">
+              <div className="flex justify-between items-center">
+                <p className="mb-4">Add Flyers for Products</p>
+                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleShopFlyerModal} />              </div>
+                <Flyercard onEditFlyer={handleEditFlyer} />        </div>
           </>
         )}
       </div>

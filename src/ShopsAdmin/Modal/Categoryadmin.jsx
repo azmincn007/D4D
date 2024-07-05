@@ -1,5 +1,5 @@
 import { Button, Modal } from 'flowbite-react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IoIosClose } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -7,66 +7,90 @@ import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import FormFieldCategory from './components/FormFieldCategory';
 
-function CategoryAdmin({ isOpen, onClose }) {
+function CategoryAdmin({ isOpen, onClose, onCategoryAdded, categoryToEdit }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
-  const addCategoryMutation = useMutation({
-    mutationFn: (newCategory) => {
-      // Retrieve the token from local storage
-      const token = localStorage.getItem('authToken'); // Adjust this key if needed
+  useEffect(() => {
+    if (categoryToEdit) {
+      console.log("Category data for editing:", categoryToEdit);
+      reset(categoryToEdit);
+    } else {
+      reset({});
+    }
+  }, [categoryToEdit, reset]);
 
-      // Create headers with the token
+  const addOrUpdateCategoryMutation = useMutation({
+    mutationFn: (categoryData) => {
+      const token = localStorage.getItem('authToken');
       const headers = {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       };
 
-      // Make the API call with the token in the header
-      return axios.post('https://hezqa.com/api/restaurent/add-category', newCategory, { headers });
+      if (categoryToEdit) {
+        // Editing existing category
+        const editData = {
+          cat_eng: categoryData.cat_eng,
+          cat_ar: categoryData.cat_ar,
+          cat_mal: categoryData.cat_mal,
+          cat_hin: categoryData.cat_hin,
+          status: 'Active',
+          cat_id: categoryToEdit.id
+        };
+        return axios.post('https://hezqa.com/api/restaurent/edit-category', editData, { headers });
+      } else {
+        // Adding new category
+        return axios.post('https://hezqa.com/api/restaurent/add-category', categoryData, { headers });
+      }
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries('categories');
-      onClose();
+    onSuccess: (response) => {
+      if (response.status === 200) {
+        console.log('Response:', response.data);
+        queryClient.invalidateQueries('categories');
+        onCategoryAdded();
+        onClose();
+      } else {
+        navigate('/404error');
+      }
     },
     onError: (error) => {
-      // Handle any errors here
-      console.error('Error adding category:', error);
-      // You might want to show an error message to the user
+      console.error('Error adding/updating category:', error);
+      navigate('/404error');
     },
   });
 
   const handleCloseModal = () => {
     onClose();
+    reset({});
   };
 
   const onSubmit = (data) => {
-    addCategoryMutation.mutate(data);
+    addOrUpdateCategoryMutation.mutate(data);
   };
 
   return (
     <div>
-      <Modal show={isOpen} onClose={onClose} className='modalfav'>
+      <Modal show={isOpen} onClose={handleCloseModal} className='modalfav'>
         <Modal.Body>
           <div className='my-4'>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className='w-[50%] mx-auto flex justify-center py-2 text-[22px] font-semibold mb-4 '>
-                <h1>Add Your Category</h1>
+                <h1>{categoryToEdit ? 'Edit' : 'Add'} Your Category</h1>
               </div>
               <FormFieldCategory language="eng" register={register} errors={errors} />
               <FormFieldCategory language="ar" register={register} errors={errors} />
               <FormFieldCategory language="mal" register={register} errors={errors} />
               <FormFieldCategory language="hin" register={register} errors={errors} />
               <div className="mt-8 w-[50%] mx-auto">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   className="w-full py-2 bg-yellow text-black rounded"
-                  disabled={addCategoryMutation.isLoading}
+                  disabled={addOrUpdateCategoryMutation.isLoading}
                 >
-                  {addCategoryMutation.isLoading ? 'Uploading...' : 'Upload'}
+                  {addOrUpdateCategoryMutation.isLoading ? 'Saving...' : (categoryToEdit ? 'Update' : 'Upload')}
                 </Button>
               </div>
             </form>

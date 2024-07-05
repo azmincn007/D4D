@@ -513,3 +513,27 @@ input:-webkit-autofill:active {
   font-size: 10px;
   color: green;
 }
+
+.buttonconfirmdelete span{
+    font-size: 20px;
+}
+
+.cardres{
+img{
+  height: 300px;
+  width: 200px;
+}
+}
+
+.cardmenu div{
+  padding: 0.3rem;
+}
+
+.buttononmenu{
+background-color: #FFD814 !important;
+color: black !important;
+}
+
+.Menuspecialbutton button:hover{
+  background-color: red !important;
+}

@@ -4,8 +4,9 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import PasswordInputAdmin from "../../Components/authentication/Passwordinputadmin";
+import { IoIosClose } from "react-icons/io";
 
-function CreateSecurepassword() {
+function CreateSecurepassword({email, onClose}) {
   const navigate = useNavigate();
   const {
     register,
@@ -20,37 +21,59 @@ function CreateSecurepassword() {
     navigate('/loginadmin'); // Navigate to the login page
   };
 
-  const password = watch("password");
+  const oldPassword = watch("oldPassword");
+  const newPassword = watch("newPassword");
+
+  const handleProfileModalClose = () => {
+   
+    onClose();
+  };
+  
 
   return (
-    <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px]">
-      <h1 className="text-[32px] font-semibold">Login</h1>
+    <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px] ">
+      <h1 className="text-[28px] font-semibold">Change Password</h1>
       <form
         className="flex min-w-[400px] flex-col p-6 rounded"
         onSubmit={handleSubmit(handleContinueToLogin)}
       >
-        <div className={`flex flex-col items-baseline ${errors.password ? 'mb-2' : 'mb-2'}`}>
-          <div className="flex justify-between w-[100%]">
-            <div className="mb-1">
-              <Label htmlFor="password" value="Password" className="labelstyle" />
-            </div>
-            <div className="text-sm underline font-semibold">
-              <Link to="/forgetpassword">Forgot?</Link>
-            </div>
+        <div className={`flex flex-col items-baseline ${errors.oldPassword ? 'mb-2' : 'mb-2'}`}>
+          <div className="mb-1">
+            <Label htmlFor="oldPassword" value="Old Password" className="labelstyle" />
           </div>
           <div className="w-[100%]">
             <PasswordInputAdmin
               register={register}
-              name="password"
+              name="oldPassword"
+              placeholder="Enter Old Password"
+              rules={{
+                required: "Old password is required",
+              }}
+              error={errors.oldPassword}
+              className="w-[250px]"
+            />
+          </div>
+        </div>
+
+        <div className={`flex flex-col items-baseline ${errors.newPassword ? 'mb-2' : 'mb-2'}`}>
+          <div className="mb-1">
+            <Label htmlFor="newPassword" value="New Password" className="labelstyle" />
+          </div>
+          <div className="w-[100%]">
+            <PasswordInputAdmin
+              register={register}
+              name="newPassword"
               placeholder="Enter New Password"
               rules={{
-                required: "Password is required",
+                required: "New password is required",
                 minLength: {
                   value: 6,
                   message: "Password must be at least 6 characters long",
                 },
+                validate: (value) =>
+                  value !== oldPassword || "New password must be different from the old password",
               }}
-              error={errors.password}
+              error={errors.newPassword}
               className="w-[250px]"
             />
           </div>
@@ -64,11 +87,11 @@ function CreateSecurepassword() {
             <PasswordInputAdmin
               register={register}
               name="confirmPassword"
-              placeholder="Confirm Password"
+              placeholder="Confirm New Password"
               rules={{
-                required: "Please confirm your password",
+                required: "Please confirm your new password",
                 validate: (value) =>
-                  value === password || "Passwords do not match",
+                  value === newPassword || "Passwords do not match",
               }}
               error={errors.confirmPassword}
               className="w-[250px]"
@@ -81,6 +104,11 @@ function CreateSecurepassword() {
         </Button>
         <div className="flex items-center justify-between pb-2"></div>
       </form>
+      <div className="absolute top-0 right-0 mt-3 mr-3">
+          <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
+            <IoIosClose className="text-base cursor-pointer" onClick={handleProfileModalClose} />
+          </div>
+        </div>
     </div>
   );
 }

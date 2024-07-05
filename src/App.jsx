@@ -14,7 +14,7 @@ import Signupsecond from "./ShopsAdmin/Components/forgetpassword";
 import VerifyOtp from "./ShopsAdmin/Components/VerifyOtp";
 import SignupDataupload from "./ShopsAdmin/Components/SignupDataupload";
 import Subscription from "./ShopsAdmin/Pages/Restuarent/Subscription";
-import RestuarentDashboard from "./ShopsAdmin/Pages/Restuarent/RestuarentDashboard";
+import RestuarentDashboard from "./ShopsAdmin/Pages/Restuarent/Dashboard";
 import CreateSecurepassword from "./ShopsAdmin/Components/CreateSecurepass";
 import ProfileShowComponent from "./ShopsAdmin/Components/ProfileShowComponent";
 import Errorpage404 from "./api/Errorpage404";

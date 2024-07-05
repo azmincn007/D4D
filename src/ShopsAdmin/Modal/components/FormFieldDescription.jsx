@@ -11,11 +11,11 @@ function FormFieldDescription({ language, register, errors }) {
           id={`description${language}`}
           type="text"
           placeholder={`Description (${language})`}
-          {...register(`description${language}`, {
+          {...register(`desc_${language}`, {
             required: `Description (${language}) is required`,
           })}
         />
-        {errors[`description${language}`] && <ErrorMessage message={errors[`description${language}`].message} />}
+        {errors[`desc_${language}`] && <ErrorMessage message={errors[`desc_${language}`].message} />}
       </div>
     </div>
   );

@@ -5,38 +5,35 @@ import { modalshop, modalthemeNational } from '../../Themes/Modaltheme';
 import { IoCloseSharp } from "react-icons/io5";
 import ProfileBanner from '../Components/Profilebanner';
 import RestuarentIcon from '../Assets/Restuarenticon.png'
-import VerifyOtpModal from './components/VerifyOtpModal';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import CreateSecurepassword from '../Components/CreateSecurepass';
 
 function ProfileModal({ isOpen, onClose, onEditProfileClick, profileData }) {
-  const [isVerifyOtpModalOpen, setIsVerifyOtpModalOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [isSecurePassModalOpen, setIsSecurePassModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleCloseModal = () => {
     onClose();
   };
 
   const handleChangePassword = () => {
-    onClose();
-    setIsVerifyOtpModalOpen(true);
+    onClose(); // Close the profile modal
+    setIsSecurePassModalOpen(true); // Open the secure password modal
   };
 
-  const handleVerifyOtpModalClose = () => {
-    setIsVerifyOtpModalOpen(false);
+  const handleSecurePassModalClose = () => {
+    setIsSecurePassModalOpen(false);
   };
 
   const handleLogout = () => {
-    // Remove the token from localStorage
     localStorage.removeItem('authToken');
-    // Close the modal
     onClose();
-    // Redirect to the login page or home page
-    navigate('/loginadmin'); // Adjust the route as needed
+    navigate('/loginadmin');
   };
 
   if (!profileData) {
     navigate('/404error')
-    return null; // or return a loading spinner
+    return null;
   }
 
   return (
@@ -83,11 +80,19 @@ function ProfileModal({ isOpen, onClose, onEditProfileClick, profileData }) {
           </div>
         </Modal.Body>
       </Modal>
-      <VerifyOtpModal
-        isOpen={isVerifyOtpModalOpen}
-        onClose={handleVerifyOtpModalClose}
-        email={profileData.email}
-      />
+
+      <Modal
+        show={isSecurePassModalOpen}
+        onClose={handleSecurePassModalClose}
+        theme={modalthemeNational}
+      >
+        <Modal.Body>
+          <CreateSecurepassword
+            email={profileData.email}
+            onClose={handleSecurePassModalClose}
+          />
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

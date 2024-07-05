@@ -11,7 +11,7 @@ function FormFieldLanguage({ language, register, errors }) {
           id={`nameofdish${language}`}
           type="text"
           placeholder={`Name of the dish (${language})`}
-          {...register(`nameofdish${language}`, {
+          {...register(`menu_${language}`, {
             required: `Name of the dish (${language}) is required`,
           })}
         />
