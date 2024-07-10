@@ -6,6 +6,8 @@ import { MdEdit } from 'react-icons/md';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import ConfirmDeleteModal from './ConfirmDelete';
+import Errorpage404 from '../../../../api/Errorpage404';
+import Loading from '../../../../api/Loading';
 
 const BASE_URL = 'https://hezqa.com';
 
@@ -19,7 +21,7 @@ const fetchProducts = async () => {
   return data.data.products;
 };
 
-const ShopCardAdmin = ({ currencySymbol, onEditProduct }) => {
+const ShopCardAdmin = ({ currencySymbol, onEditProduct,selectedCategory,selectedSubcategory  }) => {
   const { data: products, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['products'],
     queryFn: fetchProducts,
@@ -29,17 +31,26 @@ const ShopCardAdmin = ({ currencySymbol, onEditProduct }) => {
     refetch();
   };
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+  if (isLoading) return <div><Loading/></div>;
+  if (isError) return <div><Errorpage404/></div>;
 
   if (!Array.isArray(products)) {
     console.error('products is not an array:', products);
     return <div>Error: Data is not in the expected format</div>;
+
   }
+
+  const filteredProducts = products.filter(item => {
+    if (selectedCategory === 'All') return true;
+    if (item.cat_eng !== selectedCategory) return false;
+    if (selectedSubcategory === 'All') return true;
+    return item.subcat_eng === selectedSubcategory;
+  });
+
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
-      {products.map((item, index) => (
+      {filteredProducts.map((item, index) => (
         item ? (
           <ProductCard
             key={index}
@@ -88,7 +99,7 @@ const ProductCard = ({ item, currencySymbol, onEdit, onDeleteSuccess, refetch })
   };
 
   const fullImageUrl = item.image ? `${BASE_URL}${item.image}` : "/placeholder.svg";
-
+  
   return (
     <>
       <Card className="w-full max-w-sm rounded-lg shadow-lg cardmenu" style={{ opacity: isActive ? 1 : 0.5 }}>

@@ -38,6 +38,7 @@ function ProfileModal({ isOpen, onClose, onEditProfileClick, profileData }) {
 
   return (
     <>
+    
       <Modal show={isOpen} onClose={handleCloseModal} className='' theme={modalthemeNational}>
         <Modal.Body className='shopsadminmodal font-inter relative'>
           <ProfileBanner circleImage={profileData.logo}/>

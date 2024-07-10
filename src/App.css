@@ -537,3 +537,9 @@ color: black !important;
 .Menuspecialbutton button:hover{
   background-color: red !important;
 }
+
+.categoryfilter select{
+padding: 0.2rem 1rem;
+background-color: #FFD814;
+border: none;
+}

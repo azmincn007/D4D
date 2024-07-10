@@ -17,7 +17,6 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
 
   const fetchCategories = async () => {
     const response = await axios.get('https://hezqa.com/api/categories');
-    console.log('Categories API Response:', response.data.data.categories);
     return response.data.data.categories;
   };
 

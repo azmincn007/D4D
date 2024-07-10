@@ -51,6 +51,7 @@ function CategoryAdmin({ isOpen, onClose, onCategoryAdded, categoryToEdit }) {
         console.log('Response:', response.data);
         queryClient.invalidateQueries('categories');
         onCategoryAdded();
+        reset({}); // Clear the form
         onClose();
       } else {
         navigate('/404error');

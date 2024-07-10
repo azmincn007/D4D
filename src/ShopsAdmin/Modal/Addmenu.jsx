@@ -10,6 +10,7 @@ import { IoIosClose } from "react-icons/io";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import FormFieldDescription from "./components/FormFieldDescription";
 import FormFieldLanguage from "./components/FormfieldLanguage";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = 'https://hezqa.com';
 
@@ -24,9 +25,17 @@ const fetchCategories = async () => {
   return response.data.data.categories || [];
 };
 
-function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
-  const [imageUploaded, setImageUploaded] = useState(false);
+// Function to fetch tags
+const fetchTags = async () => {
+  const response = await axios.get(`${BASE_URL}/api/tags`);
+  return response.data.data.tags || [];
+};
 
+function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }) {
+  const navigate = useNavigate();
+  const [imageUploaded, setImageUploaded] = useState(false);
+  const [normalPriceFocused, setNormalPriceFocused] = useState(false);
+  const [offerPriceFocused, setOfferPriceFocused] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -42,6 +51,12 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
   const { data: categories = [], isLoading, isError } = useQuery({
     queryKey: ['categories'],
     queryFn: fetchCategories,
+  });
+
+  // Use React Query to fetch tags
+  const { data: tags = [], isLoading: isTagsLoading, isError: isTagsError } = useQuery({
+    queryKey: ['tags'],
+    queryFn: fetchTags,
   });
 
   // Mutation for adding or editing a menu item
@@ -72,20 +87,17 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
         handleCloseModal();
       },
       onError: (error) => {
-        console.error('Mutation error:', error);
-        // You can add error handling here, e.g., showing an error message to the user
+        navigate('/404error');
       }
     }
   );
 
   useEffect(() => {
     if (isOpen) {
-      // Reset the form
       reset();
       setImageUploaded(false);
-      
-      // Reset the categories data
       queryClient.resetQueries('categories');
+      queryClient.resetQueries('tags');
 
       if (modalType === "Edit Menu" && itemToEdit) {
         console.log(itemToEdit, 'items');
@@ -101,6 +113,7 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
         setValue('type', itemToEdit.type);
         setValue('normal_price', itemToEdit.normal_price);
         setValue('offer_price', itemToEdit.offer_price);
+        setValue('tag_id', itemToEdit.tag_id);
         setImageUploaded(true);
       }
     }
@@ -113,33 +126,26 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
     }
     
     try {
-      // Create a FormData object
       const formData = new FormData();
       
-      // Append all form fields to the FormData
       Object.keys(data).forEach(key => {
         formData.append(key, data[key]);
       });
       
-      // Append the image file
       if (data.cover && data.cover[0]) {
         formData.append('image', data.cover[0]);
       }
 
-      // If editing, append the menu_id to the FormData
       if (modalType === "Edit Menu" && itemToEdit) {
         formData.append('menu_id', itemToEdit.id);
       }
 
-      // Log the data before sending
       console.log('Form data before sending:', Object.fromEntries(formData));
 
-      // Use the mutation to submit the form
       await mutation.mutateAsync(formData);
 
     } catch (error) {
       console.error("Error submitting form:", error);
-      // Handle error (e.g., show error message to user)
     }
   };
 
@@ -149,12 +155,6 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
     onClose();
   };
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setCategoryToDelete(null);
-  };
-
-
   return (
     <Modal show={isOpen} onClose={handleCloseModal} className="" theme={modalshop}>
       <Modal.Body className="shopsadminmodal font-inter relative">
@@ -163,20 +163,17 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
             {modalType === "Edit Menu" ? "Edit Menu Item" : "Add Menu Item"}
           </h1>
 
-          {/* FormFieldLanguage components */}
           <FormFieldLanguage language="eng" register={register} errors={errors} />
           <FormFieldLanguage language="ar" register={register} errors={errors} />
           <FormFieldLanguage language="hin" register={register} errors={errors} />
           <FormFieldLanguage language="mal" register={register} errors={errors} />
 
-          {/* FormFieldDescription components */}
           <FormFieldDescription language="eng" register={register} errors={errors} />
           <FormFieldDescription language="ar" register={register} errors={errors} />
           <FormFieldDescription language="hin" register={register} errors={errors} />
           <FormFieldDescription language="mal" register={register} errors={errors} />
 
           <div className="w-[50%] mx-auto">
-            {/* Category of Dish */}
             <div className="mb-4 form-select">
               <Select
                 id="categoryOfDish"
@@ -201,7 +198,6 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
               {isError && <ErrorMessage message="Failed to load categories" />}
             </div>
 
-            {/* Type of Dish */}
             <div className="mb-4 form-select">
               <Select
                 id="typeOfDish"
@@ -217,15 +213,45 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
               {errors.typeOfDish && <ErrorMessage message={errors.typeOfDish.message} />}
             </div>
 
+            <div className="mb-4 form-select">
+              <Select
+                id="tagSelect"
+                {...register(`tag_id`, {
+                  required: `Tag is required`,
+                })}
+                className="w-[100%] form-select"
+                disabled={isTagsLoading}
+              >
+                <option value="">Select Tag</option>
+                {tags.length > 0 ? (
+                  tags.map((tag) => (
+                    <option key={tag.id} value={tag.id}>
+                      {tag.tag_eng}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>No tags available</option>
+                )}
+              </Select>
+              {errors.tag_id && <ErrorMessage message={errors.tag_id.message} />}
+              {isTagsError && <ErrorMessage message="Failed to load tags" />}
+            </div>
+
             {/* Normal Price */}
-            <div className="mb-4">
+            <div className="mb-4 relative">
               <TextInput
-                className="form-today w-[100%]"
+                className="form-today w-[100%] peer"
                 id="normalPrice"
                 type="number"
                 inputMode="decimal"
                 step="any"
-                placeholder="Normal Price"
+                placeholder=" "
+                onFocus={() => setNormalPriceFocused(true)}
+                onBlur={(e) => {
+                  if (e.target.value === '') {
+                    setNormalPriceFocused(false);
+                  }
+                }}
                 onKeyDown={(e) => {
                   if (!/[0-9.]/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete" && e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
                     e.preventDefault();
@@ -239,18 +265,34 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
                   },
                 })}
               />
-              {errors.normalPrice && <ErrorMessage message={errors.normalPrice.message} />}
+              <label
+                htmlFor="normalPrice"
+                className={`absolute text-sm duration-300 transform bg-white dark:bg-gray-900 pointer-events-none
+                  ${normalPriceFocused
+                    ? 'absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1'
+                    : 'text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]'
+                }`}
+              >
+                Normal Price (in {currencySymbol})
+              </label>
+              {errors.normal_price && <ErrorMessage message={errors.normal_price.message} />}
             </div>
 
             {/* Offer Price */}
-            <div className="mb-4">
+            <div className="mb-4 relative">
               <TextInput
-                className="form-today w-[100%]"
+                className="form-today w-[100%] peer"
                 id="offerPrice"
                 type="number"
                 inputMode="decimal"
                 step="any"
-                placeholder="Offer Price"
+                placeholder=" "
+                onFocus={() => setOfferPriceFocused(true)}
+                onBlur={(e) => {
+                  if (e.target.value === '') {
+                    setOfferPriceFocused(false);
+                  }
+                }}
                 onKeyDown={(e) => {
                   if (!/[0-9.]/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete" && e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
                     e.preventDefault();
@@ -264,11 +306,20 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit }) {
                   },
                 })}
               />
-              {errors.offerPrice && <ErrorMessage message={errors.offerPrice.message} />}
+              <label
+                htmlFor="offerPrice"
+                className={`absolute text-sm duration-300 transform bg-white dark:bg-gray-900 pointer-events-none
+                  ${offerPriceFocused
+                    ? 'absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1'
+                    : 'text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]'
+                }`}
+              >
+                Offer Price (in {currencySymbol})
+              </label>
+              {errors.offer_price && <ErrorMessage message={errors.offer_price.message} />}
             </div>
           </div>
 
-          {/* Image Upload */}
           <div className="flex flex-col w-[60%] mx-auto">
             <ImageUpload 
               title="cover" 

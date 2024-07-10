@@ -1,27 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { IoMdAdd } from "react-icons/io";
 
-const ImageUpload = ({ title, index, register, onUploadSuccess }) => {
+const ImageUpload = ({ title, index, register, onUploadSuccess, initialImage }) => {
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState('');
   const [error, setError] = useState('');
 
-  const handleImageUpload = () => {
-    document.getElementById(`image-upload-${index}`).click();
-  };
+  useEffect(() => {
+    if (initialImage) {
+      setImage(initialImage);
+      // Extract the filename from the initialImage URL
+      const filename = initialImage.split('/').pop();
+      setFileName(filename);
+    }
+  }, [initialImage]);
 
-  const handleImageChange = (event) => {
+  const handleImageUpload = useCallback(() => {
+    document.getElementById(`image-upload-${index}`).click();
+  }, [index]);
+
+  const handleImageChange = useCallback((event) => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
       setFileName(file.name);
       register('image', { value: file });
       setError('');
-      onUploadSuccess(); // Call the onUploadSuccess callback
+      console.log("File selected:", file);
+      onUploadSuccess(file);
     } else {
       setError('Please select an image to upload.');
     }
-  };
+  }, [register, onUploadSuccess]);
+
+  
 
   return (
     <div className="mb-4 flex flex-col items-center justify-center">
@@ -32,7 +44,7 @@ const ImageUpload = ({ title, index, register, onUploadSuccess }) => {
         {image ? (
           <div className="text-xs text-center text-[#4BB543]">
             {fileName}
-            <span className='text-[#4BB543]'> uploaded</span>
+            <span className='text-[#4BB543]'> {initialImage ? 'saved' : 'uploaded'}</span>
           </div>
         ) : (
           <div className="flex flex-col justify-center items-center">

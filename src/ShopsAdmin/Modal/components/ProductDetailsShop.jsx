@@ -8,6 +8,7 @@ import axios from "axios";
 import FormFieldShop from "./FormFieldShop";
 import FormFieldDescription from "./FormFieldDescription";
 import ErrorMessage from "../../../Pages/Authentication/ErrorValidation";
+import ImageUpload from "./Imageupload";
 
 const BASE_URL = "https://hezqa.com";
 
@@ -31,8 +32,7 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [subcategories, setSubcategories] = useState([]);
   const [imageFile, setImageFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
-  const [fileName, setFileName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchSubcategories = useCallback(async (categoryId) => {
     if (!categoryId) return;
@@ -69,13 +69,10 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
         valid_to: formatDate(productToEdit.valid_to),
       });
       setSelectedCategory(productToEdit.cat_id);
-      setPreviewUrl(`${BASE_URL}${productToEdit.image}`);
-      setFileName(productToEdit.image.split("/").pop());
     }
   }, [productToEdit, reset]);
 
   const handleCloseModal = useCallback(() => {
-    // Clear the form
     reset({
       product_eng: "",
       product_ar: "",
@@ -93,38 +90,34 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
       valid_to: "",
     });
     
-    // Reset other state
     setSelectedCategory("");
     setImageFile(null);
-    setPreviewUrl("");
-    setFileName("");
-    
-    // Close the modal
     onClose();
   }, [onClose, reset]);
 
-  const handleImageChange = useCallback((e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setFileName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleImageUploadSuccess = useCallback((file) => {
+    console.log("Image upload success, file:", file);
+    setImageFile(file);
   }, []);
 
+  useEffect(() => {
+    console.log("imageFile state updated:", imageFile);
+  }, [imageFile]);
+
   const onSubmit = useCallback(async (data) => {
+    console.log("Submitting form, imageFile:", imageFile);
+    
     if (!imageFile && !productToEdit) {
       alert("Please upload an image before submitting.");
       return;
     }
 
+    setIsSubmitting(true);
+
     const authToken = localStorage.getItem("authToken");
     if (!authToken) {
       alert("Authentication token not found. Please log in again.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -132,9 +125,11 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
     Object.entries(data).forEach(([key, value]) => {
       formData.append(key, value);
     });
+    
     if (imageFile) {
       formData.append("image", imageFile);
     }
+    
     if (productToEdit) {
       formData.append("product_id", productToEdit.id);
     }
@@ -153,12 +148,13 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
       alert(productToEdit ? "Product updated successfully!" : "Product added successfully!");
       reset();
       setImageFile(null);
-      setPreviewUrl("");
       onClose();
       queryClient.invalidateQueries("products");
     } catch (error) {
       console.error(productToEdit ? "Error updating product:" : "Error adding product:", error);
       alert(productToEdit ? "Error updating product. Please try again." : "Error adding product. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   }, [imageFile, productToEdit, reset, onClose, queryClient]);
 
@@ -171,12 +167,28 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
   }, [watchCategory]);
 
   const formFields = useMemo(() => {
-    return ['eng', 'ar', 'hin', 'mal'].map(lang => (
-      <React.Fragment key={lang}>
-        <FormFieldShop name="Product Name" language={lang} register={register} errors={errors} registerName="product" />
-        <FormFieldDescription language={lang} register={register} errors={errors} />
-      </React.Fragment>
-    ));
+    return (
+      <>
+        {['eng', 'ar', 'hin', 'mal'].map(lang => (
+          <FormFieldShop 
+            key={`product-${lang}`}
+            name="Product Name" 
+            language={lang} 
+            register={register} 
+            errors={errors} 
+            registerName="product" 
+          />
+        ))}
+        {['eng', 'ar', 'hin', 'mal'].map(lang => (
+          <FormFieldDescription 
+            key={`desc-${lang}`}
+            language={lang} 
+            register={register} 
+            errors={errors} 
+          />
+        ))}
+      </>
+    );
   }, [register, errors]);
 
   return (
@@ -297,26 +309,25 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
                   />
                 </div>
               </div>
+ 
+              <ImageUpload 
+  title="Upload Image"
+  index="product"
+  register={register}
+  onUploadSuccess={handleImageUploadSuccess}
+  initialImage={productToEdit?.image ? `${BASE_URL}${productToEdit.image}` : null}
+/>
 
-              <div className="mb-4">
-                <Label htmlFor="image-upload" value="Upload Product Image" />
-                <div className="flex items-center">
-                  <input type="file" id="image-upload" accept="image/*" onChange={handleImageChange} className="hidden" />
-                  <label
-                    htmlFor="image-upload"
-                    className="cursor-pointer bg-violet-50 text-violet-700 py-2 px-4 rounded-full text-sm font-semibold hover:bg-violet-100"
-                  >
-                    Choose File
-                  </label>
-                  <span className="ml-2 text-sm text-gray-500">{fileName || "No file chosen"}</span>
-                </div>
-                {previewUrl && <img src={previewUrl} alt="Preview" className="mt-2 max-w-full h-auto" />}
-              </div>
+             
             </div>
 
             <div className="mt-8 w-[50%] mx-auto">
-              <Button type="submit" className="w-full py-2 bg-yellow text-black rounded">
-                {productToEdit ? "Update Product" : "Add Product"}
+              <Button 
+                type="submit" 
+                className="w-full py-2 bg-yellow text-black rounded"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : (productToEdit ? "Update Product" : "Add Product")}
               </Button>
             </div>
           </form>

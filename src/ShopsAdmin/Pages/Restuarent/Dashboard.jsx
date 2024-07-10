@@ -7,7 +7,7 @@ import { IoMdAdd } from "react-icons/io";
 import { IoStar } from "react-icons/io5";
 import ProfileModal from "../../Modal/Profile";
 import EditDetailsModal from "../../Modal/EditDetailsmodal";
-import Todayspecial from "../../Modal/TodaySpecial";
+import Todayspecial from "../../Modal/Addmenu";
 import MenuCardsAdmin from "./Components/Menucardicon";
 import CategoryAdmin from "../../Modal/Categoryadmin";
 import Errorpage404 from "../../../api/Errorpage404";
@@ -23,6 +23,7 @@ import ShopCardAdmin from "./Components/ShopCardadmin";
 import ShopFlyerAdmin from "../../Modal/components/ShopFLyeradmin";
 import Flyercard from "./Components/Flyercard";
 import Flyer from "../../../Pages/Flyer";
+import { Dropdown, Label, Select } from "flowbite-react";
 
 function RestuarentDashboard() {
   const navigate = useNavigate();
@@ -40,16 +41,86 @@ function RestuarentDashboard() {
   const [flyerToEdit, setFlyerToEdit] = useState(null);
   const [isShopFlyerModalOpen, setIsShopFlyerModalOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("All");
+const [subcategories, setSubcategories] = useState([]);
 
-const handleCloseShopFlyerModal = useCallback(() => {
-  setIsShopFlyerModalOpen(false);
-  setFlyerToEdit(null);
-}, []);
+const [selectedFlyerCategory, setSelectedFlyerCategory] = useState("All");
+const [selectedFlyerSubcategory, setSelectedFlyerSubcategory] = useState("All");
+const [flyerSubcategories, setFlyerSubcategories] = useState([]);
 
+const handleFlyerCategoryChange = (event) => {
+  setSelectedFlyerCategory(event.target.value);
+  setSelectedFlyerSubcategory("All"); // Reset subcategory when category changes
+};
+
+const handleFlyerSubcategoryChange = (event) => {
+  setSelectedFlyerSubcategory(event.target.value);
+  console.log("Selected Flyer Subcategory:", event.target.value);
+};
+
+useEffect(() => {
+  const fetchFlyerSubcategories = async () => {
+    if (selectedFlyerCategory !== "All") {
+      try {
+        const category = categories.find(cat => cat.cat_eng === selectedFlyerCategory);
+        if (category) {
+          const { data } = await axios.get(`https://hezqa.com/api/subcategories/${category.id}`);
+          setFlyerSubcategories(data.data.subcategories);
+        }
+      } catch (error) {
+        console.error("Error fetching flyer subcategories:", error);
+      }
+    } else {
+      setFlyerSubcategories([]);
+    }
+  };
+  fetchFlyerSubcategories();
+}, [selectedFlyerCategory, categories]);
+
+const handleCategoryChange = (event) => {
+  setSelectedCategory(event.target.value);
+  setSelectedSubcategory("All"); // Reset subcategory when category changes
+};
+
+const handleSubcategoryChange = (event) => {
+  setSelectedSubcategory(event.target.value);
+  console.log("Selected Subcategory:", event.target.value);
+};
+
+  const handleCategoriesFetched = (fetchedCategories) => {
+    setCategories(fetchedCategories);
+  };
+
+  const handleCloseShopFlyerModal = useCallback(() => {
+    setIsShopFlyerModalOpen(false);
+    setFlyerToEdit(null);
+  }, []);
+
+
+  useEffect(() => {
+    const fetchSubcategories = async () => {
+      if (selectedCategory !== "All") {
+        try {
+          const category = categories.find(cat => cat.cat_eng === selectedCategory);
+          if (category) {
+            const { data } = await axios.get(`https://hezqa.com/api/subcategories/${category.id}`);
+            setSubcategories(data.data.subcategories);
+          }
+        } catch (error) {
+          console.error("Error fetching subcategories:", error);
+        }
+      } else {
+        setSubcategories([]);
+      }
+    };
+    fetchSubcategories();
+  }, [selectedCategory, categories]);   
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get(`${BASE_URL}/api/categories`);
+        const { data } = await axios.get(`https://hezqa.com/api/categories`);
         setCategories(data.data.categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -77,7 +148,7 @@ const handleCloseShopFlyerModal = useCallback(() => {
           ...response.data.data.profile,
           country: response.data.data.country?.country_eng,
           region: response.data.data.region?.region_eng,
-          currency_symbol: response.data.data.country?.currency_symbol
+          currency_symbol: response.data.data.country?.currency_symbol,
         };
         return profileData;
       } else {
@@ -134,7 +205,7 @@ const handleCloseShopFlyerModal = useCallback(() => {
   };
 
   const refetchCategories = () => {
-    queryClient.invalidateQueries('categoriesRestuarent');
+    queryClient.invalidateQueries("categoriesRestuarent");
   };
 
   const handleEditCategory = (category) => {
@@ -155,34 +226,23 @@ const handleCloseShopFlyerModal = useCallback(() => {
   const backgroundImage = type === "2" ? restbg : shopbg;
   const backgroundHeight = type === "2" ? "400px" : "680px";
 
-  
-
   return (
     <div>
       <ProfileModal isOpen={showProfileModal} onClose={handleProfileModalClose} onEditProfileClick={openEditDetailsModal} profileData={profileData} />
       <EditDetailsModal isOpen={isEditDetailsModalOpen} onClose={closeEditDetailsModal} profileData={profileData} />
-      <Todayspecial isOpen={isMenuModalOpen} onClose={toggleMenuModal} modalType="Menu" />
+      <Todayspecial currencySymbol={currency_symbol} isOpen={isMenuModalOpen} onClose={toggleMenuModal} modalType="Menu" />
       <ShopFlyerAdmin isOpen={isShopFlyerModalOpen} onClose={toggleShopFlyerModal} flyerToEdit={flyerToEdit} />
-      <CategoryAdmin 
-        isOpen={isCategoryModalOpen} 
+      <CategoryAdmin
+        isOpen={isCategoryModalOpen}
         onClose={() => {
           setIsCategoryModalOpen(false);
           setCategoryToEdit(null);
-        }} 
+        }}
         onCategoryAdded={refetchCategories}
         categoryToEdit={categoryToEdit}
       />
-<ShopFlyerAdmin 
-  isOpen={isShopFlyerModalOpen}
-  onClose={handleCloseShopFlyerModal}
-  flyerToEdit={flyerToEdit}
-/>   
-<ProductDetailsShop 
-      isOpen={isProductModalOpen} 
-      onClose={toggleProductModal} 
-      productToEdit={productToEdit}
-      categories={categories}
-    />
+      <ShopFlyerAdmin isOpen={isShopFlyerModalOpen} onClose={handleCloseShopFlyerModal} flyerToEdit={flyerToEdit} />
+      <ProductDetailsShop isOpen={isProductModalOpen} onClose={toggleProductModal} productToEdit={productToEdit} categories={categories} />
 
       <div className="">
         <Navbardashboard onAvatarClick={handleProfileModalOpen} profileLogo={profileData?.logo} />
@@ -214,7 +274,7 @@ const handleCloseShopFlyerModal = useCallback(() => {
                 <p className="mb-4">Add your Categories</p>
                 <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleCategoryModal} />
               </div>
-              <Categorymap onEditCategory={handleEditCategory} />
+              <Categorymap onEditCategory={handleEditCategory} onCategoriesFetched={handleCategoriesFetched} />{" "}
             </div>
             <div className="tdtags">
               <div className="flex justify-between items-center">
@@ -223,11 +283,21 @@ const handleCloseShopFlyerModal = useCallback(() => {
               <TodaySpecialCards currencySymbol={currency_symbol} />
             </div>
             <div className="tdtags">
-              <div className="flex justify-between items-center">
-                <p className="mb-4">Add Your Restaurant Menu</p>
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleMenuModal} />
+              <div className="flex justify-between items-center mb-4">
+                <p className="">Add Your Restaurant Menu</p>
+                <div className="flex items-center gap-4">
+                  <Select id="countries" className="categoryfilter" required value={selectedCategory} onChange={handleCategoryChange}>
+                    <option value="All">All</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.cat_eng}>
+                        {category.cat_eng}
+                      </option>
+                    ))}
+                  </Select>
+                  <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleMenuModal} />
+                </div>
               </div>
-              <MenuCardsAdmin currencySymbol={currency_symbol} />
+              <MenuCardsAdmin currencySymbol={currency_symbol} selectedCategory={selectedCategory} />{" "}
             </div>
           </>
         ) : (
@@ -235,15 +305,65 @@ const handleCloseShopFlyerModal = useCallback(() => {
             <div className="tdtags">
               <div className="flex justify-between items-center">
                 <p className="mb-4">Add your Products</p>
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleProductModal} />
+                <div className="flex items-center gap-4">
+  <Select id="categories" className="categoryfilter" required value={selectedCategory} onChange={handleCategoryChange}>
+    <option value="All">All Categories</option>
+    {categories.map((category) => (
+      <option key={category.id} value={category.cat_eng}>
+        {category.cat_eng}
+      </option>
+    ))}
+  </Select>
+  {selectedCategory !== "All" && (
+    <Select id="subcategories" className="categoryfilter" required value={selectedSubcategory} onChange={handleSubcategoryChange}>
+      <option value="All">All Subcategories</option>
+      {subcategories.map((subcategory) => (
+        <option key={subcategory.id} value={subcategory.subcat_eng}>
+          {subcategory.subcat_eng}
+        </option>
+      ))}
+    </Select>
+  )}
+  <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleProductModal} />
+</div>
               </div>
-              <ShopCardAdmin currencySymbol={currency_symbol} onEditProduct={handleEditProduct} />
+              <ShopCardAdmin 
+  currencySymbol={currency_symbol} 
+  onEditProduct={handleEditProduct} 
+  selectedCategory={selectedCategory}
+  selectedSubcategory={selectedSubcategory}
+/>         </div>
+<div className="tdtags">
+            <div className="flex justify-between items-center">
+              <p className="mb-4">Add Flyers for Products</p>
+              <div className="flex items-center gap-4">
+                <Select id="flyer-categories" className="categoryfilter" required value={selectedFlyerCategory} onChange={handleFlyerCategoryChange}>
+                  <option value="All">All Categories</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.cat_eng}>
+                      {category.cat_eng}
+                    </option>
+                  ))}
+                </Select>
+                {selectedFlyerCategory !== "All" && (
+                  <Select id="flyer-subcategories" className="categoryfilter" required value={selectedFlyerSubcategory} onChange={handleFlyerSubcategoryChange}>
+                    <option value="All">All Subcategories</option>
+                    {flyerSubcategories.map((subcategory) => (
+                      <option key={subcategory.id} value={subcategory.subcat_eng}>
+                        {subcategory.subcat_eng}
+                      </option>
+                    ))}
+                  </Select>
+                )}
+                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleShopFlyerModal} />
+              </div>
             </div>
-            <div className="tdtags">
-              <div className="flex justify-between items-center">
-                <p className="mb-4">Add Flyers for Products</p>
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleShopFlyerModal} />              </div>
-                <Flyercard onEditFlyer={handleEditFlyer} />        </div>
+            <Flyercard 
+              onEditFlyer={handleEditFlyer} 
+              selectedCategory={selectedFlyerCategory}
+              selectedSubcategory={selectedFlyerSubcategory}
+            />
+          </div>
           </>
         )}
       </div>

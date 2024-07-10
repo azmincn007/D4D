@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { Card, Button } from 'flowbite-react';
@@ -19,15 +19,26 @@ const fetchFlyers = async () => {
   return data.data.flyers;
 };
 
-function Flyercard({ onEditFlyer }) {
+function Flyercard({ onEditFlyer, selectedCategory, selectedSubcategory }) {
   const queryClient = useQueryClient();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedFlyer, setSelectedFlyer] = useState(null);
+  const [filteredFlyers, setFilteredFlyers] = useState([]);
 
   const { data: flyers, isLoading, isError, error } = useQuery({
     queryKey: ['flyers'],
     queryFn: fetchFlyers,
   });
+
+  useEffect(() => {
+    if (flyers) {
+      setFilteredFlyers(flyers.filter(flyer => {
+        const categoryMatch = selectedCategory === 'All' || flyer.cat_eng === selectedCategory;
+        const subcategoryMatch = selectedSubcategory === 'All' || flyer.subcat_eng === selectedSubcategory;
+        return categoryMatch && subcategoryMatch;
+      }));
+    }
+  }, [flyers, selectedCategory, selectedSubcategory]);
 
   const updateFlyerStatus = async ({ flyer_id, status }) => {
     const authToken = localStorage.getItem('authToken');
@@ -74,7 +85,7 @@ function Flyercard({ onEditFlyer }) {
   return (
     <>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
-        {flyers.map((flyer, index) => (
+        {filteredFlyers.map((flyer, index) => (
           flyer ? (
             <FlyerCard
               key={index}
@@ -86,6 +97,11 @@ function Flyercard({ onEditFlyer }) {
           ) : null
         ))}
       </div>
+      {filteredFlyers.length === 0 && (
+        <div className="text-center mt-4">
+          No flyers found for the selected category and subcategory.
+        </div>
+      )}
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDeleteModal}

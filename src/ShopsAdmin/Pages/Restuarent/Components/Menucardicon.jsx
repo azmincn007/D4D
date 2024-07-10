@@ -1,12 +1,14 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { Card, Button } from 'flowbite-react';
 import { MdEdit } from 'react-icons/md';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import Todayspecial from '../../../Modal/TodaySpecial';
+import Todayspecial from '../../../Modal/Addmenu';
 import ConfirmDeleteModal from './ConfirmDelete';
+import Loading from '../../../../api/Loading';
+import ErrorMessage from '../../../../Pages/Authentication/ErrorValidation';
 
 const BASE_URL = 'https://hezqa.com';
 
@@ -35,51 +37,43 @@ const updateTodaySpecial = async ({ menu_id, is_special }) => {
   return data;
 };
 
-const CardWithEyeIcon = memo(({ item, onEditClick, onDeleteClick, updateSpecialMutation, currencySymbol }) => {
-  const [isActive, setIsActive] = useState(item.status === 'Active');
+const CardWithEyeIcon = React.memo(({ item, onEditClick, onDeleteClick, updateSpecialMutation, currencySymbol, onStatusToggle }) => {
   const [isSpecial, setIsSpecial] = useState(item.is_special === 1);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleStatusToggle = useCallback(async () => {
-    const newStatus = isActive ? 'Blocked' : 'Active';
-    const data = { menu_id: item.id, status: newStatus };
-  
-    
-    try {
-      const authToken = localStorage.getItem('authToken');
-      const response = await axios.post(
-        'https://hezqa.com/api/restaurent/menu-status',
-        data,
-        { headers: { 'Authorization': `Bearer ${authToken}` } }
-      );
-      
-      console.log('Response received:', response.data);
-      
-      setIsActive(!isActive);
-    } catch (error) {
-      console.error('Error toggling status:', error);
-    }
-  }, [isActive, item.id]);
+  const handleStatusToggle = useCallback(() => {
+    const newStatus = item.status === 'Active' ? 'Blocked' : 'Active';
+    onStatusToggle(item.id, newStatus);
+  }, [item.id, item.status, onStatusToggle]);
 
   const handleTodaySpecialClick = useCallback(() => {
     const newSpecialStatus = isSpecial ? 0 : 1;
-    updateSpecialMutation.mutate({
-      menu_id: item.id,
-      is_special: newSpecialStatus
-    }, {
-      onSuccess: () => {
-        setIsSpecial(newSpecialStatus === 1);
+    setIsLoading(true);
+    updateSpecialMutation.mutate(
+      {
+        menu_id: item.id,
+        is_special: newSpecialStatus
+      },
+      {
+        onSuccess: () => {
+          setIsSpecial(!isSpecial);
+          setIsLoading(false);
+        },
+        onError: () => {
+          setIsLoading(false);
+        }
       }
-    });
+    );
   }, [isSpecial, item.id, updateSpecialMutation]);
 
-  const fullImageUrl = item.image ? `${BASE_URL}${item.image}` : "/placeholder.svg";
+  const fullImageUrl = useMemo(() => item.image ? `${BASE_URL}${item.image}` : "/placeholder.svg", [item.image]);
 
-  const cardClassName = `w-full max-w-sm rounded-lg shadow-lg cardmenu ${
-    isSpecial ? 'bg-yellow-100 border-2 border-yellow-400' : ''
-  }`;
+  const cardClassName = useMemo(() => `w-full max-w-sm rounded-lg shadow-lg cardmenu ${
+    isSpecial ? 'border-[2px] border-green-500 ':''
+  }`, [isSpecial]);
 
   return (
-    <Card className={cardClassName} style={{ opacity: isActive ? 1 : 0.5 }}>
+    <Card className={cardClassName} style={{ opacity: item.status === 'Active' ? 1 : 0.5 }}>
       <div className="relative">
         <img
           src={fullImageUrl}
@@ -97,7 +91,7 @@ const CardWithEyeIcon = memo(({ item, onEditClick, onDeleteClick, updateSpecialM
           </Button>
         </div>
         {isSpecial && (
-          <div className="absolute top-4 left-4 bg-yellow-400 text-black px-2 py-1 rounded-full text-xs font-bold">
+          <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
             Today's Special
           </div>
         )}
@@ -109,9 +103,9 @@ const CardWithEyeIcon = memo(({ item, onEditClick, onDeleteClick, updateSpecialM
             size="sm"
             className={`rounded-full ${isSpecial ? 'bg-yellow text-white' : 'border-2 border-yellow bg-transparent text-black'}`}
             onClick={handleTodaySpecialClick}
-            disabled={updateSpecialMutation.isLoading}
+            disabled={isLoading}
           >
-           {isSpecial?'Remove Special': 'Make Special'}
+            {isLoading ? 'Loading...' : (isSpecial ? 'Remove Special' : 'Make Special')}
           </Button>
         </div>
         <h3 className="mb-2 text-lg font-bold">{item.menu_eng}</h3>
@@ -122,7 +116,7 @@ const CardWithEyeIcon = memo(({ item, onEditClick, onDeleteClick, updateSpecialM
           </div>
           <div className="flex items-center gap-2">
             <Button color="gray" size="sm" className="rounded-full" onClick={handleStatusToggle}>
-              {isActive ? (
+              {item.status === 'Active' ? (
                 <FaEye className="h-5 w-5 text-muted-foreground" />
               ) : (
                 <FaEyeSlash className="h-5 w-5 text-muted-foreground" />
@@ -135,7 +129,7 @@ const CardWithEyeIcon = memo(({ item, onEditClick, onDeleteClick, updateSpecialM
   );
 });
 
-const MenuCardsAdmin = ({ currencySymbol }) => {
+const MenuCardsAdmin = ({ currencySymbol, selectedCategory }) => {
   const queryClient = useQueryClient();
 
   const { data: foodItems, isLoading, isError, error, refetch } = useQuery({
@@ -187,17 +181,45 @@ const MenuCardsAdmin = ({ currencySymbol }) => {
     closeDeleteModal();
   }, [refetch, closeDeleteModal]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+  const handleStatusToggle = useCallback(async (menuId, newStatus) => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      await axios.post(
+        'https://hezqa.com/api/restaurent/menu-status',
+        { menu_id: menuId, status: newStatus },
+        { headers: { 'Authorization': `Bearer ${authToken}` } }
+      );
+      
+      // Update the local data
+      queryClient.setQueryData(['menuItems'], (oldData) => {
+        return oldData.map(item => 
+          item.id === menuId ? { ...item, status: newStatus } : item
+        );
+      });
+    } catch (error) {
+      console.error('Error toggling status:', error);
+    }
+  }, [queryClient]);
 
-  if (!Array.isArray(foodItems)) {
-    console.error('foodItems is not an array:', foodItems);
-    return <div>Error: Data is not in the expected format</div>;
+  const memoizedFoodItems = useMemo(() => foodItems || [], [foodItems]);
+  const filteredFoodItems = useMemo(() => {
+    if (selectedCategory === 'All') {
+      return memoizedFoodItems;
+    }
+    return memoizedFoodItems.filter(item => item.cat_eng === selectedCategory);
+  }, [memoizedFoodItems, selectedCategory]);
+
+  if (isLoading) return <Loading />;
+  if (isError) return <ErrorMessage message={error.message} />;
+
+  if (!Array.isArray(memoizedFoodItems)) {
+    console.error('foodItems is not an array:', memoizedFoodItems);
+    return <ErrorMessage message="Data is not in the expected format" />;
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
-      {foodItems.map((item) => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+      {filteredFoodItems.map((item) => (
         item ? (
           <CardWithEyeIcon
             key={item.id}
@@ -206,6 +228,7 @@ const MenuCardsAdmin = ({ currencySymbol }) => {
             onDeleteClick={handleDeleteClick}
             updateSpecialMutation={updateSpecialMutation}
             currencySymbol={currencySymbol}
+            onStatusToggle={handleStatusToggle}
           />
         ) : null
       ))}

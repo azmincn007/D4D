@@ -25,7 +25,7 @@ const TodaySpecialCards = ({ currencySymbol }) => {
   if (isError) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
       {specialItems.map((item, index) => (
         <Card key={index} className="w-full max-w-sm rounded-lg shadow-lg cardmenu">
           <div className="relative">
@@ -34,9 +34,9 @@ const TodaySpecialCards = ({ currencySymbol }) => {
               alt={item.menu_eng}
               className="h-56 w-full rounded-t-lg object-cover"
             />
-            <div className="absolute top-4 left-4 bg-yellow-400 text-black px-2 py-1 rounded-full text-xs font-bold">
-              Today's Special
-            </div>
+            <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+            Today's Special
+          </div>
           </div>
           <div className="p-4">
             <h3 className="mb-2 text-lg font-bold">{item.menu_eng}</h3>

@@ -4,8 +4,9 @@ import axios from 'axios';
 import { FaPencilAlt, FaTrash, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Loading from '../../../../api/Loading';
 import ConfirmDeleteModal from './ConfirmDelete';
+import Errorpage404 from '../../../../api/Errorpage404';
 
-function Categorymap({ onEditCategory }) {
+function Categorymap({ onEditCategory ,onCategoriesFetched}) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const queryClient = useQueryClient();
@@ -21,7 +22,6 @@ function Categorymap({ onEditCategory }) {
         Authorization: `Bearer ${token}`
       }
     });
-
     return response.data.data.categories;
   };
 
@@ -29,14 +29,18 @@ function Categorymap({ onEditCategory }) {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     staleTime: Infinity,
+    onSuccess: (data) => {
+      onCategoriesFetched(data);
+    }
   });
+
 
   if (isLoading) {
     return <div><Loading/></div>;
   }
 
   if (isError) {
-    return <div>Error fetching categories: {error.message}</div>;
+    return <div><Errorpage404/> </div>;
   }
 
   const toggleVisibility = async (id, currentStatus) => {
@@ -89,10 +93,13 @@ function Categorymap({ onEditCategory }) {
           return (
             <div
               key={obj.id}
-              className={`bg-white border-2 border-yellow-400 rounded-[20px] mb-4 mx-4 p-2 flex items-center transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-50'}`}
+              className={`bg-white border-2 border-yellow-400 rounded-[8px] mb-4 mx-4 p-2 flex items-center transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-50'}`}
               style={{ borderColor: '#FFD700' }}
             >
+              <div>
               <span className='mr-3 text-black'>{obj.cat_eng}</span>
+
+              </div>
               <div className='flex'>
                 <FaPencilAlt
                   className='text-blue-500 cursor-pointer mr-2'
