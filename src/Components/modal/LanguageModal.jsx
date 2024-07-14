@@ -1,16 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Modal } from 'flowbite-react';
-import { modalthemeNational } from '../../Themes/Modaltheme';
 import { LanguageContext } from '../../App';
 
 const LanguageModal = ({ isOpen, onClose, onSelect }) => {
   const languages = ['English', 'Arabic', 'Hindi', 'Malayalam'];
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
 
+  useEffect(() => {
+    const storedLanguage = localStorage.getItem('userLanguageSelected');
+    if (storedLanguage) {
+      setSelectedLanguage(storedLanguage);
+      onSelect(storedLanguage);
+    }
+  }, []);
+
   const handleLanguageSelect = (language) => {
     setSelectedLanguage(language);
+    localStorage.setItem('userLanguageSelected', language);
     onSelect(language);
-    onClose(); // Close the modal after selecting the region
+    onClose();
   };
 
   return (

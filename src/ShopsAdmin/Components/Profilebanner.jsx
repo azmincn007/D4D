@@ -2,25 +2,47 @@ import React, { useRef } from 'react';
 import { FaCamera } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 
-const ProfileBanner = ({ circleImage, showEditIcon, onImageChange }) => {
-  const fileInputRef = useRef(null);
+const ProfileBanner = ({ circleImage, backgroundImage, showEditIcon, onImageChange, onBackgroundImageChange }) => {
+  const circleInputRef = useRef(null);
+  const backgroundInputRef = useRef(null);
 
   const circleStyle = circleImage
     ? {
-        backgroundImage: `url(https://hezqa.com/${circleImage})`,
+        backgroundImage: `url(${typeof circleImage === 'string' && !circleImage.startsWith('blob:') ? `https://hezqa.com/${circleImage}` : circleImage})`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat'
       }
     : { backgroundColor: '#F1F1F1' };
 
-  const handleIconClick = () => {
-    fileInputRef.current.click();
+  const backgroundStyle = backgroundImage
+    ? {
+        backgroundImage: `url(${typeof backgroundImage === 'string' && !backgroundImage.startsWith('blob:') ? `https://hezqa.com/${backgroundImage}` : backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat'
+      }
+    : { backgroundImage: 'url("../Assets/restdashbg.png")' };
+
+  const handleCircleIconClick = () => {
+    circleInputRef.current.click();
+  };
+
+  const handleBackgroundIconClick = () => {
+    backgroundInputRef.current.click();
   };
 
   return (
-    <div className="bgprofilemodal relative">
-      <div className="absolute inset-0 flex items-center justify-center"></div>
+    <div className="bgprofilemodal relative" style={backgroundStyle}>
+      <div className="absolute inset-0 flex items-center justify-center">
+        {showEditIcon && (
+          <div
+            className="absolute cursor-pointer"
+            onClick={handleBackgroundIconClick}
+          >
+            <FaCamera className="w-[60px] h-[60px] text-white opacity-70" />
+          </div>
+        )}
+      </div>
       <div
         className="circle-image flex items-center justify-center relative"
         style={circleStyle}
@@ -29,7 +51,7 @@ const ProfileBanner = ({ circleImage, showEditIcon, onImageChange }) => {
         {showEditIcon && (
           <div
             className="absolute bottom-[10px] right-[-10px] bg-yellow rounded-full p-1 cursor-pointer"
-            onClick={handleIconClick}
+            onClick={handleCircleIconClick}
           >
             <FiEdit2 className="w-[16px] h-[16px] text-gray-600" />
           </div>
@@ -37,10 +59,17 @@ const ProfileBanner = ({ circleImage, showEditIcon, onImageChange }) => {
       </div>
       <input
         type="file"
-        ref={fileInputRef}
+        ref={circleInputRef}
         style={{ display: 'none' }}
         accept="image/png, image/jpeg"
         onChange={onImageChange}
+      />
+      <input
+        type="file"
+        ref={backgroundInputRef}
+        style={{ display: 'none' }}
+        accept="image/png, image/jpeg"
+        onChange={onBackgroundImageChange}
       />
     </div>
   );

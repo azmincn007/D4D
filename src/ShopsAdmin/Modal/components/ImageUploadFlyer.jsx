@@ -3,7 +3,7 @@ import React from 'react';
 function ImageUploadFlyer({ title, index, register, onUploadSuccess, onError, initialImage }) {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log("File selected:", file);
+    console.log("File selected:", file.name);
     if (file) {
       onUploadSuccess(file);
     }

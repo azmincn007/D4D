@@ -6,6 +6,14 @@ const ImageUpload = ({ title, index, register, onUploadSuccess, initialImage }) 
   const [fileName, setFileName] = useState('');
   const [error, setError] = useState('');
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    console.log("File selected in ImageUpload:", file);
+    if (file) {
+      onUploadSuccess(file);
+    }
+  };
+
   useEffect(() => {
     if (initialImage) {
       setImage(initialImage);
@@ -26,21 +34,22 @@ const ImageUpload = ({ title, index, register, onUploadSuccess, initialImage }) 
       setFileName(file.name);
       register('image', { value: file });
       setError('');
-      console.log("File selected:", file);
+      console.log("Calling onUploadSuccess with file:", file); // Add this line
       onUploadSuccess(file);
     } else {
       setError('Please select an image to upload.');
     }
   }, [register, onUploadSuccess]);
-
-  
-
+ 
   return (
     <div className="mb-4 flex flex-col items-center justify-center">
       <div
         className="w-28 h-28 bg-white flex items-center justify-center rounded-lg cursor-pointer border border-black"
+        onChange={handleFileChange}
         onClick={handleImageUpload}
       >
+
+
         {image ? (
           <div className="text-xs text-center text-[#4BB543]">
             {fileName}

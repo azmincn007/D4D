@@ -62,6 +62,13 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
 
   const updateFlyerMutation = useMutation(
     (formData) => {
+      console.log("Sending update request with formData:");
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      if (formData.entries().next().done) {
+        throw new Error("FormData is empty");
+      }
       return axios.post(`${BASE_URL}/api/restaurent/edit-flyer`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -70,12 +77,18 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
       });
     },
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        console.log("Update success response:", data);
         queryClient.invalidateQueries('flyers');
         handleCloseModal();
       },
       onError: (error) => {
         console.error('Error updating flyer:', error);
+        if (error.response) {
+          console.error("Error response data:", error.response.data);
+          console.error("Error response status:", error.response.status);
+          console.error("Error response headers:", error.response.headers);
+        }
         alert('Error updating flyer. Please try again.');
       }
     }
@@ -116,6 +129,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
   }, [isOpen]);
 
   useEffect(() => {
+    console.log("Effect triggered, flyerToEdit:", flyerToEdit);
     if (flyerToEdit) {
       reset({
         cat_id: flyerToEdit.cat_id,
@@ -125,6 +139,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
       });
       fetchSubcategories(flyerToEdit.cat_id);
       setImageUploaded(true);
+      setImageFile(null);  // Clear imageFile state when editing
     } else {
       reset();
       setImageUploaded(false);
@@ -153,61 +168,71 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
     onClose();
   }, [reset, onClose]);
 
-  const handleImageUploadSuccess = useCallback((file) => {
-    console.log("Image upload success, file:", file);
+  const handleImageUploadSuccess = (file) => {
+    console.log("Image upload success, file:", file.name);
     setImageFile(file);
     setImageUploaded(true);
-  }, []);
-
- 
+  };
 
   const onSubmit = async (data) => {
     if (!checkAuthToken()) return;
-
+  
+    console.log("Submitting form, data:", data);
     console.log("Submitting form, imageFile state:", imageFile);
-
-    if (!imageFile && !flyerToEdit) {
-      alert("Please upload an image before submitting.");
-      return;
-    }
-
+  
     setIsSubmitting(true);
-
+  
     const formData = new FormData();
     formData.append('cat_id', data.cat_id);
     formData.append('subcat_id', data.subcat_id);
     formData.append('valid_from', data.valid_from);
     formData.append('valid_to', data.valid_to);
-
+  
+    if (flyerToEdit) {
+      formData.append('flyer_id', flyerToEdit.id);
+    }
+  
     if (imageFile) {
       formData.append('image', imageFile);
-      console.log("Appending image to formData:", imageFile);
-    } else {
-      console.log("No image file to append");
+    } else if (flyerToEdit && flyerToEdit.image) {
+      // Append a flag to indicate no change in image
+      formData.append('keep_existing_image', 'true');
     }
-
+  
+    // Log the contents of formData
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+  
     try {
       if (flyerToEdit) {
-        formData.append('flyer_id', flyerToEdit.id);
-        console.log("Updating existing flyer");
-        await updateFlyerMutation.mutateAsync(formData);
+        console.log("Updating existing flyer, ID:", flyerToEdit.id);
+        const response = await updateFlyerMutation.mutateAsync(formData);
+        console.log("Update response:", response);
       } else {
         console.log("Adding new flyer");
-        await addFlyerMutation.mutateAsync(formData);
+        const response = await addFlyerMutation.mutateAsync(formData);
+        console.log("Add response:", response);
       }
       alert(flyerToEdit ? "Flyer updated successfully!" : "Flyer added successfully!");
     } catch (error) {
       console.error(flyerToEdit ? "Error updating flyer:" : "Error adding flyer:", error);
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        console.error("Error response status:", error.response.status);
+        console.error("Error response headers:", error.response.headers);
+      }
+      alert(flyerToEdit ? "Error updating flyer. Please try again." : "Error adding flyer. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  useEffect(() => {
-    console.log("imageFile state updated:", imageFile);
-  }, [imageFile]);
-
-
+  const handleImageUploadError = (error) => {
+    console.error("Image upload error:", error);
+    setImageUploaded(false);
+    setImageFile(null);
+  };
 
   return (
     <Modal show={isOpen} onClose={handleCloseModal} className='modalfav'>
@@ -288,26 +313,21 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
                 </div>
               </div>
 
-              <ImageUploadFlyer 
-  title="Upload Flyer Image"
-  index="flyer"
-  register={register}
-  onUploadSuccess={handleImageUploadSuccess}
-  onError={(error) => {
-    console.error("Image upload error:", error);
-    setImageUploaded(false);
-    setImageFile(null);
-  }}
-  initialImage={flyerToEdit?.image ? `${BASE_URL}${flyerToEdit.image}` : null}
-/>
-              {imageUploaded && <p className="text-green-500 mt-2">Image uploaded successfully</p>}
+              <ImageUpload
+                title="Upload Image"
+                index="product"
+                register={register}
+                onUploadSuccess={handleImageUploadSuccess}
+                onError={handleImageUploadError}
+                initialImage={flyerToEdit?.image ? `${BASE_URL}${flyerToEdit.image}` : null}
+              />
             </div>
 
             <div className="mt-8 w-[50%] mx-auto">
               <Button
                 type="submit"
                 className="w-full py-2 bg-yellow text-black rounded"
-                // disabled={isSubmitting || (!imageUploaded && !flyerToEdit)}
+                disabled={isSubmitting}
               >
                 {isSubmitting ? "Submitting..." : (flyerToEdit ? "Update Flyer" : "Add Flyer")}
               </Button>

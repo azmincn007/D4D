@@ -1,13 +1,13 @@
 import { Button, Label } from "flowbite-react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import PasswordInputAdmin from "../../Components/authentication/Passwordinputadmin";
 import { IoIosClose } from "react-icons/io";
+import { useMutation } from "react-query";
+import axios from "axios";
 
-function CreateSecurepassword({email, onClose}) {
-  const navigate = useNavigate();
+function CreateSecurepassword({ email, onClose }) {
   const {
     register,
     handleSubmit,
@@ -15,20 +15,25 @@ function CreateSecurepassword({email, onClose}) {
     watch,
   } = useForm();
 
-  const handleContinueToLogin = (data) => {
-    console.log(data);
-    // Handle any necessary logic here
-    navigate('/loginadmin'); // Navigate to the login page
-  };
-
-  const oldPassword = watch("oldPassword");
   const newPassword = watch("newPassword");
 
-  const handleProfileModalClose = () => {
-   
-    onClose();
+  const resetPasswordMutation = useMutation(
+    (data) => axios.post("https://hezqa.com/api/reset-shop-psw", data),
+    {
+      onSuccess: () => {
+        // Handle successful password reset
+        onClose();
+      },
+      onError: (error) => {
+        // Handle error
+        console.error("Password reset failed:", error);
+      },
+    }
+  );
+
+  const handleContinueToLogin = (data) => {
+    resetPasswordMutation.mutate({ email, password: data.newPassword });
   };
-  
 
   return (
     <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px] ">
@@ -37,24 +42,6 @@ function CreateSecurepassword({email, onClose}) {
         className="flex min-w-[400px] flex-col p-6 rounded"
         onSubmit={handleSubmit(handleContinueToLogin)}
       >
-        <div className={`flex flex-col items-baseline ${errors.oldPassword ? 'mb-2' : 'mb-2'}`}>
-          <div className="mb-1">
-            <Label htmlFor="oldPassword" value="Old Password" className="labelstyle" />
-          </div>
-          <div className="w-[100%]">
-            <PasswordInputAdmin
-              register={register}
-              name="oldPassword"
-              placeholder="Enter Old Password"
-              rules={{
-                required: "Old password is required",
-              }}
-              error={errors.oldPassword}
-              className="w-[250px]"
-            />
-          </div>
-        </div>
-
         <div className={`flex flex-col items-baseline ${errors.newPassword ? 'mb-2' : 'mb-2'}`}>
           <div className="mb-1">
             <Label htmlFor="newPassword" value="New Password" className="labelstyle" />
@@ -70,8 +57,6 @@ function CreateSecurepassword({email, onClose}) {
                   value: 6,
                   message: "Password must be at least 6 characters long",
                 },
-                validate: (value) =>
-                  value !== oldPassword || "New password must be different from the old password",
               }}
               error={errors.newPassword}
               className="w-[250px]"
@@ -99,16 +84,22 @@ function CreateSecurepassword({email, onClose}) {
           </div>
         </div>
 
-        <Button className="mt-1 bg-yellow text-white auth-button" type="submit">
-          Continue to Login
+        <Button
+          className="mt-1 bg-yellow text-white auth-button"
+          type="submit"
+          disabled={resetPasswordMutation.isLoading}
+        >
+          {resetPasswordMutation.isLoading ? "Resetting..." : "Submit new password"}
         </Button>
-        <div className="flex items-center justify-between pb-2"></div>
+        {resetPasswordMutation.isError && (
+          <ErrorMessage message="Failed to reset password. Please try again." />
+        )}
       </form>
       <div className="absolute top-0 right-0 mt-3 mr-3">
-          <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
-            <IoIosClose className="text-base cursor-pointer" onClick={handleProfileModalClose} />
-          </div>
+        <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
+          <IoIosClose className="text-base cursor-pointer" onClick={onClose} />
         </div>
+      </div>
     </div>
   );
 }

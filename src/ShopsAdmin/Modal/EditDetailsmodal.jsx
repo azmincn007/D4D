@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React , { useEffect, useState } from "react";
 import { Label, Modal, TextInput, Button, Textarea } from "flowbite-react";
 import ProfileBanner from "../Components/Profilebanner";
 import { useForm } from "react-hook-form";
@@ -11,10 +11,10 @@ import axios from "axios";
 import { TbFileCertificate } from "react-icons/tb";
 import { useQueryClient } from 'react-query';
 
-function EditDetailsModal({ isOpen, onClose, profileData }) {
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
+function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
   const [wordCount, setWordCount] = useState(0);
   const [logo, setLogo] = useState(profileData?.logo || null);
+  const [backgroundImage, setBackgroundImage] = useState(profileData?.background_img || null);
 
   const queryClient = useQueryClient();
 
@@ -35,6 +35,7 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
       contact_num: profileData?.contact_num || "",
       logo: profileData?.logo || null,
       certificate: profileData?.certificate || null,
+      background_img: profileData?.background_img || null,
     },
   });
 
@@ -49,8 +50,22 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
       setValue("contact_num", profileData.contact_num || "");
       setValue("logo", profileData.logo || null);
       setValue("certificate", profileData.certificate || null);
+      setValue("background_img", profileData.background_img || null);
+      setLogo(profileData.logo || null);
+      setBackgroundImage(profileData.background_img || null);
     }
   }, [profileData, setValue]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof logo === 'string' && logo.startsWith('blob:')) {
+        URL.revokeObjectURL(logo);
+      }
+      if (typeof backgroundImage === 'string' && backgroundImage.startsWith('blob:')) {
+        URL.revokeObjectURL(backgroundImage);
+      }
+    };
+  }, [logo, backgroundImage]);
 
   const onSubmit = async (data) => {
     try {
@@ -58,14 +73,14 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
       
       const fieldsToInclude = [
         'logo', 'certificate', 'contact_num', 'alternate_num', 
-        'desc', 'shopname_eng', 'shopname_ar', 'shopname_hin', 'shopname_mal'
+        'desc', 'shopname_eng', 'shopname_ar', 'shopname_hin', 'shopname_mal', 'background_img'
       ];
   
       const dataToLog = {};
   
       fieldsToInclude.forEach(key => {
         if (data[key] !== undefined && data[key] !== null) {
-          if (key === 'logo' || key === 'certificate') {
+          if (key === 'logo' || key === 'certificate' || key === 'background_img') {
             if (data[key] instanceof FileList && data[key].length > 0) {
               formData.append(key, data[key][0], data[key][0].name);
               dataToLog[key] = data[key][0].name;
@@ -85,11 +100,6 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
   
       console.log("Data being sent to the backend:", dataToLog);
   
-      // Log the actual FormData content
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-      }
-  
       const token = localStorage.getItem('authToken');
   
       const response = await axios.post('https://hezqa.com/api/restaurent/edit-profile', formData, {
@@ -101,6 +111,15 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
   
       console.log("Profile updated successfully:", response.data);
       queryClient.invalidateQueries(["restaurantProfile"]);
+      
+      onProfileUpdate({
+        ...profileData,
+        ...data,
+        logo: logo,
+        background_img: backgroundImage,
+      });
+
+      console.log("Attempting to close modal");
       onClose();
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -112,7 +131,8 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
       } else {
         console.error("Error message:", error.message);
       }
-      // Handle error (e.g., show error message to user)
+      console.log("Attempting to close modal after error");
+      onClose();
     }
   };
 
@@ -122,32 +142,45 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
     setWordCount(words.length);
   }, [description]);
 
-  const handleProfileModalClose = () => {
-    setIsProfileModalOpen(false);
-    onClose();
-  };
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogo(reader.result);
-        setValue("logo", file);
-      };
-      reader.readAsDataURL(file);
+      const imageUrl = URL.createObjectURL(file);
+      setLogo(imageUrl);
+      setValue("logo", file);
+    }
+  };
+  
+  const handleBackgroundImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
+      const imageUrl = URL.createObjectURL(file);
+      setBackgroundImage(imageUrl);
+      setValue("background_img", file);
     }
   };
 
+
   return (
-    <Modal show={isOpen} onClose={onClose} theme={modalthemeNational} className="maxw-[52rem]">
+    <Modal 
+      show={isOpen} 
+      onClose={onClose} 
+      theme={modalthemeNational} 
+      className="maxw-[52rem]"
+    >
       <Modal.Body className="shopsadminmodal font-inter relative mb-8">
         <div className="absolute top-2 right-2">
           <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
             <IoIosClose className="text-base cursor-pointer" onClick={onClose} />
           </div>
         </div>
-        <ProfileBanner circleImage={logo} showEditIcon={true} onImageChange={handleImageChange} />
+        <ProfileBanner 
+          circleImage={logo} 
+          backgroundImage={backgroundImage}
+          showEditIcon={true} 
+          onImageChange={handleImageChange}
+          onBackgroundImageChange={handleBackgroundImageChange}
+        />
         <div className="flex flex-col items-center mt-16">
           <React.Fragment>
             <div className="text-sm font-semibold mb-1">{profileData.shopname_eng}</div>
@@ -263,12 +296,6 @@ function EditDetailsModal({ isOpen, onClose, profileData }) {
             </div>
           </div>
         </form>
-
-        <div className="absolute top-0 right-0 mt-3 mr-3">
-          <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
-            <IoIosClose className="text-base cursor-pointer" onClick={handleProfileModalClose} />
-          </div>
-        </div>
       </Modal.Body>
     </Modal>
   );

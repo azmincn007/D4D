@@ -1,38 +1,18 @@
 import React, { useRef } from 'react';
-import lulu from '../../assets/lulu.png';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import SwiperCore from 'swiper/core';
 import { Navigation } from 'swiper/modules';
 import '../../styles/shopswiper.css';
+import { useNavigate } from 'react-router-dom';
 
-// Initialize Swiper's Navigation module
 SwiperCore.use([Navigation]);
 
-function Shopswiper({ onCardClick }) {
-  const swiperRef = useRef(null);
+const BASE_URL = 'https://hezqa.com';
 
-  const swiperdata = [
-    { img: lulu, title: 'Lulu 1' },
-    { img: lulu, title: 'Lulu 2' },
-    { img: lulu, title: 'Lulu 3' },
-    { img: lulu, title: 'Lulu 4' },
-    { img: lulu, title: 'Lulu 5' },
-    { img: lulu, title: 'Lulu 6' },
-    { img: lulu, title: 'Lulu 7' },
-    { img: lulu, title: 'Lulu 8' },
-    { img: lulu, title: 'Lulu 9' },
-    { img: lulu, title: 'Lulu 10' },
-    { img: lulu, title: 'Lulu 11' },
-    { img: lulu, title: 'Lulu 12' },
-    { img: lulu, title: 'Lulu 13' },
-    { img: lulu, title: 'Lulu 13' },
-    { img: lulu, title: 'Lulu 13' },
-    { img: lulu, title: 'Lulu 13' },
-    { img: lulu, title: 'Lulu 13' },
-    { img: lulu, title: 'Lulu 13' },
-    { img: lulu, title: 'Lulu 13' },
-  ];
+function Shopswiper({ data }) {
+  const swiperRef = useRef(null);
+  const navigate = useNavigate();
 
   const goToNext = () => {
     if (swiperRef.current && swiperRef.current.swiper) {
@@ -45,6 +25,16 @@ function Shopswiper({ onCardClick }) {
       swiperRef.current.swiper.slidePrev();
     }
   };
+
+console.log(data  + "data");
+ 
+
+const handleCardClick = (item) => {
+  navigate('/resto', {
+    state: { id: item.id }  // Pass the item's id to the resto page
+  });
+};
+
 
   return (
     <div className="py-3 px-5 font-inter font-semibold text-sm Mobile:py-2 Tab:px-0" style={{ position: 'relative' }}>
@@ -69,12 +59,15 @@ function Shopswiper({ onCardClick }) {
           1440: { slidesPerView: 14, spaceBetween: 30, maxWidth: 1440 },
         }}
       >
-        {swiperdata.map((obj, index) => (
+        {data.map((item, index) => (
           <SwiperSlide key={index}>
-            <div className="swipercard" onClick={onCardClick}>
-              <img src={obj.img} alt={obj.title} />
-              <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px]">
-                {obj.title}
+            <div className="swipercard" onClick={() => handleCardClick(item, index)}>
+              <img className='w-[90px] h-[90px] rounded-full object-cover'
+                src={item.logo ? `${BASE_URL}${item.logo}` : '/path_to_default_image'}
+                alt={item.shopname_eng || item.name}
+              />
+              <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px] text-center">
+                {item.shopname_eng}
               </p>
             </div>
           </SwiperSlide>

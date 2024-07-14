@@ -13,8 +13,7 @@ import CategoryAdmin from "../../Modal/Categoryadmin";
 import Errorpage404 from "../../../api/Errorpage404";
 import Loading from "../../../api/Loading";
 import { useNavigate } from "react-router-dom";
-import restbg from "../../Assets/restdashbg.png";
-import shopbg from "../../Assets/Shopdashbg.png";
+
 import Addcategoryshop from "../../Modal/components/ShopFLyeradmin";
 import ProductDetailsShop from "../../Modal/components/ProductDetailsShop";
 import Categorymap from "./Components/Categorymap";
@@ -22,8 +21,8 @@ import TodaySpecialCards from "./Components/Todayspecialcard";
 import ShopCardAdmin from "./Components/ShopCardadmin";
 import ShopFlyerAdmin from "../../Modal/components/ShopFLyeradmin";
 import Flyercard from "./Components/Flyercard";
-import Flyer from "../../../Pages/Flyer";
 import { Dropdown, Label, Select } from "flowbite-react";
+import ShopProductDetailsAdmin from "../../Modal/components/Shopproductdetailsadmin";
 
 function RestuarentDashboard() {
   const navigate = useNavigate();
@@ -150,6 +149,7 @@ const handleSubcategoryChange = (event) => {
           region: response.data.data.region?.region_eng,
           currency_symbol: response.data.data.country?.currency_symbol,
         };
+        console.log(profileData);
         return profileData;
       } else {
         navigate("/404error");
@@ -223,7 +223,6 @@ const handleSubcategoryChange = (event) => {
 
   const { shopname_eng, email, region, country, currency_symbol, type } = profileData || {};
 
-  const backgroundImage = type === "2" ? restbg : shopbg;
   const backgroundHeight = type === "2" ? "400px" : "680px";
 
   return (
@@ -231,7 +230,7 @@ const handleSubcategoryChange = (event) => {
       <ProfileModal isOpen={showProfileModal} onClose={handleProfileModalClose} onEditProfileClick={openEditDetailsModal} profileData={profileData} />
       <EditDetailsModal isOpen={isEditDetailsModalOpen} onClose={closeEditDetailsModal} profileData={profileData} />
       <Todayspecial currencySymbol={currency_symbol} isOpen={isMenuModalOpen} onClose={toggleMenuModal} modalType="Menu" />
-      <ShopFlyerAdmin isOpen={isShopFlyerModalOpen} onClose={toggleShopFlyerModal} flyerToEdit={flyerToEdit} />
+      <ShopFlyerAdmin isOpen={isShopFlyerModalOpen} onClose={toggleShopFlyerModal} flyerToEdit={flyerToEdit} categories={categories} />
       <CategoryAdmin
         isOpen={isCategoryModalOpen}
         onClose={() => {
@@ -241,7 +240,6 @@ const handleSubcategoryChange = (event) => {
         onCategoryAdded={refetchCategories}
         categoryToEdit={categoryToEdit}
       />
-      <ShopFlyerAdmin isOpen={isShopFlyerModalOpen} onClose={handleCloseShopFlyerModal} flyerToEdit={flyerToEdit} />
       <ProductDetailsShop isOpen={isProductModalOpen} onClose={toggleProductModal} productToEdit={productToEdit} categories={categories} />
 
       <div className="">
@@ -249,9 +247,12 @@ const handleSubcategoryChange = (event) => {
       </div>
 
       <div
-        className="dashrestbg relative flex flex-col justify-end min-h-[200px]"
-        style={{ backgroundImage: `url(${backgroundImage}`, height: backgroundHeight }}
-      >
+  className="dashrestbg relative flex flex-col justify-end min-h-[200px]"
+  style={{
+    backgroundImage: `url(https://hezqa.com${profileData.background_img})`,
+    height: backgroundHeight
+  }}
+>
         <div className="bg-black bg-opacity-50 inline-block p-4 rounded font-inter ml-20 mb-20 text-white self-start mb-4">
           <h1 className="text-lgx font-semibold">{shopname_eng || "Restaurant name"}</h1>
           <p className="text-base2x">{email || "Restaurant Email"}</p>
@@ -272,7 +273,7 @@ const handleSubcategoryChange = (event) => {
             <div className="tdtags">
               <div className="flex justify-between items-center">
                 <p className="mb-4">Add your Categories</p>
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleCategoryModal} />
+                <IoMdAdd className="h-8 w-8 cursor-pointer" onClick={toggleCategoryModal} />
               </div>
               <Categorymap onEditCategory={handleEditCategory} onCategoriesFetched={handleCategoriesFetched} />{" "}
             </div>
@@ -294,7 +295,7 @@ const handleSubcategoryChange = (event) => {
                       </option>
                     ))}
                   </Select>
-                  <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleMenuModal} />
+                  <IoMdAdd className="h-8 w-8 cursor-pointer" onClick={toggleMenuModal} />
                 </div>
               </div>
               <MenuCardsAdmin currencySymbol={currency_symbol} selectedCategory={selectedCategory} />{" "}
@@ -324,7 +325,7 @@ const handleSubcategoryChange = (event) => {
       ))}
     </Select>
   )}
-  <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleProductModal} />
+  <IoMdAdd className="h-8 w-8 cursor-pointer" onClick={toggleProductModal} />
 </div>
               </div>
               <ShopCardAdmin 
@@ -355,7 +356,8 @@ const handleSubcategoryChange = (event) => {
                     ))}
                   </Select>
                 )}
-                <IoMdAdd className="h-5 w-5 cursor-pointer" onClick={toggleShopFlyerModal} />
+                
+                <IoMdAdd className="h-8 w-8 cursor-pointer " onClick={toggleShopFlyerModal} />
               </div>
             </div>
             <Flyercard 

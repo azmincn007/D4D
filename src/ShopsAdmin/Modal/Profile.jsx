@@ -41,7 +41,7 @@ function ProfileModal({ isOpen, onClose, onEditProfileClick, profileData }) {
     
       <Modal show={isOpen} onClose={handleCloseModal} className='' theme={modalthemeNational}>
         <Modal.Body className='shopsadminmodal font-inter relative'>
-          <ProfileBanner circleImage={profileData.logo}/>
+          <ProfileBanner circleImage={profileData.logo}   backgroundImage={profileData.background_img} />
           <div className='flex flex-col items-center mt-16'>
             <div className='text-sm font-semibold mb-1'>{profileData.shopname_eng}</div>
             <div className='text-[#696969] text-xs font-semibold mb-1'>{profileData.email}</div>

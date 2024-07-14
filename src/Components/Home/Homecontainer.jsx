@@ -5,13 +5,14 @@ import Mobileshop from './Mobileshop';
 import Restuarents from './Restaurents';
 import Categorydropdown from './Components/CategoryDropdown';
 import '../../styles/DropdownStyle.css';
-import { ToggleContext } from '../../App';
-import MobileFilter from '../Mobile/Filter';
+import { SelectionContext, ToggleContext } from '../../App';
 
-function Homecontainer() {
-  const [selectedValue, setSelectedValue] = useState('Shops');
+function Homecontainer({menus}) {
+  const [selectedValue, setSelectedValue]=useContext(SelectionContext)
   const [ActiveToggle, setActiveToggle] = useContext(ToggleContext);
   const [selectedSubcategory, setSelectedSubcategory] = useState('Mobile');
+
+ 
 
   const handleOptionClick = (value) => {
     setSelectedValue(value);
@@ -60,7 +61,7 @@ function Homecontainer() {
           />
       
       </div>
-      <div className="right min-w-24  Tab:w-[100%] pb-16">
+      <div className="right w-[100%] min-w-24  Tab:w-[100%] pb-16">
         {selectedValue === 'Shops' && ActiveToggle === 'Offer' && <Contents />}
         {selectedValue === 'Shops' && ActiveToggle === 'Product' && (
           <Mobileshop selectedSubcategory={selectedSubcategory} />
@@ -69,7 +70,7 @@ function Homecontainer() {
           <>
          
             
-            <Restuarents />
+            <Restuarents menus={menus}/>
           </>
         )}
       </div>

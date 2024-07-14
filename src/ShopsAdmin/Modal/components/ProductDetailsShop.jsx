@@ -17,8 +17,11 @@ const formatDate = (date) => {
   const d = new Date(date);
   return d.toISOString().split("T")[0];
 };
-
+const getTodayDate = () => {
+  return formatDate(new Date());
+}; 
 function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
+ 
   const {
     register,
     handleSubmit,
@@ -26,7 +29,13 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
     control,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      valid_from: getTodayDate(),
+      valid_to: getTodayDate(),
+    }
+  });  
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -100,63 +109,76 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
     setImageFile(file);
   }, []);
 
-  useEffect(() => {
-    console.log("imageFile state updated:", imageFile);
-  }, [imageFile]);
+ 
+ 
 
-  const onSubmit = useCallback(async (data) => {
-    console.log("Submitting form, imageFile:", imageFile);
-    
-    if (!imageFile && !productToEdit) {
-      alert("Please upload an image before submitting.");
-      return;
-    }
+const onSubmit = useCallback(async (data) => {
+  console.log("Form data before submission:", data);
+  console.log("Image file:", imageFile);
 
-    setIsSubmitting(true);
+  // Use default values if not provided
+  const formDataWithDefaults = {
+    ...data,
+    valid_from: data.valid_from || getTodayDate(),
+    valid_to: data.valid_to || getTodayDate(),
+  };
 
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) {
-      alert("Authentication token not found. Please log in again.");
-      setIsSubmitting(false);
-      return;
-    }
+  console.log("Form data with defaults:", formDataWithDefaults);
 
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
+  if (!imageFile && !productToEdit) {
+    alert("Please upload an image before submitting.");
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  const authToken = localStorage.getItem("authToken");
+  if (!authToken) {
+    alert("Authentication token not found. Please log in again.");
+    setIsSubmitting(false);
+    return;
+  }
+
+  const formData = new FormData();
+  Object.entries(formDataWithDefaults).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
+  
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+  
+  if (productToEdit) {
+    formData.append("product_id", productToEdit.id);
+  }
+
+  console.log("FormData contents:");
+  for (let [key, value] of formData.entries()) {
+    console.log(key, value);
+  }
+
+  const url = productToEdit ? `${BASE_URL}/api/restaurent/edit-product` : `${BASE_URL}/api/restaurent/add-product`;
+
+  try {
+    const response = await axios.post(url, formData, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        "Content-Type": "multipart/form-data",
+      },
     });
-    
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-    
-    if (productToEdit) {
-      formData.append("product_id", productToEdit.id);
-    }
 
-    const url = productToEdit ? `${BASE_URL}/api/restaurent/edit-product` : `${BASE_URL}/api/restaurent/add-product`;
-
-    try {
-      const response = await axios.post(url, formData, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log(productToEdit ? "Product updated successfully:" : "Product added successfully:", response.data);
-      alert(productToEdit ? "Product updated successfully!" : "Product added successfully!");
-      reset();
-      setImageFile(null);
-      onClose();
-      queryClient.invalidateQueries("products");
-    } catch (error) {
-      console.error(productToEdit ? "Error updating product:" : "Error adding product:", error);
-      alert(productToEdit ? "Error updating product. Please try again." : "Error adding product. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [imageFile, productToEdit, reset, onClose, queryClient]);
+    console.log(productToEdit ? "Product updated successfully:" : "Product added successfully:", response.data);
+    reset();
+    setImageFile(null);
+    onClose();
+    queryClient.invalidateQueries("products");
+  } catch (error) {
+    console.error(productToEdit ? "Error updating product:" : "Error adding product:", error);
+    alert(productToEdit ? "Error updating product. Please try again." : "Error adding product. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+}, [imageFile, productToEdit, reset, onClose, queryClient]);
 
   const watchCategory = watch("cat_id");
 

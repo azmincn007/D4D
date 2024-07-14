@@ -1,7 +1,6 @@
 .bgprofilemodal{
     height: auto;
     min-height: 200px;
-    background-image: url('../Assets/restdashbg.png');
     background-size: cover;
     background-repeat: no-repeat;
     border-top-left-radius: 6px;

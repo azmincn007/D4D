@@ -12,15 +12,15 @@ import FormFieldDescription from "./components/FormFieldDescription";
 import FormFieldLanguage from "./components/FormfieldLanguage";
 import { useNavigate } from "react-router-dom";
 
-const BASE_URL = 'https://hezqa.com';
+const BASE_URL = "https://hezqa.com";
 
 // Function to fetch categories
 const fetchCategories = async () => {
-  const authToken = localStorage.getItem('authToken');
+  const authToken = localStorage.getItem("authToken");
   const response = await axios.get(`${BASE_URL}/api/restaurent/all-categories`, {
     headers: {
-      Authorization: `Bearer ${authToken}`
-    }
+      Authorization: `Bearer ${authToken}`,
+    },
   });
   return response.data.data.categories || [];
 };
@@ -36,6 +36,7 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
   const [imageUploaded, setImageUploaded] = useState(false);
   const [normalPriceFocused, setNormalPriceFocused] = useState(false);
   const [offerPriceFocused, setOfferPriceFocused] = useState(false);
+  const [isEditMode] = useState(modalType === "Edit Menu");
 
   const queryClient = useQueryClient();
 
@@ -44,51 +45,54 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
     handleSubmit,
     formState: { errors },
     reset,
-    setValue
+    setValue,
+    watch, // Add this line
   } = useForm();
 
   // Use React Query to fetch categories
-  const { data: categories = [], isLoading, isError } = useQuery({
-    queryKey: ['categories'],
+  const {
+    data: categories = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["categories"],
     queryFn: fetchCategories,
   });
 
   // Use React Query to fetch tags
-  const { data: tags = [], isLoading: isTagsLoading, isError: isTagsError } = useQuery({
-    queryKey: ['tags'],
+  const {
+    data: tags = [],
+    isLoading: isTagsLoading,
+    isError: isTagsError,
+  } = useQuery({
+    queryKey: ["tags"],
     queryFn: fetchTags,
   });
 
   // Mutation for adding or editing a menu item
   const mutation = useMutation(
     async (formData) => {
-      const authToken = localStorage.getItem('authToken');
-      const url = modalType === "Edit Menu" 
-        ? `${BASE_URL}/api/restaurent/edit-menu`
-        : `${BASE_URL}/api/restaurent/add-menu`;
+      const authToken = localStorage.getItem("authToken");
+      const url = modalType === "Edit Menu" ? `${BASE_URL}/api/restaurent/edit-menu` : `${BASE_URL}/api/restaurent/add-menu`;
 
-      const response = await axios.post(
-        url,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       return response.data;
     },
     {
       onSuccess: (data) => {
-        console.log('Mutation successful. Response data:', data);
-        queryClient.invalidateQueries('menuItems');
+        console.log("Mutation successful. Response data:", data);
+        queryClient.invalidateQueries("menuItems");
         handleCloseModal();
       },
       onError: (error) => {
-        navigate('/404error');
-      }
+        navigate("/404error");
+      },
     }
   );
 
@@ -96,24 +100,24 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
     if (isOpen) {
       reset();
       setImageUploaded(false);
-      queryClient.resetQueries('categories');
-      queryClient.resetQueries('tags');
+      queryClient.resetQueries("categories");
+      queryClient.resetQueries("tags");
 
       if (modalType === "Edit Menu" && itemToEdit) {
-        console.log(itemToEdit, 'items');
-        setValue('menu_eng', itemToEdit.menu_eng);
-        setValue('menu_ar', itemToEdit.menu_ar);
-        setValue('menu_hin', itemToEdit.menu_hin);
-        setValue('menu_mal', itemToEdit.menu_mal);
-        setValue('desc_eng', itemToEdit.desc_eng);
-        setValue('desc_ar', itemToEdit.desc_ar);
-        setValue('desc_hin', itemToEdit.desc_hin);
-        setValue('desc_mal', itemToEdit.desc_mal);
-        setValue('cat_id', itemToEdit.cat_id);
-        setValue('type', itemToEdit.type);
-        setValue('normal_price', itemToEdit.normal_price);
-        setValue('offer_price', itemToEdit.offer_price);
-        setValue('tag_id', itemToEdit.tag_id);
+        console.log(itemToEdit, "items");
+        setValue("menu_eng", itemToEdit.menu_eng);
+        setValue("menu_ar", itemToEdit.menu_ar);
+        setValue("menu_hin", itemToEdit.menu_hin);
+        setValue("menu_mal", itemToEdit.menu_mal);
+        setValue("desc_eng", itemToEdit.desc_eng);
+        setValue("desc_ar", itemToEdit.desc_ar);
+        setValue("desc_hin", itemToEdit.desc_hin);
+        setValue("desc_mal", itemToEdit.desc_mal);
+        setValue("cat_id", itemToEdit.cat_id.toString());
+        setValue("type", itemToEdit.type);
+        setValue("normal_price", itemToEdit.normal_price);
+        setValue("offer_price", itemToEdit.offer_price);
+        setValue("tag_id", itemToEdit.tag_id.toString());
         setImageUploaded(true);
       }
     }
@@ -124,26 +128,25 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
       alert("Please upload an image");
       return;
     }
-    
+
     try {
       const formData = new FormData();
-      
-      Object.keys(data).forEach(key => {
+
+      Object.keys(data).forEach((key) => {
         formData.append(key, data[key]);
       });
-      
+
       if (data.cover && data.cover[0]) {
-        formData.append('image', data.cover[0]);
+        formData.append("image", data.cover[0]);
       }
 
       if (modalType === "Edit Menu" && itemToEdit) {
-        formData.append('menu_id', itemToEdit.id);
+        formData.append("menu_id", itemToEdit.id);
       }
 
-      console.log('Form data before sending:', Object.fromEntries(formData));
+      console.log("Form data before sending:", Object.fromEntries(formData));
 
       await mutation.mutateAsync(formData);
-
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -163,15 +166,15 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
             {modalType === "Edit Menu" ? "Edit Menu Item" : "Add Menu Item"}
           </h1>
 
-          <FormFieldLanguage language="eng" register={register} errors={errors} />
-          <FormFieldLanguage language="ar" register={register} errors={errors} />
-          <FormFieldLanguage language="hin" register={register} errors={errors} />
-          <FormFieldLanguage language="mal" register={register} errors={errors} />
+          <FormFieldLanguage language="eng" register={register} errors={errors} isEditMode={isEditMode} />
+          <FormFieldLanguage language="ar" register={register} errors={errors} isEditMode={isEditMode} />
+          <FormFieldLanguage language="hin" register={register} errors={errors} isEditMode={isEditMode} />
+          <FormFieldLanguage language="mal" register={register} errors={errors} isEditMode={isEditMode} />
 
-          <FormFieldDescription language="eng" register={register} errors={errors} />
-          <FormFieldDescription language="ar" register={register} errors={errors} />
-          <FormFieldDescription language="hin" register={register} errors={errors} />
-          <FormFieldDescription language="mal" register={register} errors={errors} />
+          <FormFieldDescription language="eng" register={register} errors={errors} isEditMode={isEditMode} />
+          <FormFieldDescription language="ar" register={register} errors={errors} isEditMode={isEditMode} />
+          <FormFieldDescription language="hin" register={register} errors={errors} isEditMode={isEditMode} />
+          <FormFieldDescription language="mal" register={register} errors={errors} isEditMode={isEditMode} />
 
           <div className="w-[50%] mx-auto">
             <div className="mb-4 form-select">
@@ -182,16 +185,19 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
                 })}
                 className="w-[100%] form-select"
                 disabled={isLoading}
+                value={watch('cat_id')}
               >
                 <option value="">Select Category of Dish</option>
                 {categories.length > 0 ? (
                   categories.map((category) => (
-                    <option key={category.id} value={category.id}>
+                    <option key={category.id} value={category.id.toString()}>
                       {category.cat_eng}
                     </option>
                   ))
                 ) : (
-                  <option value="" disabled>No categories available</option>
+                  <option value="" disabled>
+                    No categories available
+                  </option>
                 )}
               </Select>
               {errors.categoryOfDish && <ErrorMessage message={errors.categoryOfDish.message} />}
@@ -204,7 +210,8 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
                 {...register(`type`, {
                   required: `Type of dish is required`,
                 })}
-                className="w-[100%] form-select "
+                className="w-[100%] form-select"
+                value={watch('type')}
               >
                 <option value="">Select Type of Dish</option>
                 <option value="Veg">Veg</option>
@@ -221,16 +228,19 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
                 })}
                 className="w-[100%] form-select"
                 disabled={isTagsLoading}
+                value={watch('tag_id')}
               >
                 <option value="">Select Tag</option>
                 {tags.length > 0 ? (
                   tags.map((tag) => (
-                    <option key={tag.id} value={tag.id}>
+                    <option key={tag.id} value={tag.id.toString()}>
                       {tag.tag_eng}
                     </option>
                   ))
                 ) : (
-                  <option value="" disabled>No tags available</option>
+                  <option value="" disabled>
+                    No tags available
+                  </option>
                 )}
               </Select>
               {errors.tag_id && <ErrorMessage message={errors.tag_id.message} />}
@@ -248,7 +258,7 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
                 placeholder=" "
                 onFocus={() => setNormalPriceFocused(true)}
                 onBlur={(e) => {
-                  if (e.target.value === '') {
+                  if (e.target.value === "" && !isEditMode) {
                     setNormalPriceFocused(false);
                   }
                 }}
@@ -268,10 +278,11 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
               <label
                 htmlFor="normalPrice"
                 className={`absolute text-sm duration-300 transform bg-white dark:bg-gray-900 pointer-events-none
-                  ${normalPriceFocused
-                    ? 'absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1'
-                    : 'text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]'
-                }`}
+                  ${
+                    normalPriceFocused || isEditMode
+                      ? "absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+                      : "text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]"
+                  }`}
               >
                 Normal Price (in {currencySymbol})
               </label>
@@ -289,7 +300,7 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
                 placeholder=" "
                 onFocus={() => setOfferPriceFocused(true)}
                 onBlur={(e) => {
-                  if (e.target.value === '') {
+                  if (e.target.value === "" && !isEditMode) {
                     setOfferPriceFocused(false);
                   }
                 }}
@@ -309,10 +320,11 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
               <label
                 htmlFor="offerPrice"
                 className={`absolute text-sm duration-300 transform bg-white dark:bg-gray-900 pointer-events-none
-                  ${offerPriceFocused
-                    ? 'absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1'
-                    : 'text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]'
-                }`}
+                  ${
+                    offerPriceFocused || isEditMode
+                      ? "absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+                      : "text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]"
+                  }`}
               >
                 Offer Price (in {currencySymbol})
               </label>
@@ -321,30 +333,23 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
           </div>
 
           <div className="flex flex-col w-[60%] mx-auto">
-            <ImageUpload 
-              title="cover" 
-              index={0} 
-              register={register} 
-              onUploadSuccess={() => setImageUploaded(true)} 
+            <ImageUpload
+              title="cover"
+              index={0}
+              register={register}
+              onUploadSuccess={() => setImageUploaded(true)}
               initialImage={itemToEdit?.image ? `${BASE_URL}${itemToEdit.image}` : null}
             />
           </div>
 
           <div className="mt-4 w-[50%] mx-auto">
-            <Button 
-              type="submit" 
-              className="w-full py-2 bg-yellow text-black rounded"
-              disabled={mutation.isLoading}
-            >
-              {mutation.isLoading ? 'Uploading...' : (modalType === "Edit Menu" ? 'Update' : 'Upload')}
+            <Button type="submit" className="w-full py-2 bg-yellow text-black rounded" disabled={mutation.isLoading}>
+              {mutation.isLoading ? "Uploading..." : modalType === "Edit Menu" ? "Update" : "Upload"}
             </Button>
           </div>
         </form>
         <div className="absolute top-0 right-0 mt-3 mr-3">
-          <div 
-            className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white" 
-            onClick={handleCloseModal}
-          >
+          <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white" onClick={handleCloseModal}>
             <IoIosClose className="text-base cursor-pointer" />
           </div>
         </div>

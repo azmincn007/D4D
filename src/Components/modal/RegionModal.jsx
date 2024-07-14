@@ -50,7 +50,7 @@ const RegionModal = ({ isOpen, onClose, onSelect }) => {
                   <li
                     key={region.region_id}
                     className='bg-[#F5F3F3] mb-1 cursor-pointer'
-                    onClick={() => handleRegionSelect(region.region_eng)}
+                    onClick={() => handleRegionSelect(region.id)}
                   >
                     <p className='ml-2 py-1'>{useLanguageText(region)}</p>
                   </li>
