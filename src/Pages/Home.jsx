@@ -40,6 +40,7 @@ function Home() {
     const response = await axios.get(endpoint);
     console.log(response.data.data);
     console.log(response.data.data.restaurants);
+  
     return response.data.data;
   };
 
@@ -95,6 +96,8 @@ function Home() {
     return <div>Error: {error.message}</div>;
   }
 
+ 
+
   return (
     <div>
       <LanguageModal isOpen={showLanguageModal} onClose={() => setShowLanguageModal(false)} onSelect={handleLanguageSelection} />
@@ -109,7 +112,7 @@ function Home() {
       <MarqueeComponent />
       <Shopswiper data={data?.restaurants || []} />
       <div className="homecontainerdiv">
-      <Homecontainer onValueChange={handleValueChange} menus={data?.menus || []} />      </div>
+      <Homecontainer onValueChange={handleValueChange} menus={data?.menus || []}  currencySymbol={data?.country?.currency_symbol || '$'} />      </div>
     </div>
   );
 }

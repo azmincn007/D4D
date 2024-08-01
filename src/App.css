@@ -50,7 +50,7 @@ button{
 
 /* baground setting */
 .bgresto {
-  background: url("./assets/Restaurentmenu.png");
+  background: url("./assets/ImgRes.png");
 }
 
 .nearby input:focus {
@@ -520,8 +520,11 @@ input:-webkit-autofill:active {
 
 .cardres{
 img{
-  height: 300px;
-  width: 200px;
+  height: 250px;
+}
+.vg{
+  height: 37.5px !important;
+
 }
 }
 
@@ -543,4 +546,14 @@ padding: 0.2rem 1rem;
 background-color: #FFD814;
 border: none;
 }
+
+
+.dropdownrescat button{
+  background-color: rgba(35, 47, 62, 0.4) !important;  /* 40% opacity */
+}
+
+.dropdownrescat button:hover{
+  background-color: #eab308  !important;
+}
+
 

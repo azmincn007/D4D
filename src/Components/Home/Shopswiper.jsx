@@ -5,6 +5,7 @@ import SwiperCore from 'swiper/core';
 import { Navigation } from 'swiper/modules';
 import '../../styles/shopswiper.css';
 import { useNavigate } from 'react-router-dom';
+import useLanguageText from '../Uselanguagetext';
 
 SwiperCore.use([Navigation]);
 
@@ -26,15 +27,11 @@ function Shopswiper({ data }) {
     }
   };
 
-console.log(data  + "data");
- 
-
-const handleCardClick = (item) => {
-  navigate('/resto', {
-    state: { id: item.id }  // Pass the item's id to the resto page
-  });
-};
-
+  const handleCardClick = (item) => {
+    navigate('/resto', {
+      state: { id: item.id }
+    });
+  };
 
   return (
     <div className="py-3 px-5 font-inter font-semibold text-sm Mobile:py-2 Tab:px-0" style={{ position: 'relative' }}>
@@ -59,19 +56,28 @@ const handleCardClick = (item) => {
           1440: { slidesPerView: 14, spaceBetween: 30, maxWidth: 1440 },
         }}
       >
-        {data.map((item, index) => (
-          <SwiperSlide key={index}>
-            <div className="swipercard" onClick={() => handleCardClick(item, index)}>
-              <img className='w-[90px] h-[90px] rounded-full object-cover'
-                src={item.logo ? `${BASE_URL}${item.logo}` : '/path_to_default_image'}
-                alt={item.shopname_eng || item.name}
-              />
-              <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px] text-center">
-                {item.shopname_eng}
-              </p>
-            </div>
-          </SwiperSlide>
-        ))}
+        {data.map((item, index) => {
+          const shopName = useLanguageText({
+            country_eng: item.shopname_eng,
+            country_ar: item.shopname_ar,
+            country_mal: item.shopname_mal,
+            country_hin: item.shopname_hin
+          });
+
+          return (
+            <SwiperSlide key={index}>
+              <div className="swipercard" onClick={() => handleCardClick(item, index)}>
+                <img className='w-[90px] h-[90px] rounded-full object-cover'
+                  src={item.logo ? `${BASE_URL}${item.logo}` : '/path_to_default_image'}
+                  alt={shopName}
+                />
+                <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px] text-center">
+                  {shopName}
+                </p>
+              </div>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
       <div
         className="swiper-button-next px-5 Tab:hidden"

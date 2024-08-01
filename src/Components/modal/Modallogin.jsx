@@ -15,14 +15,13 @@ export function ModalAuth({ openModal, setOpenModal, onClose, onLoginSuccess }) 
     onClose();
   };
 
-  const handleLoginSuccess = () => {
-    onLoginSuccess();
+  const handleLoginSuccess = (token) => {
+    onLoginSuccess(token);
     handleCloseModal();
   };
 
-  const handleSubmit = (mobile) => {
-    setMobileNumber(mobile);
-    setAuthValue("otp");
+  const handleSignupSuccess = () => {
+    setAuthValue("login");
   };
 
   return (
@@ -33,11 +32,11 @@ export function ModalAuth({ openModal, setOpenModal, onClose, onLoginSuccess }) 
       onClose={handleCloseModal}
       popup
     >
-      <Modal.Body className=" flex flex-col items-center py-3 ">
+      <Modal.Body className="flex flex-col items-center py-3">
         {AuthValue === "login" ? (
-          <Loginpopup onClose={handleLoginSuccess} />
+          <Loginpopup onClose={onClose} onLoginSuccess={handleLoginSuccess} />
         ) : AuthValue === "signup" ? (
-          <SignupPopup onClose={handleCloseModal} onSubmit={handleSubmit} />
+          <SignupPopup onClose={handleCloseModal} onSignupSuccess={handleSignupSuccess} />
         ) : AuthValue === "otp" ? (
           <Otpverify onClose={handleCloseModal} mobileNumber={mobileNumber} />
         ) : null}

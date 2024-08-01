@@ -4,7 +4,6 @@ import Flowbitecard from "../../Themes/Flowbitecard";
 import LazyImage from "../../api/Lazyimage";
 
 const Homecards = ({ img, title, content, logo }) => {
-  console.log(img);
 
   return (
     <div className="card">

@@ -1,19 +1,46 @@
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import React, { useContext, useState } from "react";
 import flowbiteinput from "../../Themes/Flowbiteinput";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosClose } from "react-icons/io";
 import { AuthContext } from "../../App";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "./ErrorValidation";
 import googleicon from "../../assets/Google.png";
 import { useGoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+import { useMutation } from "react-query";
+import axios from "axios";
 import PasswordInput from "../../Components/authentication/PassworInput";
 
-function Loginpopup({ onClose }) {
+function Loginpopup({ onClose, onLoginSuccess }) {
   const [AuthValue, setAuthValue] = useContext(AuthContext);
   const [visible, setvisible] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const navigate = useNavigate();
+
+  const googleLoginMutation = useMutation(
+    (userData) => axios.post("https://hezqa.com/api/user/socialize-login", userData),
+    {
+      onSuccess: (response) => {
+        console.log("Google Login successful:", response.data);
+        if (response.data.data.token) {
+          localStorage.setItem("usertoken", response.data.data.token);
+          if (onLoginSuccess && typeof onLoginSuccess === 'function') {
+            onLoginSuccess(response.data.data.token);
+          }
+          onClose();
+          navigate("/"); // Navigate to home page
+        } else {
+          console.error("Invalid response data structure");
+          setLoginError("An unexpected error occurred. Please try again.");
+        }
+      },
+      onError: (error) => {
+        console.error("Google Login failed:", error);
+        setLoginError("An error occurred during Google login. Please try again.");
+      },
+    }
+  );
 
   const login = useGoogleLogin({
     onSuccess: async (response) => {
@@ -29,17 +56,57 @@ function Loginpopup({ onClose }) {
 
         const data = await fetchUserInfo(response.access_token);
         console.log(data);
+        
+        // Send Google user data to your API
+        googleLoginMutation.mutate({
+          email: data.email,
+          name: data.name,
+          google_id: data.sub,
+          // Add any other required fields
+        });
+
       } catch (error) {
         console.log("Error fetching user info:", error);
+        setLoginError("An error occurred during Google login. Please try again.");
       }
     },
-    scope: "profile",
+    scope: "profile email",
   });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const loginMutation = useMutation(
+    (credentials) =>
+      axios.post("https://hezqa.com/api/user/login", credentials),
+    {
+      onSuccess: (response) => {
+        console.log("Login successful:", response.data.data);
+        if (response.data.data.token) {
+          localStorage.setItem("usertoken", response.data.data.token);
+          if (onLoginSuccess && typeof onLoginSuccess === 'function') {
+            onLoginSuccess(response.data.data.token);
+          }
+          onClose();
+          navigate("/"); // Navigate to home page
+        } else {
+          console.error("Invalid response data structure");
+          setLoginError("An unexpected error occurred. Please try again.");
+        }
+      },
+      onError: (error) => {
+        console.error("Login failed:", error);
+        if (error.response && error.response.status === 400) {
+          setLoginError(error.response.data.message || "Invalid email or password");
+        } else {
+          setLoginError("An error occurred. Please try again.");
+        }
+      },
+    }
+  );
 
   const handleClose = () => {
     onClose();
@@ -51,9 +118,11 @@ function Loginpopup({ onClose }) {
   };
 
   const handleLogin = (data) => {
-    console.log("Form Data:", data);
-    localStorage.setItem("username", data.email);
-    onClose(); // Call the onClose function after storing the username
+    setLoginError(""); // Clear any previous error messages
+    loginMutation.mutate({
+      email: data.email,
+      password: data.password,
+    });
   };
 
   return (
@@ -62,6 +131,11 @@ function Loginpopup({ onClose }) {
 
       <div className="form py-5 w-[90%]">
         <form className="flex max-w-md flex-col gap-0" onSubmit={handleSubmit(handleLogin)}>
+          <div className="mb-2 flex justify-center">   
+            {loginError && (
+              <p className="text-red-500 text-sm mt-2 text-center">{loginError}</p>
+            )}
+          </div>
           <div>
             <TextInput
               theme={flowbiteinput}
@@ -73,19 +147,20 @@ function Loginpopup({ onClose }) {
               })}
             />
          
-              {errors.email && <ErrorMessage message={errors.email.message} />}
+            {errors.email && <ErrorMessage message={errors.email.message} />}
             <div className={`${errors.email ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
-          <PasswordInput
+            <PasswordInput
               register={register}
               name="password"
               placeholder="Password"
               rules={{ required: "Password is required" }}
               error={errors.password}
-            />            <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
+            />
+            <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
-          <div className="flex items-center justify-between  pb-2">
+          <div className="flex items-center justify-between pb-2">
             <div>
               <Checkbox className="w-[22px] h-[22px] mr-3" id="remember" />
               <Label htmlFor="remember" className="text-basex font-normal">
@@ -96,8 +171,12 @@ function Loginpopup({ onClose }) {
               <Link>Forgot?</Link>
             </div>
           </div>
-          <Button className=" mt-4 bg-yellow auth-button" type="submit">
-            Login
+          <Button 
+            className="mt-4 bg-yellow auth-button" 
+            type="submit" 
+            disabled={loginMutation.isLoading}
+          >
+            {loginMutation.isLoading ? "Logging in..." : "Login"}
           </Button>
         </form>
       </div>
@@ -107,7 +186,10 @@ function Loginpopup({ onClose }) {
         <div className="w-full border-t border-[#E3E3E6]"></div>
       </div>
 
-      <div className="flex h-[55px] rounded-[10px] border-2 w-[80%] justify-center items-center Tab:h-[45px]" onClick={() => login()}>
+      <div 
+        className="flex h-[55px] rounded-[10px] border-2 w-[80%] justify-center items-center Tab:h-[45px] cursor-pointer" 
+        onClick={() => login()}
+      >
         <img src={googleicon} className="w-[20px] h-[20px] mr-3" alt="" />
         <p className="font-semibold text-sm">Sign in with Google</p>
       </div>

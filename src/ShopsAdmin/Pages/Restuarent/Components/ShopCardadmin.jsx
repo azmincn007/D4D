@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { Card, Button } from 'flowbite-react';
@@ -21,15 +21,18 @@ const fetchProducts = async () => {
   return data.data.products;
 };
 
-const ShopCardAdmin = ({ currencySymbol, onEditProduct,selectedCategory,selectedSubcategory  }) => {
-  const { data: products, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
-  });
+const ShopCardAdmin = ({ currencySymbol, onEditProduct, selectedCategory, selectedSubcategory, onProductsLoad }) => {
+  const { data: products, isLoading, isError, error, refetch } = useQuery('products', fetchProducts);
 
-  const handleDeleteSuccess = () => {
-    refetch();
-  };
+  useEffect(() => {
+    if (products && Array.isArray(products)) {
+      const productInfo = products.map(item => ({
+        id: item.id,
+        product_eng: item.product_eng
+      }));
+      onProductsLoad(productInfo);
+    }
+  }, [products, onProductsLoad]);
 
   if (isLoading) return <div><Loading/></div>;
   if (isError) return <div><Errorpage404/></div>;
@@ -37,7 +40,6 @@ const ShopCardAdmin = ({ currencySymbol, onEditProduct,selectedCategory,selected
   if (!Array.isArray(products)) {
     console.error('products is not an array:', products);
     return <div>Error: Data is not in the expected format</div>;
-
   }
 
   const filteredProducts = products.filter(item => {
@@ -47,13 +49,16 @@ const ShopCardAdmin = ({ currencySymbol, onEditProduct,selectedCategory,selected
     return item.subcat_eng === selectedSubcategory;
   });
 
+  const handleDeleteSuccess = () => {
+    refetch();
+  };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1">
       {filteredProducts.map((item, index) => (
         item ? (
           <ProductCard
-            key={index}
+            key={item.id || index}
             item={item}
             currencySymbol={currencySymbol}
             onEdit={onEditProduct}
@@ -84,7 +89,7 @@ const ProductCard = ({ item, currencySymbol, onEdit, onDeleteSuccess, refetch })
       
       console.log('Response received:', response.data);
       setIsActive(!isActive);
-      refetch(); // Refetch the products to update the list
+      refetch();
     } catch (error) {
       console.error('Error toggling status:', error);
     }

@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Modal, Select, Label, Datepicker } from 'flowbite-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Button, Modal, Label, Datepicker, Radio } from 'flowbite-react';
 import { IoIosClose } from "react-icons/io";
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import ErrorMessage from '../../../Pages/Authentication/ErrorValidation';
 import ImageUpload from './Imageupload';
-import ImageUploadFlyer from './ImageUploadFlyer';
+import MultiSelectSearch from '../../Components/Flyercomponent';
 
 const BASE_URL = 'https://hezqa.com';
 
@@ -29,25 +29,29 @@ const checkAuthToken = () => {
   return true;
 };
 
-function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
-  const { register, handleSubmit, control, formState: { errors }, watch, reset } = useForm();
-  const [categoriesShop, setCategoriesShop] = useState([]);
-  const [subcategories, setSubcategories] = useState([]);
+function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
+  const { register, handleSubmit, control, formState: { errors }, reset, setValue, watch } = useForm({
+    defaultValues: {
+      valid_from: null,
+      valid_to: null,
+      products: [],
+      dates_needed: 'no',
+    }
+  });
   const [imageFile, setImageFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageUploaded, setImageUploaded] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const queryClient = useQueryClient();
+  const datesNeeded = watch('dates_needed');
 
   const addFlyerMutation = useMutation(
-    (formData) => {
-      return axios.post(`${BASE_URL}/api/restaurent/add-flyer`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-    },
+    (formData) => axios.post(`${BASE_URL}/api/restaurent/add-flyer`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${getAuthToken()}`
+      }
+    }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('flyers');
@@ -61,178 +65,191 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
   );
 
   const updateFlyerMutation = useMutation(
-    (formData) => {
-      console.log("Sending update request with formData:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
+    (formData) => axios.post(`${BASE_URL}/api/restaurent/edit-flyer`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${getAuthToken()}`
       }
-      if (formData.entries().next().done) {
-        throw new Error("FormData is empty");
-      }
-      return axios.post(`${BASE_URL}/api/restaurent/edit-flyer`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-    },
+    }),
     {
-      onSuccess: (data) => {
-        console.log("Update success response:", data);
+      onSuccess: () => {
         queryClient.invalidateQueries('flyers');
         handleCloseModal();
       },
       onError: (error) => {
         console.error('Error updating flyer:', error);
-        if (error.response) {
-          console.error("Error response data:", error.response.data);
-          console.error("Error response status:", error.response.status);
-          console.error("Error response headers:", error.response.headers);
-        }
         alert('Error updating flyer. Please try again.');
       }
     }
   );
 
-  const fetchCategories = async () => {
-    if (!checkAuthToken()) return;
-    try {
-      const { data } = await axios.get(`${BASE_URL}/api/categories`, {
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-      setCategoriesShop(data.data.categories);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
-
-  const fetchSubcategories = async (categoryId) => {
-    if (!categoryId || !checkAuthToken()) return;
-    try {
-      const { data } = await axios.get(`${BASE_URL}/api/subcategories/${categoryId}`, {
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-      setSubcategories(data.data.subcategories);
-    } catch (error) {
-      console.error('Error fetching subcategories:', error);
-    }
-  };
-
   useEffect(() => {
     if (isOpen) {
-      fetchCategories();
+      if (flyerToEdit) {
+        setIsEditMode(true);
+        const resetData = {
+          valid_from: flyerToEdit.valid_from ? formatDate(flyerToEdit.valid_from) : null,
+          valid_to: flyerToEdit.valid_to ? formatDate(flyerToEdit.valid_to) : null,
+          products: flyerToEdit.products.map(product => product.id) || [],
+          dates_needed: flyerToEdit.valid_from || flyerToEdit.valid_to ? 'yes' : 'no',
+        };
+        reset(resetData);
+        setValue('products', resetData.products);
+      } else {
+        setIsEditMode(false);
+        reset({
+          valid_from: null,
+          valid_to: null,
+          products: [],
+          dates_needed: 'no',
+        });
+        setImageFile(null);
+      }
     }
-  }, [isOpen]);
-
-  useEffect(() => {
-    console.log("Effect triggered, flyerToEdit:", flyerToEdit);
-    if (flyerToEdit) {
-      reset({
-        cat_id: flyerToEdit.cat_id,
-        subcat_id: flyerToEdit.subcat_id,
-        valid_from: flyerToEdit.valid_from,
-        valid_to: flyerToEdit.valid_to,
-      });
-      fetchSubcategories(flyerToEdit.cat_id);
-      setImageUploaded(true);
-      setImageFile(null);  // Clear imageFile state when editing
-    } else {
-      reset();
-      setImageUploaded(false);
-      setImageFile(null);
-    }
-  }, [flyerToEdit, reset]);
-
-  const watchCategory = watch("cat_id");
-
-  useEffect(() => {
-    if (watchCategory) {
-      fetchSubcategories(watchCategory);
-    }
-  }, [watchCategory]);
+  },[isOpen, flyerToEdit, reset, setValue]);
 
   const handleCloseModal = useCallback(() => {
     reset({
-      cat_id: "",
-      subcat_id: "",
-      valid_from: "",
-      valid_to: "",
+      valid_from: null,
+      valid_to: null,
+      products: [],
+      dates_needed: 'no',
     });
     setImageFile(null);
-    setImageUploaded(false);
-    setSubcategories([]);
+    setIsEditMode(false);
     onClose();
   }, [reset, onClose]);
 
-  const handleImageUploadSuccess = (file) => {
-    console.log("Image upload success, file:", file.name);
+  const handleImageUploadSuccess = useCallback((file) => {
     setImageFile(file);
-    setImageUploaded(true);
-  };
+  }, []);
+
+  const handleProductSelection = useCallback((selectedIds) => {
+    setValue('products', selectedIds);
+  }, [setValue]);
 
   const onSubmit = async (data) => {
     if (!checkAuthToken()) return;
   
-    console.log("Submitting form, data:", data);
-    console.log("Submitting form, imageFile state:", imageFile);
-  
     setIsSubmitting(true);
   
     const formData = new FormData();
-    formData.append('cat_id', data.cat_id);
-    formData.append('subcat_id', data.subcat_id);
-    formData.append('valid_from', data.valid_from);
-    formData.append('valid_to', data.valid_to);
-  
-    if (flyerToEdit) {
-      formData.append('flyer_id', flyerToEdit.id);
+    if (data.dates_needed === 'yes') {
+      formData.append('valid_from', data.valid_from);
+      formData.append('valid_to', data.valid_to);
     }
+    formData.append('products', data.products.join(','));
   
     if (imageFile) {
       formData.append('image', imageFile);
-    } else if (flyerToEdit && flyerToEdit.image) {
-      // Append a flag to indicate no change in image
-      formData.append('keep_existing_image', 'true');
     }
   
-    // Log the contents of formData
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
+    if (isEditMode) {
+      formData.append('flyer_id', flyerToEdit.id);
     }
   
     try {
-      if (flyerToEdit) {
-        console.log("Updating existing flyer, ID:", flyerToEdit.id);
-        const response = await updateFlyerMutation.mutateAsync(formData);
-        console.log("Update response:", response);
+      if (isEditMode) {
+        await updateFlyerMutation.mutateAsync(formData);
       } else {
-        console.log("Adding new flyer");
-        const response = await addFlyerMutation.mutateAsync(formData);
-        console.log("Add response:", response);
+        await addFlyerMutation.mutateAsync(formData);
       }
-      alert(flyerToEdit ? "Flyer updated successfully!" : "Flyer added successfully!");
+      alert(isEditMode ? "Flyer updated successfully!" : "Flyer added successfully!");
     } catch (error) {
-      console.error(flyerToEdit ? "Error updating flyer:" : "Error adding flyer:", error);
-      if (error.response) {
-        console.error("Error response:", error.response.data);
-        console.error("Error response status:", error.response.status);
-        console.error("Error response headers:", error.response.headers);
-      }
-      alert(flyerToEdit ? "Error updating flyer. Please try again." : "Error adding flyer. Please try again.");
+      console.error(isEditMode ? "Error updating flyer:" : "Error adding flyer:", error);
+      alert(isEditMode ? "Error updating flyer. Please try again." : "Error adding flyer. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleImageUploadError = (error) => {
-    console.error("Image upload error:", error);
-    setImageUploaded(false);
-    setImageFile(null);
-  };
+  const formFields = useMemo(() => {
+    return (
+      <div className='w-[50%] mx-auto'>
+        <div className="mb-4">
+          <Label>Expiry Date Needed?</Label>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center">
+              <Radio
+                id="dates-yes"
+                value="yes"
+                {...register("dates_needed")}
+              />
+              <Label htmlFor="dates-yes" className="ml-2">
+                Yes
+              </Label>
+            </div>
+            <div className="flex items-center">
+              <Radio
+                id="dates-no"
+                value="no"
+                {...register("dates_needed")}
+              />
+              <Label htmlFor="dates-no" className="ml-2">
+                No
+              </Label>
+            </div>
+          </div>
+        </div>
+
+        {datesNeeded === 'yes' && (
+          <div className='flex gap-4'>
+            <div className='mb-4'>
+              <Label htmlFor="valid_from" value="Valid From" />
+              <Controller
+                name="valid_from"
+                control={control}
+                render={({ field }) => (
+                  <Datepicker
+                    id="valid_from"
+                    className="w-full"
+                    onSelectedDateChanged={(date) => field.onChange(formatDate(date))}
+                    selected={field.value ? new Date(field.value) : null}
+                  />
+                )}
+              />
+            </div>
+
+            <div className='mb-4'>
+              <Label htmlFor="valid_to" value="Valid To" />
+              <Controller
+                name="valid_to"
+                control={control}
+                render={({ field }) => (
+                  <Datepicker
+                    id="valid_to"
+                    className="w-full"
+                    onSelectedDateChanged={(date) => field.onChange(formatDate(date))}
+                    selected={field.value ? new Date(field.value) : null}
+                  />
+                )}
+              />
+            </div>
+          </div>
+        )}
+        
+        <div className='mb-4'>
+          <MultiSelectSearch 
+            allProductInfo={allProductInfo} 
+            onChange={handleProductSelection}
+            initialSelectedProducts={flyerToEdit?.products || []}
+          />
+          <input
+            type="hidden"
+            {...register('products')}
+          />
+        </div>
+
+        <ImageUpload 
+          title="Upload Image"
+          index="flyer"
+          register={register}
+          onUploadSuccess={handleImageUploadSuccess}
+          initialImage={isEditMode && flyerToEdit?.image ? `${BASE_URL}${flyerToEdit.image}` : null}
+        />
+      </div>
+    );
+  }, [register, control, handleImageUploadSuccess, isEditMode, flyerToEdit, allProductInfo, handleProductSelection, datesNeeded]);
 
   return (
     <Modal show={isOpen} onClose={handleCloseModal} className='modalfav'>
@@ -240,96 +257,18 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit }) {
         <div className='my-4'>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className='w-[50%] mx-auto flex justify-center py-2 text-[22px] font-semibold mb-4 '>
-              <h1>{flyerToEdit ? 'Edit Flyer' : 'Add Flyer'}</h1>
+              <h1>{isEditMode ? 'Edit Flyer' : 'Add Flyer'}</h1>
             </div>
 
-            <div className='w-[50%] mx-auto'>
-              <div className='mb-4 form-select'>
-                <Select
-                  id="cat_id"
-                  {...register(`cat_id`, {
-                    required: `Product category is required`,
-                  })}
-                  className="w-[100%] form-select rounded-none"
-                  style={{borderRadius:'6px'}}
-                >
-                  <option value="">Select Product Category</option>
-                  {categoriesShop.map(category => (
-                    <option key={category.id} value={category.id}>{category.cat_eng}</option>
-                  ))}
-                </Select>
-                {errors.cat_id && <ErrorMessage message={errors.cat_id.message} />}
-              </div>
-
-              <div className='mb-4 form-select'>
-                <Select
-                  id="subcat_id"
-                  {...register(`subcat_id`, {
-                    required: `Product subcategory is required`,
-                  })}
-                  className="w-[100%] form-select rounded-none"
-                  style={{borderRadius:'6px'}}
-                  disabled={!watchCategory}
-                >
-                  <option value="">Select Product Subcategory</option>
-                  {subcategories.map(subcategory => (
-                    <option key={subcategory.id} value={subcategory.id}>{subcategory.subcat_eng}</option>
-                  ))}
-                </Select>
-                {errors.subcat_id && <ErrorMessage message={errors.subcat_id.message} />}
-              </div>
-
-              <div className='flex gap-4'>
-                <div className='mb-4'>
-                  <Label htmlFor="valid_from" value="Valid From" />
-                  <Controller
-                    name="valid_from"
-                    control={control}
-                    render={({ field }) => (
-                      <Datepicker
-                        id="valid_from"
-                        className="w-full"
-                        onSelectedDateChanged={(date) => field.onChange(formatDate(date))}
-                        selected={field.value ? new Date(field.value) : null}
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className='mb-4'>
-                  <Label htmlFor="valid_to" value="Valid To" />
-                  <Controller
-                    name="valid_to"
-                    control={control}
-                    render={({ field }) => (
-                      <Datepicker
-                        id="valid_to"
-                        className="w-full"
-                        onSelectedDateChanged={(date) => field.onChange(formatDate(date))}
-                        selected={field.value ? new Date(field.value) : null}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-
-              <ImageUpload
-                title="Upload Image"
-                index="product"
-                register={register}
-                onUploadSuccess={handleImageUploadSuccess}
-                onError={handleImageUploadError}
-                initialImage={flyerToEdit?.image ? `${BASE_URL}${flyerToEdit.image}` : null}
-              />
-            </div>
+            {formFields}
 
             <div className="mt-8 w-[50%] mx-auto">
-              <Button
-                type="submit"
+              <Button 
+                type="submit" 
                 className="w-full py-2 bg-yellow text-black rounded"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : (flyerToEdit ? "Update Flyer" : "Add Flyer")}
+                {isSubmitting ? "Submitting..." : (isEditMode ? "Update Flyer" : "Add Flyer")}
               </Button>
             </div>
           </form>

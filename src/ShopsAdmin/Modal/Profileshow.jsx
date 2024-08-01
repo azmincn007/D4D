@@ -6,6 +6,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import ProfileBanner from '../Components/Profilebanner';
 import RestuarentIcon from '../Assets/Restuarenticon.png';
 import { useLocation } from 'react-router-dom';
+import LazyImage from '../../api/Lazyimage';
 
 function ProfileShow({ isOpen, onClose, onEditProfileClick }) {
   const location = useLocation();
@@ -38,7 +39,11 @@ function ProfileShow({ isOpen, onClose, onEditProfileClick }) {
             <div className='text-[#696969] text-xs font-semibold mb-1'>{formData?.email}</div>
             <div className='text-[#696969] text-xs items-center gap-4 flex font-semibold mb-4'>
               <div className='flex items-center gap-2'>
-                <img src={RestuarentIcon} className='w-[29px] h-[25px]' alt="" />
+              <LazyImage 
+                  src={RestuarentIcon} 
+                  className='w-[29px] h-[25px]' 
+                  alt="Restaurant Icon" 
+                />
                 <p>{getShopTypeDisplay(formData?.shop_type)}</p>
               </div>
               <hr className=" bg-black w-[1px] h-[20px]" />

@@ -16,6 +16,7 @@ const fetchFlyers = async () => {
       'Authorization': `Bearer ${authToken}`
     }
   });
+  console.log(data.data.flyers);
   return data.data.flyers;
 };
 
@@ -121,6 +122,7 @@ const FlyerCard = ({ flyer, updateStatusMutation, onEditFlyer, onOpenDeleteModal
   }
 
   const [isActive, setIsActive] = useState(flyer.status === 'Active');
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleStatusToggle = () => {
     const newStatus = isActive ? 'Blocked' : 'Active';
@@ -137,14 +139,19 @@ const FlyerCard = ({ flyer, updateStatusMutation, onEditFlyer, onOpenDeleteModal
   const fullImageUrl = flyer.image ? `${BASE_URL}${flyer.image}` : "/placeholder.svg";
 
   return (
-    <Card className="w-full max-w-sm rounded-lg shadow-lg cardmenu" style={{ opacity: isActive ? 1 : 0.5 }}>
+    <Card 
+      className="w-full max-w-sm rounded-lg shadow-lg cardmenu relative overflow-hidden transition-all duration-300 ease-in-out" 
+      style={{ opacity: isActive ? 1 : 0.5 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="relative">
         <img
           src={fullImageUrl}
           alt={flyer.title}
           className="h-56 w-full rounded-t-lg object-cover"
         />
-        <div className="absolute top-4 right-4 flex items-center gap-2">
+        <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
           <Button size="sm" className="rounded-full buttononmenu" onClick={() => onEditFlyer(flyer)}>
             <MdEdit className="h-5 w-5 text-muted-foreground" />
             <span className="sr-only">Edit</span>
@@ -157,24 +164,34 @@ const FlyerCard = ({ flyer, updateStatusMutation, onEditFlyer, onOpenDeleteModal
       </div>
       <div className="p-4">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-sm font-medium text-muted-foreground">{flyer.cat_eng}</span>
-          <span className="text-sm font-medium text-muted-foreground border-2 border-yellow rounded-xl p-[.3rem] px-2">{flyer.subcat_eng}</span>
+          <h3 className="text-lg font-bold">{flyer.title}</h3>
+          <Button color="gray" size="sm" className="rounded-full" onClick={handleStatusToggle}>
+            {isActive ? (
+              <FaEye className="h-5 w-5 text-muted-foreground" />
+            ) : (
+              <FaEyeSlash className="h-5 w-5 text-muted-foreground" />
+            )}
+          </Button>
         </div>
-        <h3 className="mb-2 text-lg font-bold">{flyer.title}</h3>
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <span className="text-sm font-medium">Expires <br /> {flyer.valid_to}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button color="gray" size="sm" className="rounded-full" onClick={handleStatusToggle}>
-              {isActive ? (
-                <FaEye className="h-5 w-5 text-muted-foreground" />
-              ) : (
-                <FaEyeSlash className="h-5 w-5 text-muted-foreground" />
-              )}
-            </Button>
-          </div>
+        <div className="text-sm font-medium">
+          Expires: {flyer.valid_to}
         </div>
+      </div>
+      <div 
+        className={`absolute inset-0 bg-white bg-opacity-90 p-4 overflow-y-auto transition-transform duration-300 ease-in-out ${
+          isHovered ? 'translate-y-0' : 'translate-y-full'
+        }`}
+        style={{ zIndex: 5 }}
+      >
+        <div className='my-12 font-inter'>
+        <h4 className="text-lg font-bold mb-2 my-4 mx-4">Products Linked</h4>
+        <ul className='mx-4'>
+          {flyer.products && flyer.products.map((product, index) => (
+            <li key={index} className="mb-1">{product.product_eng}</li>
+          ))}
+        </ul>
+        </div>
+        
       </div>
     </Card>
   );

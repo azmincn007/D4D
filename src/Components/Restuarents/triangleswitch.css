@@ -1,0 +1,98 @@
+.switch-container {
+  display: flex;
+  align-items: center;
+}
+
+.triangle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px; /* Decreased from 80px */
+  height: 10px; /* Further decreased from 12px */
+  margin-right: 10px;
+}
+
+.triangle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 10px; /* Adjusted to match new height */
+  padding: 1px;
+}
+
+.toggle-shape {
+  position: absolute;
+  content: "";
+  height: 18px; /* Slightly decreased from 20px */
+  width: 18px; /* Slightly decreased from 20px */
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-shape::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.toggle-shape.red::after {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 7px solid #ff0000;
+}
+
+.toggle-shape.green::after {
+  width: 8px;
+  height: 8px;
+  background-color: #00ff00;
+  border-radius: 50%;
+}
+
+.slider.red {
+  --switch-color: #ff0000;
+}
+
+.slider.green {
+  --switch-color: #00ff00;
+}
+
+input:checked + .slider {
+  background-color: var(--switch-color);
+}
+
+input:checked + .slider .toggle-shape {
+  transform: translate(46px, -50%); /* Adjusted from 60px */
+  background-color: white;
+}
+
+input:checked + .slider .toggle-shape.red::after {
+  border-bottom-color: #ff0000;
+}
+
+input:checked + .slider .toggle-shape.green::after {
+  background-color: #00ff00;
+}
+
+.switch-label {
+  font-size: 14px;
+  color: white;
+}

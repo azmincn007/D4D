@@ -1,12 +1,20 @@
-import { Button, Label, Radio, Select, TextInput } from "flowbite-react";
+import { Button, Label, Radio, TextInput } from "flowbite-react";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import axios from "axios";
 import flowbiteinput from "../../Themes/Flowbiteinput";
 import { IoIosClose } from "react-icons/io";
 import ErrorMessage from "./ErrorValidation";
 import PasswordInput from "../../Components/authentication/PassworInput";
 
-function SignupPopup({ onClose, onSubmit }) {
+// API function
+const registerUser = async (userData) => {
+  const response = await axios.post("https://hezqa.com/api/user/register", userData);
+  return response.data;
+};
+
+function SignupPopup({ onClose, onSignupSuccess }) {
   const {
     register,
     handleSubmit,
@@ -17,11 +25,22 @@ function SignupPopup({ onClose, onSubmit }) {
 
   const password = watch("password");
 
+  const mutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (data) => {
+      console.log("Signup successful:", data);
+      onSignupSuccess();
+    },
+    onError: (error) => {
+      console.error("Signup error:", error);
+      // Handle error (e.g., show error message to user)
+    },
+  });
+
   const onSubmitHandler = async (data) => {
-    const isValid = await trigger("confirmPassword");
+    const isValid = await trigger();
     if (isValid) {
-      console.log("Submitted Data:", data);
-      onSubmit(data.mobileNumber);
+      mutation.mutate(data);
     }
   };
 
@@ -29,19 +48,8 @@ function SignupPopup({ onClose, onSubmit }) {
     onClose();
   };
 
-  const countryOptions = [
-    { value: "USA", name: "United States" },
-    { value: "Canada", name: "Canada" },
-    { value: "UK", name: "United Kingdom" },
-    { value: "Australia", name: "Australia" },
-    { value: "Germany", name: "Germany" },
-    { value: "France", name: "France" },
-    { value: "Japan", name: "Japan" },
-    { value: "China", name: "China" },
-  ];
-
   const handleKeyDown = (e) => {
-    if (!/[0-9]/.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
+    if (!/[0-9+]/.test(e.key) && e.key !== "Backspace" && e.key !== "Tab") {
       e.preventDefault();
     }
   };
@@ -50,17 +58,20 @@ function SignupPopup({ onClose, onSubmit }) {
     <>
       <h1 className="text-base font-semibold py-2">Sign Up</h1>
       <div className="form py-5 w-[90%]">
+        {mutation.isError && (
+          <ErrorMessage message={mutation.error?.response?.data?.message || "An error occurred during signup"} />
+        )}
         <form onSubmit={handleSubmit(onSubmitHandler)} className="flex flex-col gap-0">
           <div>
             <TextInput
               theme={flowbiteinput}
-              id="username"
+              id="name"
               type="text"
-              placeholder="Username"
-              {...register("username", { required: "Username is required" })}
+              placeholder="Name"
+              {...register("name", { required: "Name is required" })}
             />
-            {errors.username && <ErrorMessage message={errors.username.message} />}
-            <div className={`${errors.username ? 'mb-2' : 'mb-4'} block`}></div>
+            {errors.name && <ErrorMessage message={errors.name.message} />}
+            <div className={`${errors.name ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
             <TextInput
@@ -99,59 +110,33 @@ function SignupPopup({ onClose, onSubmit }) {
           <div>
             <TextInput
               theme={flowbiteinput}
-              id="mobileNumber"
+              id="mobile"
               type="tel"
-              placeholder="Mobile Number"
-              {...register("mobileNumber", { 
+              placeholder="Mobile Number (including country code)"
+              {...register("mobile", { 
                 required: "Mobile Number is required",
                 pattern: {
-                  value: /^[0-9]+$/,
-                  message: "Mobile Number can only contain numbers"
+                  value: /^\+?[0-9]+$/,
+                  message: "Invalid mobile number format"
                 }
               })}
               onKeyDown={handleKeyDown}
             />
-            {errors.mobileNumber && <ErrorMessage message={errors.mobileNumber.message} />}
-            <div className={`${errors.mobileNumber ? 'mb-2' : 'mb-4'} block`}></div>
-          </div>
-          <div>
-            <Select
-              theme={flowbiteinput}
-              id="nationality"
-              placeholder="Select Nationality"
-              style={{
-                backgroundColor: "#F1F1F1",
-                border: "none",
-                color: "#6D6D6D",
-              }}
-              {...register("nationality", { required: "Nationality is required" })}
-            >
-              <option value="">Select Nationality</option>
-              {countryOptions.map((country) => (
-                <option key={country.value} value={country.value}>
-                  {country.name}
-                </option>
-              ))}
-            </Select>
-            {errors.nationality && <ErrorMessage message={errors.nationality.message} />}
-            <div className={`${errors.nationality ? 'mb-2' : 'mb-4'} block`}></div>
+            {errors.mobile && <ErrorMessage message={errors.mobile.message} />}
+            <div className={`${errors.mobile ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div className="flex items-center justify-around mb-4 mt-2">
-  <div>
-    <Radio id="male" name="gender" value="male" defaultChecked className="mr-2" {...register("gender")} />
-    <Label htmlFor="male">Male</Label>
-  </div>
-  <div>
-    <Radio id="female" name="gender" value="female" className="mr-2" {...register("gender")} />
-    <Label htmlFor="female">Female</Label>
-  </div>
-  <div>
-    <Radio id="other" name="gender" value="other" className="mr-2" {...register("gender")} />
-    <Label htmlFor="other">Other</Label>
-  </div>
-</div>
-          <Button className="bg-yellow auth-button" type="submit">
-            Continue
+            <div>
+              <Radio id="male" name="gender" value="Male" defaultChecked className="mr-2" {...register("gender")} />
+              <Label htmlFor="male">Male</Label>
+            </div>
+            <div>
+              <Radio id="female" name="gender" value="Female" className="mr-2" {...register("gender")} />
+              <Label htmlFor="female">Female</Label>
+            </div>
+          </div>
+          <Button className="bg-yellow auth-button" type="submit" disabled={mutation.isLoading}>
+            {mutation.isLoading ? "Signing Up..." : "Sign Up"}
           </Button>
         </form>
       </div>

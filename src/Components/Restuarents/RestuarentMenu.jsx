@@ -1,177 +1,265 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { NavbarComponent } from "../../Pages/Navbar/Navbar";
 import RatingComponent from "./Rating";
-import { Dropdown, DropdownItem } from "flowbite-react";
+import { Dropdown } from "flowbite-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
-import MenuItemList from "./MenuItem";
-import { restorentpagedrop } from "../../Themes/Flowbitedrop";
-import { MdKeyboardArrowRight } from "react-icons/md";
 import RestoCard from "../Cards/Restocard";
+import TriangleSwitch from "./Triangleswitch";
+import useLanguageText from '../Uselanguagetext';
+import { LanguageContext } from "../../App";
 
 const BASE_URL = "https://hezqa.com";
 
 const fetchRestaurantData = async (id) => {
   const { data } = await axios.get(`${BASE_URL}/api/public/restaurent/dashboard/${id}`);
-  console.log(data.data);
-  
+  console.log("Fetched data:", data.data);
   return {
     restaurantDetails: data.data.details,
     menus: data.data.menus,
-    todaySpecial: data.data.today_special
+    todaySpecial: data.data.today_special,
   };
 };
 
 function RestuarentMenu() {
   const location = useLocation();
   const { id } = location.state;
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [showVeg, setShowVeg] = useState(true);
+  const [showNonVeg, setShowNonVeg] = useState(true);
+  const [selectedLanguage] = useContext(LanguageContext);
 
-  const { data, isLoading, error } = useQuery(
-    ["restaurantData", id],
-    () => fetchRestaurantData(id),
-    {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    }
-  );
+  const handleNonVegSwitchChange = (isChecked) => {
+    setShowNonVeg(isChecked);
+  };
+
+  const handleVegSwitchChange = (isChecked) => {
+    setShowVeg(isChecked);
+  };
+
+  const { data, isLoading, error } = useQuery(["restaurantData", id], () => fetchRestaurantData(id), {
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  useEffect(() => {
+    console.log("Filters:", { showVeg, showNonVeg });
+  }, [showVeg, showNonVeg]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   const { restaurantDetails, menus, todaySpecial } = data;
-  console.log(menus);
+
+  const shopName = useLanguageText({
+    country_eng: restaurantDetails.shopname_eng,
+    country_ar: restaurantDetails.shopname_ar,
+    country_mal: restaurantDetails.shopname_mal,
+    country_hin: restaurantDetails.shopname_hin
+  });
+
+  const allText = useLanguageText({
+    country_eng: "All",
+    country_ar: "الكل",
+    country_mal: "എല്ലാം",
+    country_hin: "सभी"
+  });
+
+  const menuText = useLanguageText({
+    country_eng: "Menu",
+    country_ar: "القائمة",
+    country_mal: "മെനു",
+    country_hin: "मेनू"
+  });
+
+  const todaysSpecialText = useLanguageText({
+    country_eng: "Today's Special",
+    country_ar: "عرض اليوم",
+    country_mal: "ഇന്നത്തെ പ്രത്യേകത",
+    country_hin: "आज का विशेष"
+  });
+
+  const filterMenuItems = (items) => {
+    console.log("Filtering items:", items);
+    if (!showVeg && !showNonVeg) return []; // Show no items if both are unchecked
+    return items.filter(item => {
+      const itemType = (item.type || '').toLowerCase();
+      return (showVeg && itemType.includes('veg') && !itemType.includes('non')) || 
+             (showNonVeg && (itemType.includes('non') || !itemType.includes('veg')));
+    });
+  };
+
+  const filteredMenus = menus
+    .filter(category => selectedCategory === 'All' || category.category_eng === selectedCategory)
+    .map(category => ({
+      ...category,
+      menus: filterMenuItems(category.menus)
+    }))
+    .filter(category => category.menus.length > 0);
 
   return (
-    <div className="bg-[#131921]">
-      <div className="min-h-[124vh] flex flex-col Mobile:min-h-[90vh]">
-        <NavbarComponent hideToggle={true} />
-        <div className="bgresto bg-cover bg-no-repeat flex-grow overflow-auto flex center">
-          <div className="w-[100%] font-inter flex flex-col justify-end">
-            <div className="mx-6 w-[432px] backdrop-blur-[3px] rounded-[12px] bg-[#13192180] Mobile:w-[270px]">
-              <div className="px-4 text-white flex flex-col py-2">
-                <div className="flex items-center">
-                  <div className="text-[22px] font-semibold text-white mr-[5px] Mobile:text-[12px] LgMobile:text-[18px]">
-                    {restaurantDetails.shopname_eng}
-                  </div>
-                  <div>
-                    <RatingComponent rating={restaurantDetails.rating} />
-                  </div>
-                </div>
-
-                <div className="text-xs">
-                  <p>{restaurantDetails.country_eng}</p>
-                  <p>{restaurantDetails.city} - {restaurantDetails.region_eng}</p>
-                </div>
-
+    <div className="">
+      <NavbarComponent hideToggle={true} />
+      <div className="bgresto bg-cover bg-no-repeat">
+        <div className="w-[80%] font-inter mx-auto">
+          <div className="mx-6 rounded-[12px] flex justify-center w-full text-center Mobile:w-[270px]">
+            <div className="px-4 text-white flex flex-col py-2">
+              <div className="flex items-center">
+                <div className="text-[26px] font-semibold text-white mr-[5px] Mobile:text-[12px] LgMobile:text-[18px]">{shopName}</div>
                 <div>
-                  <p className="text-[20px] font-semibold Mobile:text-xs">Menu</p>
-                  <div className="flex items-center text-xsm text-yellow Mobile:text-xs">
-                    <p>Home</p> <MdKeyboardArrowRight /> <p>menu</p>
-                  </div>
+                  <RatingComponent rating={restaurantDetails.rating} />
                 </div>
               </div>
-            </div>
-            <div className="backdrop-blur-[3px] mt-[30px] rounded-tl-[60px] rounded-tr-[60px] Tab:rounded-tr-[25px] Tab:rounded-tl-[25px] bg-[#13192180]">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="py-2 text-[24px] font-semibold px-16 text-white Mobile:text-[12px] Mobile:px-8">Today's Special</p>
-                </div>
-                <div>
-                  <Dropdown
-                    theme={restorentpagedrop}
-                    style={{
-                      backgroundColor: "#FFD814",
-                      color: "black",
-                      padding: "0rem 0rem",
-                      borderRadius: "0px",
-                      fontWeight: "700",
-                      fontSize: "12px",
-                      marginRight: "35px",
-                    }}
-                    label="All"
-                    size="xs"
-                    className="bg-[#FFD814] text-black border-none font-inter"
-                  >
-                    <div className="dropdownss">
-                      <DropdownItem className="dropdownitem" style={{
-                        backgroundColor: "#FFD814",
-                        color: "black",
-                        padding: "0.2rem 1rem",
-                        borderRadius: "0px",
-                        fontWeight: "600",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "flex-start",
-                      }}>
-                        Veg
-                      </DropdownItem>
-                      <DropdownItem className="dropdownitem" style={{
-                        backgroundColor: "#FFD814",
-                        color: "black",
-                        padding: "0.2rem 1rem",
-                        borderRadius: "0px",
-                        fontWeight: "600",
-                        fontSize: "12px",
-                        display: "flex",
-                        alignItems: "flex-start",
-                      }}>
-                        Non-Veg
-                      </DropdownItem>
-                    </div>
-                  </Dropdown>
-                </div>
-              </div>
-              <div className="swiper-container w-[95%] mx-auto pb-4">
-                <Swiper
-                  slidesPerView={1}
-                  spaceBetween={0}
-                  pagination={{
-                    clickable: true,
-                  }}
-                  breakpoints={{
-                    300: { slidesPerView: 4.5, spaceBetween: 10 },
-                    450: { slidesPerView: 5, spaceBetween: 10 },
-                    640: { slidesPerView: 5, spaceBetween: 10 },
-                    768: { slidesPerView: 5.5, spaceBetween: 10 },
-                    1024: { slidesPerView: 6.5, spaceBetween: 10 },
-                    1250: { slidesPerView: 8.5, spaceBetween: 15 },
-                    1450: { slidesPerView: 9.5, spaceBetween: 5 },
-                  }}
-                  modules={[Navigation, Pagination]}
-                  className="mySwiper"
-                >
-                  {todaySpecial.map((item, index) => (
-                    <SwiperSlide key={index}>
-                      <RestoCard
-                        price={item.offer_price}
-                        img={`${BASE_URL}${item.image}`}
-                        title={item.menu_eng}
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+              <div className="text-xs">
+                <p>{useLanguageText({
+                  country_eng: restaurantDetails.country_eng,
+                  country_ar: restaurantDetails.country_ar,
+                  country_mal: restaurantDetails.country_mal,
+                  country_hin: restaurantDetails.country_hin
+                })}</p>
+                <p>
+                  {restaurantDetails.city} - {useLanguageText({
+                    country_eng: restaurantDetails.region_eng,
+                    country_ar: restaurantDetails.region_ar,
+                    country_mal: restaurantDetails.region_mal,
+                    country_hin: restaurantDetails.region_hin
+                  })}
+                </p>
               </div>
             </div>
           </div>
+          <div className="flex w-full flex-col items-start gap-4">
+            <div className="flex justify-between w-full">
+              <div className="flex gap-8">
+              <div className="bg-[#232F3E]/40 border border-white rounded-full inline-block backdrop-blur-sm p-4">
+  <TriangleSwitch onChange={handleNonVegSwitchChange} color="red" initialChecked={true} />
+</div>
+<div className="bg-[#232F3E]/40 border border-white rounded-full inline-block backdrop-blur-sm p-4">
+  <TriangleSwitch onChange={handleVegSwitchChange} color="green" initialChecked={true} />
+</div>
+              </div>
+              <div className="dropdownrescat">
+                <Dropdown
+                  label={selectedCategory === 'All' ? allText : useLanguageText({
+                    country_eng: selectedCategory,
+                    country_ar: menus.find(menu => menu.category_eng === selectedCategory)?.category_ar,
+                    country_mal: menus.find(menu => menu.category_eng === selectedCategory)?.category_mal,
+                    country_hin: menus.find(menu => menu.category_eng === selectedCategory)?.category_hin
+                  })}
+                  dismissOnClick={true}
+                >
+                  <Dropdown.Item onClick={() => setSelectedCategory('All')}>
+                    {allText}
+                  </Dropdown.Item>
+                  {menus.map((menu, index) => {
+                    const categoryText = useLanguageText({
+                      country_eng: menu.category_eng,
+                      country_ar: menu.category_ar,
+                      country_mal: menu.category_mal,
+                      country_hin: menu.category_hin
+                    });
+                    return (
+                      <Dropdown.Item key={index} onClick={() => setSelectedCategory(menu.category_eng)}>
+                        {categoryText}
+                      </Dropdown.Item>
+                    );
+                  })}
+                </Dropdown>
+              </div>
+            </div>
+          </div>
+          
+          {/* Today's Special Section - Unaffected by filters */}
+          <div className="mt-[30px]">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="py-2 text-[24px] font-semibold text-white Mobile:text-[12px]">{todaysSpecialText}</p>
+              </div>
+            </div>
+            <div className="swiper-container w-[100%] mx-auto pb-4">
+              <Swiper
+                slidesPerView={2.5}
+                spaceBetween="10"
+                pagination={{
+                  clickable: true,
+                }}
+                breakpoints={{
+                  300: { slidesPerView: 1.5, spaceBetween: "20" },
+                  450: { slidesPerView: 2.5, spaceBetween: "20" },
+                  640: { slidesPerView: 2.5, spaceBetween: "20" },
+                  768: { slidesPerView: 2.5, spaceBetween: "20" },
+                  1024: { slidesPerView: 2.5, spaceBetween: "20" },
+                  1250: { slidesPerView: 2.5, spaceBetween: "50" },
+                  1450: { slidesPerView: 2.5, spaceBetween: "50" },
+                }}
+                modules={[Navigation, Pagination]}
+                className="mySwiper"
+              >
+                {todaySpecial.map((item, index) => (
+                  <SwiperSlide key={index} className="!w-auto">
+                    <RestoCard 
+                      offer_price={item.offer_price} 
+                      normal_price={item._price} 
+                      img={`${BASE_URL}${item.image}`}  
+                      title={useLanguageText({
+                        country_eng: item.menu_eng,
+                        country_ar: item.menu_ar,
+                        country_mal: item.menu_mal,
+                        country_hin: item.menu_hin
+                      })}  
+                      type={item.type} 
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </div>
+        </div>
+        
+        {/* Menu Section - Affected by filters */}
+        <div className="flex items-center justify-center my-4">
+          <div className="h-[1px] flex-grow bg-white"></div>
+          <p className="mx-4 text-center text-white font-['Marck_Script'] text-[42px]">{menuText}</p>
+          <div className="h-[1px] flex-grow bg-white"></div> 
+        </div>
+        <div className="w-[80%] mx-auto py-8">
+          {filteredMenus.map((category, index) => (
+            <div key={index} className="mb-8">
+              <h2 className="text-2xl font-semibold text-white mb-4">
+                {useLanguageText({
+                  country_eng: category.category_eng,
+                  country_ar: category.category_ar,
+                  country_mal: category.category_mal,
+                  country_hin: category.category_hin
+                })}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {category.menus.map((item, itemIndex) => (
+                  <RestoCard
+                    key={itemIndex}
+                    img={`${BASE_URL}${item.image}`}
+                    title={useLanguageText({
+                      country_eng: item.menu_eng,
+                      country_ar: item.menu_ar,
+                      country_mal: item.menu_mal,
+                      country_hin: item.menu_hin
+                    })}
+                    normal_price={item.price}
+                    type={item.type} 
+                    offer_price={item.offer_price}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-      <div className="flex items-center justify-center my-4">
-        <div className="h-[1px] flex-grow bg-[#696969]"></div>
-        <p className="mx-4 text-center text-white font-['Marck_Script'] text-[42px]">Menu</p>
-        <div className="h-[1px] flex-grow bg-[#696969]"></div>
-      </div>
-      <div className="w-[90%] mx-auto">
-        {menus.map((menuCategory, index) => (
-          <MenuItemList key={index} data={menuCategory} title={menuCategory.menu_eng} />
-        ))}
-      </div>
     </div>
-
   );
 }
 

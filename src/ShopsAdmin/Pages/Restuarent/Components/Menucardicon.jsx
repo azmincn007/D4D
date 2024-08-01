@@ -9,6 +9,7 @@ import Todayspecial from '../../../Modal/Addmenu';
 import ConfirmDeleteModal from './ConfirmDelete';
 import Loading from '../../../../api/Loading';
 import ErrorMessage from '../../../../Pages/Authentication/ErrorValidation';
+import LazyImage from '../../../../api/Lazyimage';
 
 const BASE_URL = 'https://hezqa.com';
 
@@ -75,12 +76,12 @@ const CardWithEyeIcon = React.memo(({ item, onEditClick, onDeleteClick, updateSp
   return (
     <Card className={cardClassName} style={{ opacity: item.status === 'Active' ? 1 : 0.5 }}>
       <div className="relative">
-        <img
+      <LazyImage
           src={fullImageUrl}
           alt={item.menu_eng}
           className="h-56 w-full rounded-t-lg object-cover"
         />
-        <div className="absolute top-4 right-4 flex items-center gap-2">
+        <div className="absolute top-4 right-4 flex items-center gap-2 ">
           <Button size="sm" className="rounded-full buttononmenu" onClick={() => onEditClick(item)}>
             <MdEdit className="h-5 w-5 text-muted-foreground" />
             <span className="sr-only">Edit</span>
@@ -101,7 +102,7 @@ const CardWithEyeIcon = React.memo(({ item, onEditClick, onDeleteClick, updateSp
           <span className="text-sm font-medium text-muted-foreground">{item.cat_eng}</span>
           <Button
             size="sm"
-            className={`rounded-full ${isSpecial ? 'bg-yellow text-white' : 'border-2 border-yellow bg-transparent text-black'}`}
+            className={`rounded-full  ${isSpecial ? 'bg-yellow text-white' : 'border-2 border-yellow bg-transparent text-black'}`}
             onClick={handleTodaySpecialClick}
             disabled={isLoading}
           >

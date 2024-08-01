@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { Card } from 'flowbite-react';
+import LazyImage from '../../../../api/Lazyimage';
 
 const BASE_URL = 'https://hezqa.com';
 
@@ -29,14 +30,14 @@ const TodaySpecialCards = ({ currencySymbol }) => {
       {specialItems.map((item, index) => (
         <Card key={index} className="w-full max-w-sm rounded-lg shadow-lg cardmenu">
           <div className="relative">
-            <img
+            <LazyImage
               src={item.image ? `${BASE_URL}${item.image}` : "/placeholder.svg"}
               alt={item.menu_eng}
               className="h-56 w-full rounded-t-lg object-cover"
             />
             <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-            Today's Special
-          </div>
+              Today's Special
+            </div>
           </div>
           <div className="p-4">
             <h3 className="mb-2 text-lg font-bold">{item.menu_eng}</h3>

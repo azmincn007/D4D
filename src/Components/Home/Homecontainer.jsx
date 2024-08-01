@@ -7,7 +7,7 @@ import Categorydropdown from './Components/CategoryDropdown';
 import '../../styles/DropdownStyle.css';
 import { SelectionContext, ToggleContext } from '../../App';
 
-function Homecontainer({menus}) {
+function Homecontainer({menus,currencySymbol }) {
   const [selectedValue, setSelectedValue]=useContext(SelectionContext)
   const [ActiveToggle, setActiveToggle] = useContext(ToggleContext);
   const [selectedSubcategory, setSelectedSubcategory] = useState('Mobile');
@@ -70,7 +70,7 @@ function Homecontainer({menus}) {
           <>
          
             
-            <Restuarents menus={menus}/>
+            <Restuarents menus={menus} currencySymbol={currencySymbol}/>
           </>
         )}
       </div>

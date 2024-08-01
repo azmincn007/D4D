@@ -55,7 +55,6 @@ function App() {
                       <Route path="/resto" element={<RestuarentMenu />} />
                       <Route path="/mobilesingle" element={<Mobilessingle />} />
                       <Route path="/flyer" element={<Flyer />} />
-                      <Route path="/fav" element={<Favouratemodal />} />
                       <Route path="/404error" element={<Errorpage404 />} />
                       <Route
                         path="/loginadmin"

@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import Logo from '../../assets/Logo.png';
-
 import '../../styles/nav.css';
 import Toggle from './navcomponents/Toggle';
 import Regiondropdown from './navcomponents/Regiondropdown';
@@ -21,7 +20,7 @@ export function NavbarComponent({ hideToggle }) {
   const [openModal, setOpenModal] = useState(false);
   const [authValue, setAuthValue] = useContext(AuthContext);
   const [Tabscreen, setTabscreen] = useState(window.innerWidth <= 820);
-  const [username, setUsername] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
@@ -36,7 +35,7 @@ export function NavbarComponent({ hideToggle }) {
   const handleLoginClick = () => {
     setOpenModal(true);
     setAuthValue('login');
-    setIsNavbarOpen(false); // Close the navbar collapse
+    setIsNavbarOpen(false);
   };
 
   const handleModalClose = () => {
@@ -51,13 +50,15 @@ export function NavbarComponent({ hideToggle }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('username');
-    setUsername('');
+    localStorage.removeItem('usertoken');
+    setIsLoggedIn(false);
+    console.log('User logged out. Token removed.');
   };
 
-  const handleLoginSuccess = () => {
-    const newUsername = localStorage.getItem('username');
-    setUsername(newUsername);
+  const handleLoginSuccess = (token) => {
+    setIsLoggedIn(true);
+    setOpenModal(false);
+    console.log('Login successful. Token:', token);
   };
 
   const toggleNavbar = () => {
@@ -65,10 +66,14 @@ export function NavbarComponent({ hideToggle }) {
   };
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    setUsername(storedUsername || '');
+    const storedToken = localStorage.getItem('usertoken');
+    if (storedToken) {
+      setIsLoggedIn(true);
+      console.log('Stored Token:', storedToken);
+    }
+
     window.addEventListener('resize', handleResize);
-    handleResize(); // Call handleResize initially to handle the initial window size
+    handleResize();
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -87,7 +92,7 @@ export function NavbarComponent({ hideToggle }) {
                     <img src={Logo} className="logo SmMobile:w-[70px] SmMobile:h-[70px]" alt="Logo" />
                   </NavbarBrand>
                 </div>
-                {username && ( // Only render if the user is logged in
+                {isLoggedIn && (
                   <div className='watchtime w-[177px] py-[4px] Tab:mt-[-15px] bg-[#232F3E] text-center text-white rounded-[1000px] Tab:w-[100px]'>
                     <p className='text-small Tab:text-xs'>Watch Time</p>
                     <p className='text-xs Tab:text-[6px]'>Last update yesterday 12:00 AM</p>
@@ -101,12 +106,12 @@ export function NavbarComponent({ hideToggle }) {
           </div>
 
           <div className="right flex items-center">
-          {!hideToggle && <div className='mr-[20px] Tab:mr-[0px]'><Toggle /></div>}
+            {!hideToggle && <div className='mr-[20px] Tab:mr-[0px]'><Toggle /></div>}
             <Regiondropdown />
             <div className='log SmMobile:hidden'>
-              {username ? (
+              {isLoggedIn ? (
                 <div onClick={handleProfileModalOpen}>
-                  <AvatarComponent username={username} />
+                  <AvatarComponent />
                 </div>
               ) : (
                 Tabscreen ? (
@@ -123,12 +128,9 @@ export function NavbarComponent({ hideToggle }) {
             {isNavbarOpen && (
               <NavbarCollapse className="fixed top-0 right-0 bottom-0 min-w-[250px] w-[50%] bg-darkblue z-[10000] flex flex-col overflow-y-auto">
                 <div className="auth bg-[#2C3B4F] text-white py">
-                  {/* Render log or loged class based on username */}
-                  {username ? (
+                  {isLoggedIn ? (
                     <div className='loged py-5 w-[90%] mx-auto text-inter text-sm Mobile:text-small'>
                       <AvatarComponent className='h-[30px] w-[30px] my-3' />
-                      <p className='leading-4 my-2'>{username}</p>
-                      {/* Add user's email or any other information */}
                       <button
                         className="my-2 loginbutton px-2 py-2 rounded-[4px] bg-red-500"
                         onClick={handleLogout}
@@ -179,7 +181,7 @@ export function NavbarComponent({ hideToggle }) {
         <ProfileModal
           isOpen={isProfileModalOpen}
           onClose={handleProfileModalClose}
-          handleLogout={handleLogout} // Pass the handleLogout function as a prop
+          handleLogout={handleLogout}
         />
       )}
     </div>

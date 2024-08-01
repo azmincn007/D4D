@@ -6,17 +6,17 @@ const LanguageModal = ({ isOpen, onClose, onSelect }) => {
   const languages = ['English', 'Arabic', 'Hindi', 'Malayalam'];
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
 
-  useEffect(() => {
-    const storedLanguage = localStorage.getItem('userLanguageSelected');
-    if (storedLanguage) {
-      setSelectedLanguage(storedLanguage);
-      onSelect(storedLanguage);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedLanguage = localStorage.getItem('userLanguageSelected');
+  //   if (storedLanguage) {
+  //     setSelectedLanguage(storedLanguage);
+  //     onSelect(storedLanguage);
+  //   }
+  // }, []);
 
   const handleLanguageSelect = (language) => {
     setSelectedLanguage(language);
-    localStorage.setItem('userLanguageSelected', language);
+    // localStorage.setItem('userLanguageSelected', language);
     onSelect(language);
     onClose();
   };
