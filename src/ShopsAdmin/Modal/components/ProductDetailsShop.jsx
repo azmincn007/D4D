@@ -9,8 +9,8 @@ import FormFieldShop from "./FormFieldShop";
 import FormFieldDescription from "./FormFieldDescription";
 import ErrorMessage from "../../../Pages/Authentication/ErrorValidation";
 import ImageUpload from "./Imageupload";
+import { API_BASE_URL } from "../../../config/config";
 
-const BASE_URL = "https://hezqa.com";
 
 const formatDate = (date) => {
   if (!date) return "";
@@ -47,7 +47,7 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
   const fetchSubcategories = useCallback(async (categoryId) => {
     if (!categoryId) return;
     try {
-      const { data } = await axios.get(`${BASE_URL}/api/subcategories/${categoryId}`);
+      const { data } = await axios.get(`${API_BASE_URL}/api/subcategories/${categoryId}`);
       setSubcategories(data.data.subcategories);
     } catch (error) {
       console.error("Error fetching subcategories:", error);
@@ -182,7 +182,7 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
       console.log(key, value);
     }
 
-    const url = isEditMode ? `${BASE_URL}/api/restaurent/edit-product` : `${BASE_URL}/api/restaurent/add-product`;
+    const url = isEditMode ? `${API_BASE_URL}/api/restaurent/edit-product` : `${API_BASE_URL}/api/restaurent/add-product`;
 
     try {
       const response = await axios.post(url, formData, {
@@ -400,7 +400,7 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
                 index="product"
                 register={register}
                 onUploadSuccess={handleImageUploadSuccess}
-                initialImage={isEditMode && productToEdit?.image ? `${BASE_URL}${productToEdit.image}` : null}
+                initialImage={isEditMode && productToEdit?.image ? `${API_BASE_URL}}${productToEdit.image}` : null}
               />
             </div>
 

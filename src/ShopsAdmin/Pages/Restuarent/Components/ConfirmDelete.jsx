@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'flowbite-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../../../../config/config';
 
 function ConfirmDeleteModal({ isOpen, onClose, onDeleteSuccess, itemName, itemId, itemType }) {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -17,16 +18,16 @@ function ConfirmDeleteModal({ isOpen, onClose, onDeleteSuccess, itemName, itemId
 
       if (itemType === 'category') {
         formData.append('cat_id', itemId);
-        endpoint = 'https://hezqa.com/api/restaurent/category-delete';
+        endpoint = `${API_BASE_URL}/api/restaurent/category-delete`;
       } else if (itemType === 'menu') {
         formData.append('menu_id', itemId);
-        endpoint = 'https://hezqa.com/api/restaurent/menu-delete';
+        endpoint = `${API_BASE_URL}/api/restaurent/menu-delete`;
       } else if (itemType === 'shopcard') {
         formData.append('product_id', itemId);
-        endpoint = 'https://hezqa.com/api/restaurent/product-delete';
+        endpoint = `${API_BASE_URL}/api/restaurent/product-delete`;
       } else if (itemType === 'flyer') {
         formData.append('flyer_id', itemId);
-        endpoint = 'https://hezqa.com/api/restaurent/flyer-delete';
+        endpoint = `${API_BASE_URL}/api/restaurent/flyer-delete`;
       }
 
       const response = await axios.post(endpoint, formData, {

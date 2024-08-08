@@ -1,12 +1,12 @@
-import React from 'react'
-import { GridLoader } from 'react-spinners'
+import React from 'react';
+import { ClipLoader } from 'react-spinners';
 
 function Loading() {
   return (
-    <div className='w-[100%] h-[100vh] flex justify-center items-center'>
- <GridLoader size={30} />
+    <div className='w-[100%] h-[100%] flex justify-center items-center'>
+      <ClipLoader size={35} color="#fbbf24" />
     </div>
-  )
+  );
 }
 
-export default Loading
+export default Loading;

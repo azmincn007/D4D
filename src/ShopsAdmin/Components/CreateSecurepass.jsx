@@ -6,6 +6,7 @@ import PasswordInputAdmin from "../../Components/authentication/Passwordinputadm
 import { IoIosClose } from "react-icons/io";
 import { useMutation } from "react-query";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/config";
 
 function CreateSecurepassword({ email, onClose }) {
   const {
@@ -18,7 +19,7 @@ function CreateSecurepassword({ email, onClose }) {
   const newPassword = watch("newPassword");
 
   const resetPasswordMutation = useMutation(
-    (data) => axios.post("https://hezqa.com/api/reset-shop-psw", data),
+    (data) => axios.post(`${API_BASE_URL}/api/reset-shop-psw`, data),
     {
       onSuccess: () => {
         // Handle successful password reset

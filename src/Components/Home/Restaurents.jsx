@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import '../../styles/categories.css'
 import Homecards from '../Cards/Homecards'
-import { Radio } from 'flowbite-react'
 import SingleDishModalDetails from '../modal/SingleDishModaldetails'
 
-const BASE_URL = 'https://hezqa.com'
 
-function Restuarents({menus,currencySymbol}) {
+function Restuarents({menus, currencySymbol}) {
   const [selectedMenu, setSelectedMenu] = useState(null)
-
+  
   const handleCardClick = (menu) => {
     setSelectedMenu(menu)
   }
@@ -28,14 +26,14 @@ function Restuarents({menus,currencySymbol}) {
       </div>
       <div className="contentscards-resto">
         <div className="cardcontainer-resto ">
-          {menus.map((obj, index) => (
-            <div key={index} onClick={() => handleCardClick(obj)}>
-              <Homecards
-                img={`${BASE_URL}${obj.image}`}
-                logo={`${BASE_URL}${obj.logo}`}
-                title={obj.menu_eng}
-                content={obj.desc}
-              />
+          {menus.map((menu, index) => (
+            <div key={index} onClick={() => handleCardClick(menu)}>
+             <Homecards
+  product={menu}
+
+  currencySymbol={currencySymbol}
+  isRestaurant={true}
+/>
             </div>
           ))}
         </div>

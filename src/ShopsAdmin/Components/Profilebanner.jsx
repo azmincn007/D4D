@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { FaCamera } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
+import { API_BASE_URL } from '../../config/config';
 
 const ProfileBanner = ({ circleImage, backgroundImage, showEditIcon, onImageChange, onBackgroundImageChange }) => {
   const circleInputRef = useRef(null);
@@ -8,7 +9,7 @@ const ProfileBanner = ({ circleImage, backgroundImage, showEditIcon, onImageChan
 
   const circleStyle = circleImage
     ? {
-        backgroundImage: `url(${typeof circleImage === 'string' && !circleImage.startsWith('blob:') ? `https://hezqa.com/${circleImage}` : circleImage})`,
+        backgroundImage: `url(${typeof circleImage === 'string' && !circleImage.startsWith('blob:') ? `${API_BASE_URL}/${circleImage}` : circleImage})`,
         backgroundPosition: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat'
@@ -17,7 +18,7 @@ const ProfileBanner = ({ circleImage, backgroundImage, showEditIcon, onImageChan
 
   const backgroundStyle = backgroundImage
     ? {
-        backgroundImage: `url(${typeof backgroundImage === 'string' && !backgroundImage.startsWith('blob:') ? `https://hezqa.com/${backgroundImage}` : backgroundImage})`,
+        backgroundImage: `url(${typeof backgroundImage === 'string' && !backgroundImage.startsWith('blob:') ? `${API_BASE_URL}/${backgroundImage}` : backgroundImage})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat'
       }

@@ -3,12 +3,12 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { Card } from 'flowbite-react';
 import LazyImage from '../../../../api/Lazyimage';
+import { API_BASE_URL } from '../../../../config/config';
 
-const BASE_URL = 'https://hezqa.com';
 
 const fetchTodaySpecial = async () => {
   const authToken = localStorage.getItem('authToken');
-  const { data } = await axios.get(`${BASE_URL}/api/restaurent/todays-special`, {
+  const { data } = await axios.get(`${API_BASE_URL}/api/restaurent/todays-special`, {
     headers: {
       'Authorization': `Bearer ${authToken}`
     }
@@ -31,7 +31,7 @@ const TodaySpecialCards = ({ currencySymbol }) => {
         <Card key={index} className="w-full max-w-sm rounded-lg shadow-lg cardmenu">
           <div className="relative">
             <LazyImage
-              src={item.image ? `${BASE_URL}${item.image}` : "/placeholder.svg"}
+              src={item.image ? `${item.image}` : "/placeholder.svg"}
               alt={item.menu_eng}
               className="h-56 w-full rounded-t-lg object-cover"
             />

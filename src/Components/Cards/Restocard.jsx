@@ -7,7 +7,7 @@ const RestoCard = ({ img, title, normal_price, offer_price, type }) => {
   return (
     <Card
       theme={Flowbitecard}
-      className="cardres bg-black relative w-[240px] p-1 shadow-[rgba(0,0,0,0.1)_0px_20px_25px_-5px,_rgba(0,0,0,0.04)_0px_10px_10px_-5px]"
+      className="cardres bg-black relative w-[240px] p-1 shadow-[rgba(0,0,0,0.1)_0px_20px_25px_-5px,_rgba(0,0,0,0.04)_0px_10px_10px_-5px] "
       imgAlt="Meaningful alt text for an image that is not purely decorative"
       imgSrc={img}
     >

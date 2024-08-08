@@ -1,18 +1,78 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useQuery } from "react-query";
+import axios from "axios";
 import Categories from './Categories';
-import Contents from './Contents';
-import Mobileshop from './Mobileshop';
 import Restuarents from './Restaurents';
 import Categorydropdown from './Components/CategoryDropdown';
 import '../../styles/DropdownStyle.css';
-import { SelectionContext, ToggleContext } from '../../App';
+import { SelectionContext, ToggleContext, RegionContext, SelectedCategoryContext, SelectedSubCategoryContext, UseridContext, OfferContext, SearchContext } from '../../App';
+import Shop from './Shop';
+import Loading from "../../api/Loading";
+import FavoriteItems from '../../ShopsAdmin/Components/FavourateList';
+import OffersPage from './OffersPage';
+import { API_BASE_URL } from '../../config/config';
+import SearchProduct from './SearchProduct';
 
-function Homecontainer({menus,currencySymbol }) {
-  const [selectedValue, setSelectedValue]=useContext(SelectionContext)
+
+function Homecontainer({ onDataFetched, showFavorites, setShowFavorites, setResetToAllOffers }) {
+  const [selectedValue, setSelectedValue] = useContext(SelectionContext);
   const [ActiveToggle, setActiveToggle] = useContext(ToggleContext);
-  const [selectedSubcategory, setSelectedSubcategory] = useState('Mobile');
-
+  const [selectedRegion] = useContext(RegionContext);
+  const { selectedCategoryId } = useContext(SelectedCategoryContext);
+  const { selectedSubCategoryId } = useContext(SelectedSubCategoryContext);
+  const [Userid, setUserid] = useContext(UseridContext);
+  const { selectedOfferId, setSelectedOfferId } = useContext(OfferContext);
+ const { showSearchProducts, setShowSearchProducts } = useContext(SearchContext);
  
+
+  const fetchData = async () => {
+    if (!selectedRegion) {
+      return null;
+    }
+    let endpoint;
+    let data;
+    if (selectedValue === "Restaurant") {
+      endpoint = `${API_BASE_URL}/api/public/restaurent/home/${selectedRegion}`;
+      const response = await axios.get(endpoint);
+      data = response.data.data;
+    } else {
+      endpoint = `${API_BASE_URL}/api/public/shop/filter-products`;
+      const postData = {
+        region_id: selectedRegion,
+        cat_id: selectedCategoryId,
+        subcat_id: selectedSubCategoryId,
+        shop_id: 0,
+        user_id: Userid,
+      };
+      const response = await axios.post(endpoint, postData);
+      data = response.data.data;
+    }
+    return data;
+  };
+
+  const { data, isLoading, error, refetch } = useQuery(
+    ["data", selectedRegion, selectedValue, selectedCategoryId, selectedSubCategoryId, "filter-products"],
+    fetchData,
+    {
+      enabled: !!selectedRegion,
+    }
+  );
+
+  useEffect(() => {
+    if (selectedRegion && (selectedCategoryId || selectedSubCategoryId)) {
+      refetch();
+    }
+  }, [selectedCategoryId, selectedSubCategoryId, selectedRegion, refetch]);
+
+  useEffect(() => {
+    if (data) {
+      if (selectedValue === "Restaurant") {
+        onDataFetched(data.restaurants || []);
+      } else {
+        onDataFetched(data.shops || []);
+      }
+    }
+  }, [data, selectedValue, onDataFetched]);
 
   const handleOptionClick = (value) => {
     setSelectedValue(value);
@@ -21,22 +81,57 @@ function Homecontainer({menus,currencySymbol }) {
     }
   };
 
-  const handleSubcategoryClick = (subcategory) => {
-    setSelectedSubcategory(subcategory);
-    if (ActiveToggle === 'Offer') {
-      setActiveToggle('Product');
-    }
-  };
-
-
   useEffect(() => {
     if (selectedValue === 'Restaurant' && ActiveToggle === 'Product') {
       setActiveToggle('Offer');
     }
   }, [selectedValue, ActiveToggle, setActiveToggle]);
 
+  const renderContent = () => {
+
+    if (showSearchProducts) {
+      return <SearchProduct />;
+    }
+    if (showFavorites) {
+      return <FavoriteItems />;
+    }
+
+    if (selectedOfferId && selectedOfferId !== 1) {
+      return <OffersPage offerId={selectedOfferId} />;
+    }
+
+    if (selectedValue === 'Shops' && ActiveToggle === 'Product') {
+      return <Shop products={data?.products || []} currencySymbol={data?.country?.currency_symbol || '$'}/>;
+    }
+
+    if (selectedValue === 'Restaurant' && ActiveToggle === 'Offer') {
+      return <Restuarents menus={data?.menus || []} currencySymbol={data?.country?.currency_symbol || '$'}/>;
+    }
+
+    return null;
+  };
+
+  const handleCategoryOrSubcategoryChange = () => {
+    setShowFavorites(false);
+    setSelectedOfferId(1);
+    setResetToAllOffers(prev => !prev);
+    setShowSearchProducts(false); 
+  };
+
+  
+
   return (
-    <div className="homecontainer w-100 flex Tab:flex-col">
+    <div className="homecontainer w-100 flex Tab:flex-col relative">
+      {isLoading && (
+        <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-80 z-10">
+          <Loading />
+        </div>
+      )}
+      {error && (
+        <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-80 z-10">
+          <div>Error: {error.message}</div>
+        </div>
+      )}
       <div className="dropdowncontents hidden Tab:block py-4 w-[95%] mx-auto">
         {selectedValue !== 'Restaurant' && (
           <Categorydropdown
@@ -53,26 +148,15 @@ function Homecontainer({menus,currencySymbol }) {
           maxWidth: '330px',
         }}
       >
-      
-          <Categories
-            selectedValue={selectedValue}
-            onOptionClick={handleOptionClick}
-            onSubcategoryClick={handleSubcategoryClick}
-          />
-      
+        <Categories
+          selectedValue={selectedValue}
+          onOptionClick={handleOptionClick}
+          onCategoryClick={handleCategoryOrSubcategoryChange}
+          onSubcategoryClick={handleCategoryOrSubcategoryChange}
+        />
       </div>
-      <div className="right w-[100%] min-w-24  Tab:w-[100%] pb-16">
-        {selectedValue === 'Shops' && ActiveToggle === 'Offer' && <Contents />}
-        {selectedValue === 'Shops' && ActiveToggle === 'Product' && (
-          <Mobileshop selectedSubcategory={selectedSubcategory} />
-        )}
-        {selectedValue === 'Restaurant' && ActiveToggle === 'Offer' && (
-          <>
-         
-            
-            <Restuarents menus={menus} currencySymbol={currencySymbol}/>
-          </>
-        )}
+      <div className="right w-[100%] min-w-24 Tab:w-[100%] pb-16">
+        {renderContent()}
       </div>
     </div>
   );

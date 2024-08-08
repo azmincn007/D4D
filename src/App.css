@@ -520,7 +520,7 @@ input:-webkit-autofill:active {
 
 .cardres{
 img{
-  height: 250px;
+  height: 250px !important;
 }
 .vg{
   height: 37.5px !important;
@@ -556,4 +556,88 @@ border: none;
   background-color: #eab308  !important;
 }
 
+.favorite-icon {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
 
+.favorite-icon:hover {
+  transform: scale(1.1);
+}
+
+.favorite-icon.animate {
+  animation: favoriteAnimation 0.3s ease;
+}
+
+@keyframes favoriteAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.favorite-counter {
+  position: relative;
+  display: inline-block;
+}
+
+.icon-container {
+  position: relative;
+}
+
+.heart-icon {
+  font-size: 35px;
+  color: white;
+}
+
+.count-badge {
+  position: absolute;
+  top: 1px;
+  right: -3px;
+  background-color: #DC143C;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#shopCategories{
+  background-color: rgba(35, 47, 62, 0.4);
+  color: White;
+  border: 1px solid White ;
+
+  span{
+    color: white;
+  }
+}
+
+.dropdownrescat div[data-testid="flowbite-dropdown"]{
+  top: 30% !important ;
+}
+.inputuser input{
+  background-color: #F1F1F1;
+
+}
+ .inputuser textarea{
+  background-color: #F1F1F1 !important;
+
+}
+
+
+.inputuser input:hover, .inputuser input:focus{
+  border-color: #FFD814;
+}
+.inputuser textarea:hover, .inputuser textarea:focus{
+  border-color: #FFD814;
+}

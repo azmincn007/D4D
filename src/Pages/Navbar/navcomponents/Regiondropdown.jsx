@@ -3,6 +3,7 @@ import '../../../styles/nav.css';
 import { Dropdown } from 'flowbite-react';
 import { Countrycontext, NationalityContext } from '../../../App';
 import flowbiteDrop from '../../../Themes/Flowbitedrop';
+import { API_BASE_URL } from '../../../config/config';
 
 function Regiondropdown() {
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
@@ -21,7 +22,7 @@ const remainingCountries = Nationalities.filter(
       <div className="countryimage LgTab2:hidden">
         <img
           className="logocountry rounded-full" // Add the 'rounded-full' class to make the image circular
-           src={`https://hezqa.com/${selectedCountry.image}`} 
+           src={`${API_BASE_URL}/${selectedCountry.image}`} 
           alt=""
         />
       </div>

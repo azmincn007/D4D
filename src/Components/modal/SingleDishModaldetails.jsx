@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Button, Badge } from 'flowbite-react'
 import useLanguageText from '../Uselanguagetext'
 import { modalthemeNational } from '../../Themes/Modaltheme'
+import { API_BASE_URL } from '../../config/config'
 
 export default function SingleDishModalDetails({ menu, onClose,currencySymbol }) {
   const [openModal, setOpenModal] = useState(true)
-  const BASE_URL = 'https://hezqa.com'
 
   useEffect(() => {
     setOpenModal(true)
@@ -42,7 +42,7 @@ export default function SingleDishModalDetails({ menu, onClose,currencySymbol })
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <img 
-                src={`${BASE_URL}${menu.image}`} 
+                src={`${API_BASE_URL}${menu.image}`} 
                 alt={useLanguageText(createLanguageObject('menu'))} 
                 className="rounded-lg w-full h-56 object-cover" 
               />

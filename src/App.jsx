@@ -3,8 +3,8 @@ import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import Home from "./Pages/Home";
 import "./App.css";
-import RestuarentMenu from "./Components/Restuarents/RestuarentMenu";
-import Mobilessingle from "./Components/Mobile/Mobilessingle";
+import RestuarentMenu from "./Components/RestuarentsorShop/RestuarentMenu";
+import Mobilessingle from "./Components/Mobile/Shoppage";
 import Flyer from "./Pages/Flyer";
 import Favouratemodal from "./Components/modal/Favouratemodal";
 import BaseLayoutAuthentication from "./ShopsAdmin/Pages/Restuarent/BaseLayoutAuthentication";
@@ -18,6 +18,8 @@ import RestuarentDashboard from "./ShopsAdmin/Pages/Restuarent/Dashboard";
 import CreateSecurepassword from "./ShopsAdmin/Components/CreateSecurepass";
 import ProfileShowComponent from "./ShopsAdmin/Components/ProfileShowComponent";
 import Errorpage404 from "./api/Errorpage404";
+import ShopMenu from "./Components/RestuarentsorShop/ShopMenu";
+import Shoppage from "./Components/Mobile/Shoppage";
 
 export const AuthContext = createContext();
 export const Countrycontext = createContext();
@@ -26,6 +28,15 @@ export const ToggleContext = createContext();
 export const RegionContext = createContext();
 export const LanguageContext = createContext();
 export const SelectionContext = createContext();
+export const SelectedCategoryContext = createContext();
+export const SelectedSubCategoryContext = createContext();
+export const LoginContext = createContext();
+export const UseridContext = createContext();
+export const FavCountContext = createContext();
+export const OfferContext = createContext();
+export const SearchContext = createContext();
+
+
 
 
 const queryClient = new QueryClient();
@@ -37,11 +48,38 @@ function App() {
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [selectedValue, setSelectedValue] = useState('Shops');
   const [ActiveToggle, setActiveToggle] = useState("Product");
+  const [selectedCategoryId, setSelectedCategoryId] = useState(0);
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [Userid, setUserid] = useState(0);
+  const [FavCount, SetFavCount] = useState(0);
+  const [selectedOfferId, setSelectedOfferId] = useState(1);
+  const [showSearchProducts, setShowSearchProducts] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+
+
+
+  
 
   const [Nationalities, setNationalities] = useState([]);
 
   return (
     <QueryClientProvider client={queryClient}>
+    <SearchContext.Provider
+      value={{
+        showSearchProducts,
+        setShowSearchProducts,
+        searchResults,
+        setSearchResults,
+      }}
+    >
+           <OfferContext.Provider value={{ selectedOfferId, setSelectedOfferId }}>
+      <FavCountContext.Provider value={[FavCount, SetFavCount ]} >
+
+      <UseridContext.Provider value={[Userid, setUserid ]} >
+         <LoginContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+      <SelectedSubCategoryContext.Provider value={{ selectedSubCategoryId, setSelectedSubCategoryId }}>
+        <SelectedCategoryContext.Provider value={{ selectedCategoryId, setSelectedCategoryId }}>
         <SelectionContext.Provider value={[selectedValue, setSelectedValue]}>
       <LanguageContext.Provider value={[selectedLanguage, setSelectedLanguage]}>
         <RegionContext.Provider value={[selectedRegion, setSelectedRegion]}>
@@ -52,8 +90,10 @@ function App() {
                   <Router>
                     <Routes>
                       <Route path="/" element={<Home />} />
-                      <Route path="/resto" element={<RestuarentMenu />} />
-                      <Route path="/mobilesingle" element={<Mobilessingle />} />
+                      <Route path="/restuarent" element={<RestuarentMenu />} />
+                      <Route path="/shop" element={<ShopMenu />} />
+
+                      <Route path="/Shoppage" element={<Shoppage />} />
                       <Route path="/flyer" element={<Flyer />} />
                       <Route path="/404error" element={<Errorpage404 />} />
                       <Route
@@ -176,6 +216,14 @@ function App() {
         </RegionContext.Provider>
       </LanguageContext.Provider>
       </SelectionContext.Provider>
+      </SelectedCategoryContext.Provider>
+      </SelectedSubCategoryContext.Provider>
+      </LoginContext.Provider>
+      </UseridContext.Provider>
+      </FavCountContext.Provider>
+      </OfferContext.Provider>
+      </SearchContext.Provider>
+
     </QueryClientProvider>
   );
 }

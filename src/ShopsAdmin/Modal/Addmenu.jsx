@@ -11,13 +11,13 @@ import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import FormFieldDescription from "./components/FormFieldDescription";
 import FormFieldLanguage from "./components/FormfieldLanguage";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../config/config";
 
-const BASE_URL = "https://hezqa.com";
 
 // Function to fetch categories
 const fetchCategories = async () => {
   const authToken = localStorage.getItem("authToken");
-  const response = await axios.get(`${BASE_URL}/api/restaurent/all-categories`, {
+  const response = await axios.get(`${API_BASE_URL}/api/restaurent/all-categories`, {
     headers: {
       Authorization: `Bearer ${authToken}`,
     },
@@ -27,7 +27,7 @@ const fetchCategories = async () => {
 
 // Function to fetch tags
 const fetchTags = async () => {
-  const response = await axios.get(`${BASE_URL}/api/tags`);
+  const response = await axios.get(`${API_BASE_URL}/api/tags`);
   return response.data.data.tags || [];
 };
 
@@ -73,7 +73,7 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
   const mutation = useMutation(
     async (formData) => {
       const authToken = localStorage.getItem("authToken");
-      const url = modalType === "Edit Menu" ? `${BASE_URL}/api/restaurent/edit-menu` : `${BASE_URL}/api/restaurent/add-menu`;
+      const url = modalType === "Edit Menu" ? `${API_BASE_URL}/api/restaurent/edit-menu` : `${API_BASE_URL}/api/restaurent/add-menu`;
 
       const response = await axios.post(url, formData, {
         headers: {

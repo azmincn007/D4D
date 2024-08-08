@@ -6,12 +6,13 @@ import { Navigation } from 'swiper/modules';
 import '../../styles/shopswiper.css';
 import { useNavigate } from 'react-router-dom';
 import useLanguageText from '../Uselanguagetext';
+import { API_BASE_URL } from '../../config/config';
 
 SwiperCore.use([Navigation]);
 
-const BASE_URL = 'https://hezqa.com';
 
-function Shopswiper({ data }) {
+function Shopswiper({ data, Type }) {
+  
   const swiperRef = useRef(null);
   const navigate = useNavigate();
 
@@ -28,9 +29,15 @@ function Shopswiper({ data }) {
   };
 
   const handleCardClick = (item) => {
-    navigate('/resto', {
-      state: { id: item.id }
-    });
+    if (Type === 'Restaurant') {
+      navigate('/restuarent', {
+        state: { id: item.id }
+      });
+    } else {
+      navigate('/shop', {
+        state: { id: item.id }
+      });
+    }
   };
 
   return (
@@ -57,10 +64,10 @@ function Shopswiper({ data }) {
         }}
       >
         {data.map((item, index) => {
-          const shopName = useLanguageText({
-            country_eng: item.shopname_eng,
-            country_ar: item.shopname_ar,
-            country_mal: item.shopname_mal,
+          const name = useLanguageText({
+            country_eng:  item.shopname_eng,
+            country_ar:  item.shopname_ar,
+            country_mal:  item.shopname_mal,
             country_hin: item.shopname_hin
           });
 
@@ -68,11 +75,11 @@ function Shopswiper({ data }) {
             <SwiperSlide key={index}>
               <div className="swipercard" onClick={() => handleCardClick(item, index)}>
                 <img className='w-[90px] h-[90px] rounded-full object-cover'
-                  src={item.logo ? `${BASE_URL}${item.logo}` : '/path_to_default_image'}
-                  alt={shopName}
+                  src={item.logo ? `${API_BASE_URL}${item.logo}` : '/path_to_default_image'}
+                  alt={name}
                 />
                 <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px] text-center">
-                  {shopName}
+                  {name}
                 </p>
               </div>
             </SwiperSlide>

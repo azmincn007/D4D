@@ -2,13 +2,13 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button, Modal, Label, Datepicker, Radio } from 'flowbite-react';
 import { IoIosClose } from "react-icons/io";
 import { useForm, Controller } from 'react-hook-form';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient, useQuery } from 'react-query';
 import axios from 'axios';
 import ErrorMessage from '../../../Pages/Authentication/ErrorValidation';
 import ImageUpload from './Imageupload';
-import MultiSelectSearch from '../../Components/Flyercomponent';
+import MultiSelectSearch from '../../Components/MultiSelectSearch';
+import { API_BASE_URL } from '../../../config/config';
 
-const BASE_URL = 'https://hezqa.com';
 
 const formatDate = (date) => {
   if (!date) return '';
@@ -35,6 +35,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
       valid_from: null,
       valid_to: null,
       products: [],
+      offers: [],
       dates_needed: 'no',
     }
   });
@@ -46,7 +47,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
   const datesNeeded = watch('dates_needed');
 
   const addFlyerMutation = useMutation(
-    (formData) => axios.post(`${BASE_URL}/api/restaurent/add-flyer`, formData, {
+    (formData) => axios.post(`${API_BASE_URL}/api/restaurent/add-flyer`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${getAuthToken()}`
@@ -65,7 +66,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
   );
 
   const updateFlyerMutation = useMutation(
-    (formData) => axios.post(`${BASE_URL}/api/restaurent/edit-flyer`, formData, {
+    (formData) => axios.post(`${API_BASE_URL}/api/restaurent/edit-flyer`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${getAuthToken()}`
@@ -83,6 +84,18 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
     }
   );
 
+  // New query to fetch offers
+  const { data: offersData } = useQuery('offers', async () => {
+    const response = await axios.get(`${API_BASE_URL}/api/shop/offers`, {
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`
+      }
+    });
+    console.log(response.data.data.offers);
+    
+    return response.data.data.offers;
+  });
+
   useEffect(() => {
     if (isOpen) {
       if (flyerToEdit) {
@@ -91,28 +104,32 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
           valid_from: flyerToEdit.valid_from ? formatDate(flyerToEdit.valid_from) : null,
           valid_to: flyerToEdit.valid_to ? formatDate(flyerToEdit.valid_to) : null,
           products: flyerToEdit.products.map(product => product.id) || [],
+          offers: flyerToEdit.offers?.map(offer => offer.id) || [],
           dates_needed: flyerToEdit.valid_from || flyerToEdit.valid_to ? 'yes' : 'no',
         };
         reset(resetData);
         setValue('products', resetData.products);
+        setValue('offers', resetData.offers);
       } else {
         setIsEditMode(false);
         reset({
           valid_from: null,
           valid_to: null,
           products: [],
+          offers: [],
           dates_needed: 'no',
         });
         setImageFile(null);
       }
     }
-  },[isOpen, flyerToEdit, reset, setValue]);
+  }, [isOpen, flyerToEdit, reset, setValue]);
 
   const handleCloseModal = useCallback(() => {
     reset({
       valid_from: null,
       valid_to: null,
       products: [],
+      offers: [],
       dates_needed: 'no',
     });
     setImageFile(null);
@@ -128,6 +145,10 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
     setValue('products', selectedIds);
   }, [setValue]);
 
+  const handleOfferSelection = useCallback((selectedIds) => {
+    setValue('offers', selectedIds);
+  }, [setValue]);
+
   const onSubmit = async (data) => {
     if (!checkAuthToken()) return;
   
@@ -139,6 +160,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
       formData.append('valid_to', data.valid_to);
     }
     formData.append('products', data.products.join(','));
+    formData.append('offers', data.offers.join(','));
   
     if (imageFile) {
       formData.append('image', imageFile);
@@ -240,6 +262,20 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
           />
         </div>
 
+        <div className='mb-4'>
+          <MultiSelectSearch 
+            allProductInfo={offersData || []} 
+            onChange={handleOfferSelection}
+            initialSelectedProducts={flyerToEdit?.offers || []}
+            valueKey="offer_title_eng"
+            idKey="id"
+          />
+          <input
+            type="hidden"
+            {...register('offers')}
+          />
+        </div>
+
         <ImageUpload 
           title="Upload Image"
           index="flyer"
@@ -249,7 +285,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
         />
       </div>
     );
-  }, [register, control, handleImageUploadSuccess, isEditMode, flyerToEdit, allProductInfo, handleProductSelection, datesNeeded]);
+  }, [register, control, handleImageUploadSuccess, isEditMode, flyerToEdit, allProductInfo, offersData, handleProductSelection, handleOfferSelection, datesNeeded]);
 
   return (
     <Modal show={isOpen} onClose={handleCloseModal} className='modalfav'>

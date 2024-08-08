@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Dropdown } from 'flowbite-react';
 import '../../styles/categories.css';
 import Accordion from '@mui/material/Accordion';
@@ -11,18 +11,21 @@ import Categorydropdown from './Components/CategoryDropdown';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import useLanguageText from '../Uselanguagetext';
+import { SelectedCategoryContext, SelectedSubCategoryContext } from '../../App'; // Adjust the import path as needed
+import { API_BASE_URL } from '../../config/config';
 
-function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNavbar = false }) {
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+function Categories({ selectedValue, onOptionClick, onSubcategoryClick, onCategoryClick, showInNavbar = false }) {
+  const { selectedCategoryId, setSelectedCategoryId } = useContext(SelectedCategoryContext);
+  const { selectedSubCategoryId, setSelectedSubCategoryId } = useContext(SelectedSubCategoryContext);
 
   const fetchCategories = async () => {
-    const response = await axios.get('https://hezqa.com/api/categories');
+    const response = await axios.get(`${API_BASE_URL}/api/categories`);
     return response.data.data.categories;
   };
 
   const fetchSubcategories = async (categoryId) => {
     if (!categoryId) return [];
-    const response = await axios.get(`https://hezqa.com/api/subcategories/${categoryId}`);
+    const response = await axios.get(`${API_BASE_URL}/api/subcategories/${categoryId}`);
     console.log('Subcategories API Response:', response.data.data.subcategories);
     return response.data.data.subcategories;
   };
@@ -38,21 +41,20 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
     enabled: !!selectedCategoryId,
   });
 
-  const options = [
-    { value: 'Shops', label: 'Shops' },
-    { value: 'Restaurant', label: 'Restaurant' },
-  ];
-
   const handleCategoryClick = (categoryId) => {
-    setSelectedCategoryId(categoryId === selectedCategoryId ? null : categoryId);
+    const newSelectedId = categoryId === selectedCategoryId ? null : categoryId;
+    setSelectedCategoryId(newSelectedId);
+    setSelectedSubCategoryId(null);
+    onCategoryClick();
   };
 
   const handleSubcategoryClick = (subcategory) => {
-    onSubcategoryClick(subcategory);
+    setSelectedSubCategoryId(subcategory.id);
+    onSubcategoryClick();
   };
-
   if (categoriesLoading) return <div>Loading categories...</div>;
   if (categoriesError) return <div>An error occurred while loading categories: {categoriesError.message}</div>;
+ 
 
   return (
     <div
@@ -127,9 +129,9 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, showInNa
                       });
                       return (
                         <li
-                          className="pb-4 cursor-pointer"
+                          className={`pb-4 cursor-pointer ${selectedSubCategoryId === subcategory.id ? 'font-bold' : ''}`}
                           key={subcategory.id}
-                          onClick={() => handleSubcategoryClick(subcategoryName)}
+                          onClick={() => handleSubcategoryClick(subcategory)}
                         >
                           {subcategoryName}
                         </li>

@@ -18,7 +18,6 @@ console.log(categories);
     setImageUploaded(false);
     setImageFile(null);
   };
-  const BASE_URL = 'https://hezqa.com';
 
   return (
     <Modal show={isOpen}  className='modalfav'>
@@ -72,7 +71,7 @@ console.log(categories);
         register={register}
         onUploadSuccess={handleImageUploadSuccess}
         onError={handleImageUploadError}
-        initialImage={flyerToEdit?.image ? `${BASE_URL}${flyerToEdit.image}` : null}
+        initialImage={flyerToEdit?.image ? `${API_BASE_URL}${flyerToEdit.image}` : null}
       />
      </form>
     </div>

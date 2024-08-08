@@ -10,12 +10,12 @@ import ConfirmDeleteModal from './ConfirmDelete';
 import Loading from '../../../../api/Loading';
 import ErrorMessage from '../../../../Pages/Authentication/ErrorValidation';
 import LazyImage from '../../../../api/Lazyimage';
+import { API_BASE_URL } from '../../../../config/config';
 
-const BASE_URL = 'https://hezqa.com';
 
 const fetchMenuItems = async () => {
   const authToken = localStorage.getItem('authToken');
-  const { data } = await axios.get(`${BASE_URL}/api/restaurent/all-menu`, {
+  const { data } = await axios.get(`${API_BASE_URL}/api/restaurent/all-menu`, {
     headers: {
       'Authorization': `Bearer ${authToken}`
     }
@@ -27,7 +27,7 @@ const fetchMenuItems = async () => {
 const updateTodaySpecial = async ({ menu_id, is_special }) => {
   const authToken = localStorage.getItem('authToken');
   const { data } = await axios.post(
-    `${BASE_URL}/api/restaurent/todays-special-status`,
+    `${API_BASE_URL}/api/restaurent/todays-special-status`,
     { menu_id, is_special },
     {
       headers: {
@@ -67,7 +67,6 @@ const CardWithEyeIcon = React.memo(({ item, onEditClick, onDeleteClick, updateSp
     );
   }, [isSpecial, item.id, updateSpecialMutation]);
 
-  const fullImageUrl = useMemo(() => item.image ? `${BASE_URL}${item.image}` : "/placeholder.svg", [item.image]);
 
   const cardClassName = useMemo(() => `w-full max-w-sm rounded-lg shadow-lg cardmenu ${
     isSpecial ? 'border-[2px] border-green-500 ':''
@@ -77,7 +76,7 @@ const CardWithEyeIcon = React.memo(({ item, onEditClick, onDeleteClick, updateSp
     <Card className={cardClassName} style={{ opacity: item.status === 'Active' ? 1 : 0.5 }}>
       <div className="relative">
       <LazyImage
-          src={fullImageUrl}
+          src={item.image}
           alt={item.menu_eng}
           className="h-56 w-full rounded-t-lg object-cover"
         />
@@ -186,7 +185,7 @@ const MenuCardsAdmin = ({ currencySymbol, selectedCategory }) => {
     try {
       const authToken = localStorage.getItem('authToken');
       await axios.post(
-        'https://hezqa.com/api/restaurent/menu-status',
+        `${API_BASE_URL}/api/restaurent/menu-status`,
         { menu_id: menuId, status: newStatus },
         { headers: { 'Authorization': `Bearer ${authToken}` } }
       );

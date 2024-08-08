@@ -8,12 +8,12 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import ConfirmDeleteModal from './ConfirmDelete';
 import Errorpage404 from '../../../../api/Errorpage404';
 import Loading from '../../../../api/Loading';
+import { API_BASE_URL } from '../../../../config/config';
 
-const BASE_URL = 'https://hezqa.com';
 
 const fetchProducts = async () => {
   const authToken = localStorage.getItem('authToken');
-  const { data } = await axios.get(`${BASE_URL}/api/restaurent/all-products`, {
+  const { data } = await axios.get(`${API_BASE_URL}/api/restaurent/all-products`, {
     headers: {
       'Authorization': `Bearer ${authToken}`
     }
@@ -82,7 +82,7 @@ const ProductCard = ({ item, currencySymbol, onEdit, onDeleteSuccess, refetch })
     try {
       const authToken = localStorage.getItem('authToken');
       const response = await axios.post(
-        `${BASE_URL}/api/restaurent/product-status`,
+        `${API_BASE_URL}/api/restaurent/product-status`,
         data,
         { headers: { 'Authorization': `Bearer ${authToken}` } }
       );
@@ -103,7 +103,7 @@ const ProductCard = ({ item, currencySymbol, onEdit, onDeleteSuccess, refetch })
     setIsDeleteModalOpen(false);
   };
 
-  const fullImageUrl = item.image ? `${BASE_URL}${item.image}` : "/placeholder.svg";
+  const fullImageUrl = item.image ? `${API_BASE_URL}${item.image}` : "/placeholder.svg";
   
   return (
     <>

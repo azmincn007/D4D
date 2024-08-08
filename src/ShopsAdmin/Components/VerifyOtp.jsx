@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, TextInput } from 'flowbite-react';
 import Timer from '../../Components/authentication/Timer';
 import axios from 'axios';
+import { API_BASE_URL } from "../../config/config";
+
 
 function VerifyOtp() {
   const navigate = useNavigate();
@@ -64,7 +66,7 @@ function VerifyOtp() {
       setTimer(120);
       setIsRunning(true);
       try {
-        const response = await axios.post('https://hezqa.com/api/send-reg-otp', { email });
+        const response = await axios.post(`${API_BASE_URL}/api/send-reg-otp`, { email });
         console.log('New OTP sent successfully', response.data.data.otp);
         setBackendOTP(response.data.data.otp);
         setError('');

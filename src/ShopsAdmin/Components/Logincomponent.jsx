@@ -6,9 +6,10 @@ import { useMutation } from "react-query";
 import { Button, TextInput, Label, Spinner } from "flowbite-react";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import PasswordInputAdmin from "../../Components/authentication/Passwordinputadmin";
+import { API_BASE_URL } from "../../config/config";
 
 const login = async (data) => {
-  const response = await fetch("https://hezqa.com/api/shop-login", {
+  const response = await fetch(`${API_BASE_URL}/api/shop-login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

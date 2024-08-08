@@ -7,37 +7,18 @@ import { IoMdArrowDropdown } from 'react-icons/io';
 import AvatarComponent from '../../Pages/Navbar/navcomponents/AvatarComponent';
 import LanguageModal from './LanguageModal';
 import { LanguageContext } from '../../App';
-import { useQuery } from 'react-query';
-import axios from 'axios';
 import EditProfile from './EditProfile';
 import ChangePasswordModal from './ChangePassword';
+import WarrantyCardsModal from './WarrantyDetails';
+import { API_BASE_URL } from '../../config/config';
 
-const fetchUserProfile = async () => {
-  const token = localStorage.getItem('usertoken');
-  if (!token) {
-    throw new Error('No token found');
-  }
-  const response = await axios.get('https://hezqa.com/api/user/profile', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
-  console.log(response.data.data.profile);
-  return response.data.data.profile;
-};
-
-const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
+const ProfileModal = ({ isOpen, onClose, handleLogout, userProfile, refreshUserProfile }) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(isOpen);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [isWarrantyCardsModalOpen, setIsWarrantyCardsModalOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
-
-  const { data: userProfile, isLoading, isError } = useQuery({
-    queryKey: ['userProfile'],
-    queryFn: fetchUserProfile,
-    enabled: isProfileModalOpen,
-  });
 
   useEffect(() => {
     setIsProfileModalOpen(isOpen);
@@ -75,13 +56,24 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
     setIsProfileModalOpen(false);
   };
 
+  const handleWarrantyCardsClick = () => {
+    setIsWarrantyCardsModalOpen(true);
+    setIsProfileModalOpen(false);
+  };
+
   const handleEditProfileClose = () => {
     setIsEditProfileModalOpen(false);
     setIsProfileModalOpen(true);
+    refreshUserProfile();
   };
 
   const handleChangePasswordClose = () => {
     setIsChangePasswordModalOpen(false);
+    setIsProfileModalOpen(true);
+  };
+
+  const handleWarrantyCardsClose = () => {
+    setIsWarrantyCardsModalOpen(false);
     setIsProfileModalOpen(true);
   };
 
@@ -93,11 +85,13 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
             <div>
               <div className="flex flex-col items-center font-inter">
                 <h2 className="text-[22px] font-semibold mb-2">My profile</h2>
-                <AvatarComponent height={100} width={100} />
-                {isLoading ? (
+                <AvatarComponent 
+                  height={100} 
+                  width={100} 
+                  src={userProfile?.photo ? `${API_BASE_URL}/${userProfile.photo}` : null}
+                />
+                {!userProfile ? (
                   <p>Loading profile...</p>
-                ) : isError ? (
-                  <p>Error loading profile</p>
                 ) : (
                   <>
                     <div className="flex items-center mt-2">
@@ -142,10 +136,16 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
                     Edit Profile
                   </button>
                   <button
-                    className="bg-yellow text-[12px] px-2 font-semibold py-2 rounded-[6px] w-[100%]"
+                    className="bg-yellow text-[12px] px-2 font-semibold py-2 rounded-[6px] w-[100%] mb-2"
                     onClick={handleChangePasswordClick}
                   >
                     Change Password
+                  </button>
+                  <button
+                    className="bg-yellow text-[12px] px-2 font-semibold py-2 rounded-[6px] w-[100%] mb-2"
+                    onClick={handleWarrantyCardsClick}
+                  >
+                    Warranty Cards
                   </button>
                 </div>
               </div>
@@ -171,6 +171,10 @@ const ProfileModal = ({ isOpen, onClose, handleLogout }) => {
       <ChangePasswordModal 
         isOpen={isChangePasswordModalOpen}
         onClose={handleChangePasswordClose}
+      />
+      <WarrantyCardsModal
+        isOpen={isWarrantyCardsModalOpen}
+        onClose={handleWarrantyCardsClose}
       />
     </>
   );

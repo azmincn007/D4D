@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
+import { API_BASE_URL } from "../../config/config";
 
 function ResetPasswordadmin() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function ResetPasswordadmin() {
 
   const sendOtpMutation = useMutation(
     (email) => 
-      fetch("https://hezqa.com/api/send-reg-otp", {
+      fetch(`${API_BASE_URL}/api/send-reg-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

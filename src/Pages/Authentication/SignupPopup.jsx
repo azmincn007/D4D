@@ -1,5 +1,5 @@
-import { Button, Label, Radio, TextInput } from "flowbite-react";
-import React from "react";
+import React, { useMemo } from "react";
+import { Button, Label, Radio, TextInput, Select } from "flowbite-react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import axios from "axios";
@@ -7,10 +7,15 @@ import flowbiteinput from "../../Themes/Flowbiteinput";
 import { IoIosClose } from "react-icons/io";
 import ErrorMessage from "./ErrorValidation";
 import PasswordInput from "../../Components/authentication/PassworInput";
+import countryList from 'react-select-country-list';
+import { API_BASE_URL } from "../../config/config";
+
 
 // API function
 const registerUser = async (userData) => {
-  const response = await axios.post("https://hezqa.com/api/user/register", userData);
+  const response = await axios.post(`${API_BASE_URL}/api/user/register`, userData);
+  console.log(response.data.data.token);
+  
   return response.data;
 };
 
@@ -24,11 +29,20 @@ function SignupPopup({ onClose, onSignupSuccess }) {
   } = useForm();
 
   const password = watch("password");
+  const countries = useMemo(() => countryList().getData(), []);
 
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
       console.log("Signup successful:", data);
+      // Save the token in localStorage
+      if (data.data && data.data.token) {
+        localStorage.setItem('usertoken', data.data.token);
+        console.log("Token saved in localStorage");
+        window.dispatchEvent(new Event('tokenUpdated'));
+      } else {
+        console.warn("Token not found in the response");
+      }
       onSignupSuccess();
     },
     onError: (error) => {
@@ -40,7 +54,11 @@ function SignupPopup({ onClose, onSignupSuccess }) {
   const onSubmitHandler = async (data) => {
     const isValid = await trigger();
     if (isValid) {
-      mutation.mutate(data);
+      const userData = {
+        ...data,
+        country: data.country,
+      };
+      mutation.mutate(userData);
     }
   };
 
@@ -53,6 +71,7 @@ function SignupPopup({ onClose, onSignupSuccess }) {
       e.preventDefault();
     }
   };
+  
 
   return (
     <>
@@ -108,11 +127,26 @@ function SignupPopup({ onClose, onSignupSuccess }) {
             <div className={`${errors.confirmPassword ? 'mb-2' : 'mb-4'} block`}></div>
           </div>
           <div>
+           {/* Country select */}
+           <select
+  className="w-full countrydropdownuser rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-yellow focus:ring-yellow dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+  {...register("country", { required: "Country is required" })}
+>
+  <option value="">Select a country</option>
+  {countries.map(({ value, label }) => (
+    <option key={value} value={label}>
+      {label}
+    </option>
+  ))}
+</select>
+<div className="mb-4"></div>
+</div>
+          <div>
             <TextInput
               theme={flowbiteinput}
               id="mobile"
               type="tel"
-              placeholder="Mobile Number (including country code)"
+              placeholder="Mobile Number"
               {...register("mobile", { 
                 required: "Mobile Number is required",
                 pattern: {

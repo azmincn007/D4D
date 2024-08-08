@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts = [] }) => {
+const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts = [], valueKey = 'product_eng', idKey = 'id' }) => {
   const [selectedValues, setSelectedValues] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState(allProductInfo);
   const [loading, setLoading] = useState(false);
@@ -8,11 +8,20 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
 
+  // Log incoming props
+  console.log('MultiSelectSearch Props:', { allProductInfo, initialSelectedProducts, valueKey, idKey });
+
   useEffect(() => {
     if (initialSelectedProducts.length > 0) {
       setSelectedValues(initialSelectedProducts);
+      console.log('Initial Selected Products:', initialSelectedProducts);
     }
   }, [initialSelectedProducts]);
+
+  useEffect(() => {
+    setFilteredOptions(allProductInfo);
+    console.log('Updated allProductInfo:', allProductInfo);
+  }, [allProductInfo]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -31,20 +40,22 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
     setLoading(true);
     setTimeout(() => {
       const filtered = allProductInfo.filter(
-        (item) => item.product_eng.toLowerCase().includes(query.toLowerCase())
+        (item) => item[valueKey].toLowerCase().includes(query.toLowerCase())
       );
       setFilteredOptions(filtered);
       setLoading(false);
+      console.log('Filtered Options:', filtered);
     }, 300);
   };
 
   const handleSelect = (option) => {
     setSelectedValues((prev) => {
-      const newValues = prev.some((item) => item.id === option.id)
-        ? prev.filter((item) => item.id !== option.id)
+      const newValues = prev.some((item) => item[idKey] === option[idKey])
+        ? prev.filter((item) => item[idKey] !== option[idKey])
         : [...prev, option];
       
-      onChange(newValues.map(item => item.id));
+      onChange(newValues.map(item => item[idKey]));
+      console.log('Selected Values:', newValues);
       
       return newValues;
     });
@@ -52,8 +63,9 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
 
   const handleRemove = (id) => {
     setSelectedValues((prev) => {
-      const newValues = prev.filter((item) => item.id !== id);
-      onChange(newValues.map(item => item.id));
+      const newValues = prev.filter((item) => item[idKey] !== id);
+      onChange(newValues.map(item => item[idKey]));
+      console.log('Values after removal:', newValues);
       return newValues;
     });
   };
@@ -66,9 +78,9 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
       >
         <div className="flex flex-wrap gap-2">
           {selectedValues.map((value) => (
-            <span key={value.id} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
-              {value.product_eng}
-              <button onClick={() => handleRemove(value.id)} className="ml-1.5 text-blue-800 hover:text-blue-900 focus:outline-none">
+            <span key={value[idKey]} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full flex items-center">
+              {value[valueKey]}
+              <button onClick={() => handleRemove(value[idKey])} className="ml-1.5 text-blue-800 hover:text-blue-900 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
@@ -78,7 +90,7 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
           <input
             type="text"
             className="flex-grow bg-transparent outline-none placeholder-gray-400"
-            placeholder={selectedValues.length ? '' : "Search Products"}
+            placeholder={selectedValues.length ? '' : "Search"}
             value={query}
             onChange={(e) => handleSearch(e.target.value)}
           />
@@ -91,13 +103,13 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
           ) : (
             filteredOptions.map((option) => (
               <div
-                key={option.id}
+                key={option[idKey]}
                 className={`p-3 hover:bg-gray-100 cursor-pointer transition-colors duration-150 ${
-                  selectedValues.some((item) => item.id === option.id) ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                  selectedValues.some((item) => item[idKey] === option[idKey]) ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
                 }`}
                 onClick={() => handleSelect(option)}
               >
-                {option.product_eng}
+                {option[valueKey]}
               </div>
             ))
           )}

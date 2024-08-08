@@ -1,8 +1,9 @@
 // src/hooks/useCountries.js
 import { useQuery } from 'react-query';
+import { API_BASE_URL } from '../../config/config';
 
 const fetchCountries = async () => {
-  const response = await fetch('https://hezqa.com/api/countries');
+  const response = await fetch(`${API_BASE_URL}/api/countries`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

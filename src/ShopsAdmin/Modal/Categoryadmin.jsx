@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import FormFieldCategory from "./components/FormFieldCategory";
+import { API_BASE_URL } from "../../config/config";
 
 function CategoryAdmin({ isOpen, onClose, onCategoryAdded, categoryToEdit }) {
   const navigate = useNavigate();
@@ -46,10 +47,10 @@ function CategoryAdmin({ isOpen, onClose, onCategoryAdded, categoryToEdit }) {
           status: "Active",
           cat_id: categoryToEdit.id,
         };
-        return axios.post("https://hezqa.com/api/restaurent/edit-category", editData, { headers });
+        return axios.post(`${API_BASE_URL}/api/restaurent/edit-category`, editData, { headers });
       } else {
         // Adding new category
-        return axios.post("https://hezqa.com/api/restaurent/add-category", categoryData, { headers });
+        return axios.post(`${API_BASE_URL}/api/restaurent/add-category`, categoryData, { headers });
       }
     },
     onSuccess: (response) => {

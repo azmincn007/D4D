@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './basicstyles.css';
 import { useQuery } from 'react-query';
 import ErrorMessage from '../../Pages/Authentication/ErrorValidation';
+import { API_BASE_URL } from '../../config/config';
 
 
 const fetchShopTypes = async () => {
-  const response = await fetch('https://hezqa.com/api/shop-types');
+  const response = await fetch(`${API_BASE_URL}/api/shop-types`);
   if (!response.ok) {
     throw new Error('Failed to fetch shop types');
   }
@@ -13,7 +14,7 @@ const fetchShopTypes = async () => {
 };
 
 const fetchCountries = async () => {
-  const response = await fetch('https://hezqa.com/api/countries');
+  const response = await fetch(`${API_BASE_URL}/api/countries`);
   if (!response.ok) {
     throw new Error('Failed to fetch countries');
   }
@@ -22,7 +23,7 @@ const fetchCountries = async () => {
 
 const fetchRegions = async (countryId) => {
   if (!countryId) return [];
-  const response = await fetch(`https://hezqa.com/api/regions/${countryId}`);
+  const response = await fetch(`${API_BASE_URL}/api/regions/${countryId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch regions');
   }

@@ -9,6 +9,7 @@ import OrgDropdowns from "./DropdownsofUpload";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "react-query";
 import PhoneInput from "react-phone-input-2";
+import { API_BASE_URL } from "../../config/config";
 
 function SignupdataUpload() {
   const [wordCount, setWordCount] = useState(0);
@@ -88,7 +89,7 @@ function SignupdataUpload() {
         formData.append(key, data[key]);
       }
       
-      const response = await fetch('https://hezqa.com/api/register-shop', {
+      const response = await fetch(`${API_BASE_URL}/api/register-shop`, {
         method: 'POST',
         body: formData,
       });

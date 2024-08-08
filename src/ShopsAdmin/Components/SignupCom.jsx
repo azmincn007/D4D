@@ -8,10 +8,11 @@ import PasswordInputAdmin from "../../Components/authentication/Passwordinputadm
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { Padding } from "@mui/icons-material";
+import { API_BASE_URL } from "../../config/config";
 
 // API function to send OTP
 const sendOTP = async ({ email, formData }) => {
-  const response = await fetch("https://hezqa.com/api/send-reg-otp", {
+  const response = await fetch(`${API_BASE_URL}/api/send-reg-otp`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

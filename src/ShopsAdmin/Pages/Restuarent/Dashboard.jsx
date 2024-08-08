@@ -22,7 +22,9 @@ import MenuCardsAdmin from "./Components/Menucardicon";
 import ShopCardAdmin from "./Components/ShopCardadmin";
 import Flyercard from "./Components/Flyercard";
 
+
 import "./restuarentdashboard.css";
+import { API_BASE_URL } from "../../../config/config";
 
 function RestuarentDashboard() {
   const navigate = useNavigate();
@@ -69,7 +71,9 @@ function RestuarentDashboard() {
     setIsCategoryLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-      const { data } = await axios.get("https://hezqa.com/api/restaurent/all-categories", {
+      console.log(token);
+
+      const { data } = await axios.get(`${API_BASE_URL}/api/restaurent/all-categories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRestaurantCategories(data.data.categories);
@@ -91,13 +95,15 @@ function RestuarentDashboard() {
     fetchRestaurantCategories();
   }, []);
 
+  
+
   useEffect(() => {
     const fetchSubcategories = async () => {
       if (selectedShopCategory !== "All") {
         try {
           const category = shopCategories.find(cat => cat.cat_eng === selectedShopCategory);
           if (category) {
-            const { data } = await axios.get(`https://hezqa.com/api/subcategories/${category.id}`);
+            const { data } = await axios.get(`${API_BASE_URL}/api/subcategories/${category.id}`);
             setSubcategories(data.data.subcategories);
             console.log("Fetched subcategories:", data.data.subcategories);
           }
@@ -115,7 +121,7 @@ function RestuarentDashboard() {
     const fetchShopCategories = async () => {
       setIsCategoryLoading(true);
       try {
-        const { data } = await axios.get(`https://hezqa.com/api/categories`);
+        const { data } = await axios.get(`${API_BASE_URL}/api/categories`);
         setShopCategories(data.data.categories);
         console.log("Fetched shop categories:", data.data.categories);
       } catch (error) {
@@ -130,7 +136,7 @@ function RestuarentDashboard() {
   const fetchProfileData = async () => {
     try {
       const token = localStorage.getItem("authToken");
-      const response = await axios.get("https://hezqa.com/api/restaurent/profile", {
+      const response = await axios.get(`${API_BASE_URL}/api/restaurent/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
@@ -192,6 +198,8 @@ function RestuarentDashboard() {
   if (isProfileError) return <Errorpage404 />;
 
   const { shopname_eng, email, region, country, currency_symbol, type } = profileData || {};
+  console.log(profileData);
+  
 
   const backgroundHeight = type === "2" ? "400px" : "680px";
 
@@ -220,7 +228,7 @@ function RestuarentDashboard() {
       <div
         className="dashrestbg relative flex flex-col justify-end min-h-[200px]"
         style={{
-          backgroundImage: `url(https://hezqa.com${profileData.background_img})`,
+          backgroundImage: `url(${API_BASE_URL}/${profileData.background_img})`,
           height: backgroundHeight
         }}
       >

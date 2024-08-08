@@ -3,6 +3,7 @@ import { Modal } from 'flowbite-react';
 import { useQuery } from 'react-query';
 import { Countrycontext, LanguageContext, RegionContext } from '../../App';
 import useLanguageText from '../Uselanguagetext';
+import { API_BASE_URL } from '../../config/config';
 
 const RegionModal = ({ isOpen, onClose, onSelect }) => {
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
@@ -15,7 +16,7 @@ const RegionModal = ({ isOpen, onClose, onSelect }) => {
   }, [selectedCountry]);
 
   const fetchRegions = async () => {
-    const response = await fetch(`https://hezqa.com/api/regions/${selectedCountry.id}`);
+    const response = await fetch(`${API_BASE_URL}/api/regions/${selectedCountry.id}`);
     if (!response.ok) {
       throw new Error('Failed to fetch regions');
     }

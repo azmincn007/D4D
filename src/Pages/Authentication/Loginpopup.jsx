@@ -11,6 +11,8 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useMutation } from "react-query";
 import axios from "axios";
 import PasswordInput from "../../Components/authentication/PassworInput";
+import { API_BASE_URL } from "../../config/config";
+import Loading from "../../api/Loading";
 
 function Loginpopup({ onClose, onLoginSuccess }) {
   const [AuthValue, setAuthValue] = useContext(AuthContext);
@@ -19,7 +21,7 @@ function Loginpopup({ onClose, onLoginSuccess }) {
   const navigate = useNavigate();
 
   const googleLoginMutation = useMutation(
-    (userData) => axios.post("https://hezqa.com/api/user/socialize-login", userData),
+    (userData) => axios.post(`${API_BASE_URL}/api/user/socialize-login`, userData),
     {
       onSuccess: (response) => {
         console.log("Google Login successful:", response.data);
@@ -72,6 +74,10 @@ function Loginpopup({ onClose, onLoginSuccess }) {
     },
     scope: "profile email",
   });
+  
+  const handleForgotPasswordClick = () => {
+    setAuthValue("forget");
+  };
 
   const {
     register,
@@ -81,7 +87,7 @@ function Loginpopup({ onClose, onLoginSuccess }) {
 
   const loginMutation = useMutation(
     (credentials) =>
-      axios.post("https://hezqa.com/api/user/login", credentials),
+      axios.post(`${API_BASE_URL}/api/user/login`, credentials),
     {
       onSuccess: (response) => {
         console.log("Login successful:", response.data.data);
@@ -124,6 +130,19 @@ function Loginpopup({ onClose, onLoginSuccess }) {
       password: data.password,
     });
   };
+
+  if (loginMutation.isError || googleLoginMutation.isError) {
+    navigate('/error404');
+    return null;
+  }
+
+  if (loginMutation.isLoading || googleLoginMutation.isLoading) {
+    return (
+    
+          <Loading />
+       
+    );
+  }
 
   return (
     <>
@@ -168,8 +187,7 @@ function Loginpopup({ onClose, onLoginSuccess }) {
               </Label>
             </div>
             <div className="text-sm underline font-semibold">
-              <Link>Forgot?</Link>
-            </div>
+            <button type="button" onClick={handleForgotPasswordClick}>Forgot?</button>            </div>
           </div>
           <Button 
             className="mt-4 bg-yellow auth-button" 

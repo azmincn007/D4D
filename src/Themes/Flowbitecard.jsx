@@ -2,7 +2,7 @@
 export const Flowbitecard = {
     root: {
       base: "flex rounded-lg border border-gray-200 bg-white  dark:border-gray-700 dark:bg-gray-800",
-      children: "flex h-full flex-col justify-center gap-1 p-1",
+      children: "flex  flex-col justify-center gap-1 p-1",
       horizontal: {
         off: "flex-col",
         on: "flex-col md:max-w-xl md:flex-row"

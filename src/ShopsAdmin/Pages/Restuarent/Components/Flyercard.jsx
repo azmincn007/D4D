@@ -6,12 +6,12 @@ import { MdEdit } from 'react-icons/md';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import ConfirmDeleteModal from './ConfirmDelete';
+import { API_BASE_URL } from '../../../../config/config';
 
-const BASE_URL = 'https://hezqa.com';
 
 const fetchFlyers = async () => {
   const authToken = localStorage.getItem('authToken');
-  const { data } = await axios.get(`${BASE_URL}/api/restaurent/all-flyers`, {
+  const { data } = await axios.get(`${API_BASE_URL}/api/restaurent/all-flyers`, {
     headers: {
       'Authorization': `Bearer ${authToken}`
     }
@@ -136,7 +136,7 @@ const FlyerCard = ({ flyer, updateStatusMutation, onEditFlyer, onOpenDeleteModal
     );
   };
 
-  const fullImageUrl = flyer.image ? `${BASE_URL}${flyer.image}` : "/placeholder.svg";
+  const fullImageUrl = flyer.image ? `${API_BASE_URL}${flyer.image}` : "/placeholder.svg";
 
   return (
     <Card 

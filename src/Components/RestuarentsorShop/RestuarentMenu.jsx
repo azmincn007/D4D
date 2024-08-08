@@ -14,11 +14,12 @@ import RestoCard from "../Cards/Restocard";
 import TriangleSwitch from "./Triangleswitch";
 import useLanguageText from '../Uselanguagetext';
 import { LanguageContext } from "../../App";
+import { API_BASE_URL } from "../../config/config";
 
-const BASE_URL = "https://hezqa.com";
+const BASE_URL = "";
 
 const fetchRestaurantData = async (id) => {
-  const { data } = await axios.get(`${BASE_URL}/api/public/restaurent/dashboard/${id}`);
+  const { data } = await axios.get(`${API_BASE_URL}/api/public/restaurent/dashboard/${id}`);
   console.log("Fetched data:", data.data);
   return {
     restaurantDetails: data.data.details,
@@ -86,7 +87,6 @@ function RestuarentMenu() {
 
   const filterMenuItems = (items) => {
     console.log("Filtering items:", items);
-    if (!showVeg && !showNonVeg) return []; // Show no items if both are unchecked
     return items.filter(item => {
       const itemType = (item.type || '').toLowerCase();
       return (showVeg && itemType.includes('veg') && !itemType.includes('non')) || 
@@ -105,7 +105,7 @@ function RestuarentMenu() {
   return (
     <div className="">
       <NavbarComponent hideToggle={true} />
-      <div className="bgresto bg-cover bg-no-repeat">
+      <div className="bgresto min-h-[100vh] bg-cover bg-no-repeat">
         <div className="w-[80%] font-inter mx-auto">
           <div className="mx-6 rounded-[12px] flex justify-center w-full text-center Mobile:w-[270px]">
             <div className="px-4 text-white flex flex-col py-2">
@@ -133,15 +133,15 @@ function RestuarentMenu() {
               </div>
             </div>
           </div>
-          <div className="flex w-full flex-col items-start gap-4">
+          <div className="flex w-full flex-col items-start gap-0">
             <div className="flex justify-between w-full">
               <div className="flex gap-8">
-              <div className="bg-[#232F3E]/40 border border-white rounded-full inline-block backdrop-blur-sm p-4">
-  <TriangleSwitch onChange={handleNonVegSwitchChange} color="red" initialChecked={true} />
-</div>
-<div className="bg-[#232F3E]/40 border border-white rounded-full inline-block backdrop-blur-sm p-4">
-  <TriangleSwitch onChange={handleVegSwitchChange} color="green" initialChecked={true} />
-</div>
+                <div className="bg-[#232F3E]/40 border border-white rounded-full inline-block backdrop-blur-sm p-4">
+                  <TriangleSwitch onChange={handleNonVegSwitchChange} color="red" initialChecked={showNonVeg} />
+                </div>
+                <div className="bg-[#232F3E]/40 border border-white rounded-full inline-block backdrop-blur-sm p-4">
+                  <TriangleSwitch onChange={handleVegSwitchChange} color="green" initialChecked={showVeg} />
+                </div>
               </div>
               <div className="dropdownrescat">
                 <Dropdown
@@ -174,90 +174,99 @@ function RestuarentMenu() {
             </div>
           </div>
           
-          {/* Today's Special Section - Unaffected by filters */}
-          <div className="mt-[30px]">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="py-2 text-[24px] font-semibold text-white Mobile:text-[12px]">{todaysSpecialText}</p>
+          {/* Today's Special Section */}
+          {todaySpecial.length > 0 && (
+            <div className="mt-[30px]">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="py-2 text-[24px] font-semibold text-white Mobile:text-[12px]">{todaysSpecialText}</p>
+                </div>
+              </div>
+              <div className="swiper-container w-[100%] mx-auto pb-4">
+                <Swiper
+                  slidesPerView={2.5}
+                  spaceBetween="10"
+                  pagination={{
+                    clickable: true,
+                  }}
+                  breakpoints={{
+                    300: { slidesPerView: 1.5, spaceBetween: "20" },
+                    450: { slidesPerView: 2.5, spaceBetween: "20" },
+                    640: { slidesPerView: 2.5, spaceBetween: "20" },
+                    768: { slidesPerView: 2.5, spaceBetween: "20" },
+                    1024: { slidesPerView: 2.5, spaceBetween: "20" },
+                    1250: { slidesPerView: 2.5, spaceBetween: "50" },
+                    1450: { slidesPerView: 2.5, spaceBetween: "50" },
+                  }}
+                  modules={[Navigation, Pagination]}
+                  className="mySwiper"
+                >
+                  {todaySpecial.map((item, index) => (
+                    <SwiperSlide key={index} className="!w-auto">
+                      <RestoCard 
+                        offer_price={item.offer_price} 
+                        normal_price={item._price} 
+                        img={`${API_BASE_URL}${item.image}`}  
+                        title={useLanguageText({
+                          country_eng: item.menu_eng,
+                          country_ar: item.menu_ar,
+                          country_mal: item.menu_mal,
+                          country_hin: item.menu_hin
+                        })}  
+                        type={item.type} 
+                      />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
             </div>
-            <div className="swiper-container w-[100%] mx-auto pb-4">
-              <Swiper
-                slidesPerView={2.5}
-                spaceBetween="10"
-                pagination={{
-                  clickable: true,
-                }}
-                breakpoints={{
-                  300: { slidesPerView: 1.5, spaceBetween: "20" },
-                  450: { slidesPerView: 2.5, spaceBetween: "20" },
-                  640: { slidesPerView: 2.5, spaceBetween: "20" },
-                  768: { slidesPerView: 2.5, spaceBetween: "20" },
-                  1024: { slidesPerView: 2.5, spaceBetween: "20" },
-                  1250: { slidesPerView: 2.5, spaceBetween: "50" },
-                  1450: { slidesPerView: 2.5, spaceBetween: "50" },
-                }}
-                modules={[Navigation, Pagination]}
-                className="mySwiper"
-              >
-                {todaySpecial.map((item, index) => (
-                  <SwiperSlide key={index} className="!w-auto">
-                    <RestoCard 
-                      offer_price={item.offer_price} 
-                      normal_price={item._price} 
-                      img={`${BASE_URL}${item.image}`}  
-                      title={useLanguageText({
-                        country_eng: item.menu_eng,
-                        country_ar: item.menu_ar,
-                        country_mal: item.menu_mal,
-                        country_hin: item.menu_hin
-                      })}  
-                      type={item.type} 
-                    />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
-          </div>
+          )}
         </div>
         
-        {/* Menu Section - Affected by filters */}
-        <div className="flex items-center justify-center my-4">
-          <div className="h-[1px] flex-grow bg-white"></div>
-          <p className="mx-4 text-center text-white font-['Marck_Script'] text-[42px]">{menuText}</p>
-          <div className="h-[1px] flex-grow bg-white"></div> 
-        </div>
-        <div className="w-[80%] mx-auto py-8">
-          {filteredMenus.map((category, index) => (
-            <div key={index} className="mb-8">
-              <h2 className="text-2xl font-semibold text-white mb-4">
-                {useLanguageText({
-                  country_eng: category.category_eng,
-                  country_ar: category.category_ar,
-                  country_mal: category.category_mal,
-                  country_hin: category.category_hin
-                })}
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {category.menus.map((item, itemIndex) => (
-                  <RestoCard
-                    key={itemIndex}
-                    img={`${BASE_URL}${item.image}`}
-                    title={useLanguageText({
-                      country_eng: item.menu_eng,
-                      country_ar: item.menu_ar,
-                      country_mal: item.menu_mal,
-                      country_hin: item.menu_hin
-                    })}
-                    normal_price={item.price}
-                    type={item.type} 
-                    offer_price={item.offer_price}
-                  />
-                ))}
-              </div>
+        {/* Menu Section */}
+        {filteredMenus.length > 0 ? (
+          <>
+            <div className="flex items-center justify-center my-4">
+              <div className="h-[1px] flex-grow bg-white"></div>
+              <p className="mx-4 text-center text-white font-['Marck_Script'] text-[60px]">{menuText}</p>
+              <div className="h-[1px] flex-grow bg-white"></div> 
             </div>
-          ))}
-        </div>
+            <div className="w-[80%] mx-auto py-8">
+              {filteredMenus.map((category, index) => (
+                <div key={index} className="mb-8">
+                  <h2 className="text-2xl font-semibold text-white mb-4">
+                    {useLanguageText({
+                      country_eng: category.category_eng,
+                      country_ar: category.category_ar,
+                      country_mal: category.category_mal,
+                      country_hin: category.category_hin
+                    })}
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-[87px]">
+                    {category.menus.map((item, itemIndex) => (
+                      <RestoCard
+                        key={itemIndex}
+                        img={`${API_BASE_URL}${item.image}`}
+                        title={useLanguageText({
+                          country_eng: item.menu_eng,
+                          country_ar: item.menu_ar,
+                          country_mal: item.menu_mal,
+                          country_hin: item.menu_hin
+                        })}
+                        normal_price={item.price}
+                        type={item.type} 
+                        offer_price={item.offer_price}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="text-center text-white mt-8">
+          </div>
+        )}
       </div>
     </div>
   );

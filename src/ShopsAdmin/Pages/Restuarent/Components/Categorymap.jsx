@@ -5,6 +5,7 @@ import { FaPencilAlt, FaTrash, FaEye, FaEyeSlash } from 'react-icons/fa';
 import Loading from '../../../../api/Loading';
 import ConfirmDeleteModal from './ConfirmDelete';
 import Errorpage404 from '../../../../api/Errorpage404';
+import { API_BASE_URL } from '../../../../config/config';
 
 function Categorymap({ onEditCategory ,onCategoriesFetched}) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -17,7 +18,7 @@ function Categorymap({ onEditCategory ,onCategoriesFetched}) {
       throw new Error('No authentication token found');
     }
 
-    const response = await axios.get('https://hezqa.com/api/restaurent/all-categories', {
+    const response = await axios.get(`${API_BASE_URL}/api/restaurent/all-categories`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -53,7 +54,7 @@ function Categorymap({ onEditCategory ,onCategoriesFetched}) {
     const newStatus = currentStatus === 'Active' ? 'Blocked' : 'Active';
 
     try {
-      await axios.post('https://hezqa.com/api/restaurent/category-status', 
+      await axios.post(`${API_BASE_URL}/api/restaurent/category-status`, 
         { 
           cat_id: id,
           status: newStatus

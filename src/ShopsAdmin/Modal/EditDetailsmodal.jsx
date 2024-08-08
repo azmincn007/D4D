@@ -10,6 +10,7 @@ import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import axios from "axios";
 import { TbFileCertificate } from "react-icons/tb";
 import { useQueryClient } from 'react-query';
+import { API_BASE_URL } from "../../config/config";
 
 function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
   const [wordCount, setWordCount] = useState(0);
@@ -102,7 +103,7 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
   
       const token = localStorage.getItem('authToken');
   
-      const response = await axios.post('https://hezqa.com/api/restaurent/edit-profile', formData, {
+      const response = await axios.post(`${API_BASE_URL}/api/restaurent/edit-profile`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
