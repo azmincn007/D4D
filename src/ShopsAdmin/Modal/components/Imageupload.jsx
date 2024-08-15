@@ -8,7 +8,6 @@ const ImageUpload = ({ title, index, register, onUploadSuccess, initialImage }) 
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log("File selected in ImageUpload:", file);
     if (file) {
       onUploadSuccess(file);
     }

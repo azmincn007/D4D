@@ -169,9 +169,10 @@ const ProfileModal = ({ isOpen, onClose, handleLogout, userProfile, refreshUserP
         initialValues={userProfile}
       />
       <ChangePasswordModal 
-        isOpen={isChangePasswordModalOpen}
-        onClose={handleChangePasswordClose}
-      />
+  isOpen={isChangePasswordModalOpen}
+  onClose={handleChangePasswordClose}
+  email={userProfile?.email} // Add this line
+/>
       <WarrantyCardsModal
         isOpen={isWarrantyCardsModalOpen}
         onClose={handleWarrantyCardsClose}

@@ -54,7 +54,6 @@ function Signupcomp() {
     onError: (error) => {
       console.error("API error:", error);
       if (error.status === 400) {
-        console.log(error.data.message);
         // Handle 400 error (e.g., show error message to user)
       } else {
         // Handle other errors
@@ -88,7 +87,6 @@ function Signupcomp() {
     };
     
     if (!phoneError) {
-      console.log(updatedData);
       mutation.mutate({ email: data.email, formData: updatedData });
     }
   };

@@ -1,34 +1,23 @@
 import React, { useContext, useEffect } from 'react';
 import { Modal } from 'flowbite-react';
-import { useQuery } from 'react-query';
-import { Countrycontext, LanguageContext, RegionContext } from '../../App';
+import { Countrycontext, RegionContext } from '../../App';
 import useLanguageText from '../Uselanguagetext';
-import { API_BASE_URL } from '../../config/config';
 
-const RegionModal = ({ isOpen, onClose, onSelect }) => {
+const RegionModal = ({ isOpen, onClose, onSelect ,regions}) => {
+  const [selectedCountry] = useContext(Countrycontext);
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
-  const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
-  const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
-
-
 
   useEffect(() => {
-  }, [selectedCountry]);
-
-  const fetchRegions = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/regions/${selectedCountry.id}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch regions');
+    const storedRegion = localStorage.getItem('userRegionSelected');
+    if (storedRegion) {
+      setSelectedRegion(JSON.parse(storedRegion));
+      onSelect(JSON.parse(storedRegion));
     }
-    const data = await response.json();
-    return data.data.regions; // Assuming regions are under data.regions
-  };
-
-  const { data: regions, isLoading, isError } = useQuery(['regions', selectedCountry.id], fetchRegions);
-
+  }, []);
 
   const handleRegionSelect = (region) => {
     setSelectedRegion(region);
+    localStorage.setItem('userRegionSelected', JSON.stringify(region));
     onSelect(region);
     onClose();
   };
@@ -37,21 +26,15 @@ const RegionModal = ({ isOpen, onClose, onSelect }) => {
     <Modal className='modalregion' show={isOpen} onClose={onClose}>
       <Modal.Body>
         <div className='font-inter'>
-          <div className='flex justify-center pb-4 text-sm font-semibold text-[#6D6D6D]'>
-            Select Your Region
-          </div>
-          {isLoading ? (
-            <p>Loading regions...</p>
-          ) : isError ? (
-            <p>Error fetching regions</p>
-          ) : (
+          <div className='flex justify-center pb-4 text-sm font-semibold text-[#6D6D6D]'>Select Your Region</div>
+          {selectedCountry && (
             <div>
               <ul>
-                {Array.isArray(regions) && regions.map((region) => (
+                {regions?.map((region) => (
                   <li
-                    key={region.region_id}
-                    className='bg-[#F5F3F3] mb-1 cursor-pointer'
-                    onClick={() => handleRegionSelect(region.id)}
+                    key={region.id}
+                    className={`bg-[#F5F3F3] mb-1 cursor-pointer ${selectedRegion?.id === region.id ? 'bg-[#E6E6E6]' : ''}`}
+                    onClick={() => handleRegionSelect(region)}
                   >
                     <p className='ml-2 py-1'>{useLanguageText(region)}</p>
                   </li>

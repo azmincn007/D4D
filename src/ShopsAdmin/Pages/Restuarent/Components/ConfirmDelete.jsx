@@ -37,7 +37,6 @@ function ConfirmDeleteModal({ isOpen, onClose, onDeleteSuccess, itemName, itemId
         }
       });
 
-      console.log(`${itemType} deleted successfully:`, response.data);
       onDeleteSuccess();
       onClose();
     } catch (error) {

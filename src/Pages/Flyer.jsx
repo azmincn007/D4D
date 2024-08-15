@@ -5,17 +5,23 @@ import { A11y, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { IoIosArrowForward } from "react-icons/io";
-import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import FooterFlyer from '../Components/Home/Footer';
-import Fly1 from '../assets/Flyer/fly1.png';
-import Fly2 from '../assets/Flyer/Fly2.png';
-import mobflyer1 from '../assets/Flyer/Mobflyer.png';
-import mobflyer2 from '../assets/Flyer/Mobflyer2.png';
+import { API_BASE_URL } from '../config/config';
+import comingsoon from '../assets/coming.jpg';
+
+const LoadingPlaceholder = () => (
+  <div className="w-full h-0 pb-[133.33%] relative bg-gray-300 animate-pulse">
+    <div className="absolute inset-0 flex items-center justify-center">
+    
+    </div>
+  </div>
+);
 
 function Flyer() {
   const location = useLocation();
-  const source = location.state?.source;
+  const [flyersData, setFlyersData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigationPrevRef = useRef(null);
   const navigationNextRef = useRef(null);
@@ -23,17 +29,16 @@ function Flyer() {
   const [nextDisabled, setNextDisabled] = useState(false);
   const [swiper, setSwiper] = useState(null);
 
-  const FLyerimagesSUpermarket = [
-    { img: Fly1 },
-    { img: Fly2 },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      setTimeout(() => {
+        setFlyersData(location.state?.flyers || []);
+        setIsLoading(false);
+      });
+    };
 
-  const FLyerimagesMobile = [
-    { img: mobflyer1 },
-    { img: mobflyer2 },
-  ];
-
-  const imagesToRender = source === 'supermarket' ? FLyerimagesSUpermarket : FLyerimagesMobile;
+    fetchData();
+  }, [location.state]);
 
   useEffect(() => {
     if (swiper) {
@@ -43,25 +48,24 @@ function Flyer() {
   }, [swiper]);
 
   const handleSwipeChange = (swiperInstance) => {
-    const isBeginning = swiperInstance.isBeginning;
-    const isEnd = swiperInstance.isEnd;
-
-    setPrevDisabled(isBeginning);
-    setNextDisabled(isEnd);
+    setPrevDisabled(swiperInstance.isBeginning);
+    setNextDisabled(swiperInstance.isEnd);
   };
 
   const handleSwiperInit = (swiperInstance) => {
     setSwiper(swiperInstance);
   };
 
-  // Check if source prop is provided
-  if (!source) {
-    return <div>Please provide the source prop to render the Flyer component.</div>;
-  }
+  const imagesToRender = isLoading
+    ? [{ image: 'loading' }, { image: 'loading' }]
+    : (!flyersData || flyersData.length === 0)
+      ? [{ image: comingsoon }, { image: comingsoon }]
+      : flyersData.length === 1
+        ? [...flyersData, { image: comingsoon }]
+        : flyersData;
 
   return (
     <div className='flex flex-col min-h-screen'>
-      <NavbarFlyer />
       <div className="flex-grow py-10 max-w-[1440px] Flyercomp flex items-center justify-between w-[60%] mx-auto min-w-[700px] Tab:min-w-[500px] LgMobile2:min-w-[420px]">
         <div ref={navigationPrevRef}>
           <button
@@ -71,10 +75,10 @@ function Flyer() {
             <IoIosArrowBack className='h-[30px] w-[30px] LgMobile2:w-[20px] LgMobile2:h-[20px]' />
           </button>
         </div>
-        <div>
+        <div className="w-full max-w-[450px]">
           <Swiper
             modules={[A11y, Navigation]}
-            className="flyrcard max-w-[450px] Tab:w-[300px] LgMobile:max-w-[250px]"
+            className="flyrcard"
             slidesPerView={1}
             navigation={{
               prevEl: navigationPrevRef.current,
@@ -83,9 +87,19 @@ function Flyer() {
             onSwiper={handleSwiperInit}
             onSlideChange={handleSwipeChange}
           >
-            {imagesToRender.map((image, index) => (
+            {imagesToRender.map((flyer, index) => (
               <SwiperSlide key={index}>
-                <img className='max-w-[450px] w-[100%]' src={image.img} alt="" />
+                <div className="w-full h-0 pb-[133.33%] relative">
+                  {flyer.image === 'loading' ? (
+                    <LoadingPlaceholder />
+                  ) : (
+                    <img
+                      className='absolute inset-0 w-full h-full object-cover'
+                      src={flyer.image === comingsoon ? comingsoon : (flyer.image.startsWith('/') ? `${API_BASE_URL}${flyer.image}` : flyer.image)}
+                      alt={`Flyer ${index + 1}`}
+                    />
+                  )}
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>

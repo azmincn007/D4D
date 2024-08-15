@@ -91,7 +91,6 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
         'Authorization': `Bearer ${getAuthToken()}`
       }
     });
-    console.log(response.data.data.offers);
     
     return response.data.data.offers;
   });
@@ -281,7 +280,7 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
           index="flyer"
           register={register}
           onUploadSuccess={handleImageUploadSuccess}
-          initialImage={isEditMode && flyerToEdit?.image ? `${BASE_URL}${flyerToEdit.image}` : null}
+          initialImage={isEditMode && flyerToEdit?.image ? `${API_BASE_URL}${flyerToEdit.image}` : null}
         />
       </div>
     );

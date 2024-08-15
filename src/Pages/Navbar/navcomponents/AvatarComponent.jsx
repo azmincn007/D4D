@@ -6,6 +6,9 @@ import { API_BASE_URL } from '../../../config/config';
 function AvatarComponent({ height, width, showAvatar, profileLogo, src }) {
   let avatarImage;
 
+  
+
+
   if (src) {
     avatarImage = src;
   } else if (profileLogo) {
@@ -14,23 +17,28 @@ function AvatarComponent({ height, width, showAvatar, profileLogo, src }) {
     avatarImage = showAvatar ? avt2 : avatar;
   }
 
+
   return (
     <div
       style={{
         height: `${height}px`,
         width: `${width}px`,
-        borderRadius: '50%', // This makes the container circular
-        overflow: 'hidden', // This ensures the image doesn't spill outside the circular container
+        borderRadius: '50%',
+        overflow: 'hidden',
       }}
     >
       <img
         src={avatarImage}
         alt="User Avatar"
+        onError={(e) => {
+          console.error('Error loading image:', e);
+          e.target.src = showAvatar ? avt2 : avatar;
+        }}
         style={{
           width: '100%',
           height: '100%',
-          objectFit: 'cover', // This makes the image cover the container
-          objectPosition: 'center', // This centers the image within the container
+          objectFit: 'cover',
+          objectPosition: 'center',
         }}
       />
     </div>

@@ -16,20 +16,29 @@ const fetchFlyers = async () => {
       'Authorization': `Bearer ${authToken}`
     }
   });
-  console.log(data.data.flyers);
   return data.data.flyers;
 };
 
-function Flyercard({ onEditFlyer, selectedCategory, selectedSubcategory }) {
+function Flyercard({ onEditFlyer,maxItems, onItemCountChange ,selectedSubcategory,selectedCategory}) {
   const queryClient = useQueryClient();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedFlyer, setSelectedFlyer] = useState(null);
   const [filteredFlyers, setFilteredFlyers] = useState([]);
 
+  
+  
+
   const { data: flyers, isLoading, isError, error } = useQuery({
     queryKey: ['flyers'],
     queryFn: fetchFlyers,
   });
+
+  useEffect(() => {
+    if (flyers && Array.isArray(flyers)) {
+      onItemCountChange(flyers.length);
+    }
+  }, [flyers, onItemCountChange]);
+
 
   useEffect(() => {
     if (flyers) {
@@ -89,12 +98,12 @@ function Flyercard({ onEditFlyer, selectedCategory, selectedSubcategory }) {
         {filteredFlyers.map((flyer, index) => (
           flyer ? (
             <FlyerCard
-              key={index}
-              flyer={flyer}
-              updateStatusMutation={updateStatusMutation}
-              onEditFlyer={onEditFlyer}
-              onOpenDeleteModal={handleOpenDeleteModal}
-            />
+            key={index}
+            flyer={flyer}
+            updateStatusMutation={updateStatusMutation}
+            onEditFlyer={onEditFlyer}
+            onOpenDeleteModal={handleOpenDeleteModal}
+          />
           ) : null
         ))}
       </div>

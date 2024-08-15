@@ -1,15 +1,20 @@
-import React, { useState } from 'react'
-import '../../styles/categories.css'
-import Homecards from '../Cards/Homecards'
-import SingleDishModalDetails from '../modal/SingleDishModaldetails'
+import React, { useState } from 'react';
+import '../../styles/categories.css';
+import Homecards from '../Cards/Homecards';
+import SingleDishModalDetails from '../modal/SingleDishModaldetails';
+import { Button } from 'flowbite-react';
 
+function Restuarents({ menus, currencySymbol, isLoading }) {
+  const [selectedMenu, setSelectedMenu] = useState(null);
+  const [displayCount, setDisplayCount] = useState(12);
 
-function Restuarents({menus, currencySymbol}) {
-  const [selectedMenu, setSelectedMenu] = useState(null)
-  
   const handleCardClick = (menu) => {
-    setSelectedMenu(menu)
-  }
+    setSelectedMenu(menu);
+  };
+
+  const handleShowMore = () => {
+    setDisplayCount(prevCount => prevCount + 12);
+  };
 
   return (
     <div className="contentsdiv w-[100%] px-8 pb-3p border-t-2 border-[#232F3E]">
@@ -26,27 +31,37 @@ function Restuarents({menus, currencySymbol}) {
       </div>
       <div className="contentscards-resto">
         <div className="cardcontainer-resto ">
-          {menus.map((menu, index) => (
-            <div key={index} onClick={() => handleCardClick(menu)}>
-             <Homecards
-  product={menu}
-
-  currencySymbol={currencySymbol}
-  isRestaurant={true}
-/>
-            </div>
-          ))}
+          {isLoading
+            ? Array(12).fill().map((_, index) => (
+                <Homecards key={index} isLoading={true} isRestaurant={true} />
+              ))
+            : menus.slice(0, displayCount).map((menu, index) => (
+                <div key={index} onClick={() => handleCardClick(menu)}>
+                  <Homecards
+                    product={menu}
+                    currencySymbol={currencySymbol}
+                    isRestaurant={true}
+                    isLoading={false}
+                  />
+                </div>
+              ))
+          }
         </div>
       </div>
+      {!isLoading && displayCount < menus.length && (
+        <div className="flex justify-center mt-4">
+          <Button onClick={handleShowMore}>Show More</Button>
+        </div>
+      )}
       {selectedMenu && (
-        <SingleDishModalDetails 
+        <SingleDishModalDetails
           menu={selectedMenu}
           currencySymbol={currencySymbol}
           onClose={() => setSelectedMenu(null)}
         />
       )}
     </div>
-  )
+  );
 }
 
-export default Restuarents
+export default Restuarents;

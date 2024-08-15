@@ -6,7 +6,6 @@ import Homecards from '../Cards/Homecards';
 function SearchProduct() {
     
   const { searchResults } = useContext(SearchContext);
-  console.log(searchResults);
 
   
   

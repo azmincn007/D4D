@@ -622,9 +622,7 @@ border: none;
   }
 }
 
-.dropdownrescat div[data-testid="flowbite-dropdown"]{
-  top: 30% !important ;
-}
+
 .inputuser input{
   background-color: #F1F1F1;
 
@@ -640,4 +638,41 @@ border: none;
 }
 .inputuser textarea:hover, .inputuser textarea:focus{
   border-color: #FFD814;
+}
+.current-product-card {
+  border: 2px solid #3b82f6; /* Blue border */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.current-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+img{
+  object-fit: cover;
+}
+
+.shop-menu-card div[data-testid="flowbite-card"]{
+  width: auto  !important ;
+}
+
+.shop-menu-card {
+  img {
+    height: 250px !important;
+
+    @media screen and (max-width: 1000px) {
+      height: 200px !important;
+    }
+
+    @media screen and (max-width: 600px) {
+      height: 150px !important;
+    }
+
+    @media screen and (max-width: 450px) {
+      height: 100px !important;
+    }
+  }
 }

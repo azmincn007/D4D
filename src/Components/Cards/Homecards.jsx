@@ -1,52 +1,71 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Card } from "flowbite-react";
 import Flowbitecard from "../../Themes/Flowbitecard";
-import LazyImage from "../../api/Lazyimage";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
-import { LoginContext } from "../../App";
+import { LoginContext, FavCountContext } from "../../App";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import useLanguageText from '../Uselanguagetext';
+import { ShimmerCard } from "./Shimmer/Shimmer";
 import { API_BASE_URL } from "../../config/config";
+import axios from 'axios';
 
-const Homecards = ({ product, isRestaurant, currencySymbol }) => {
-  const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
-  const [isFavorite, setIsFavorite] = useState(product.is_favourite === 1);
-  const [isAnimating, setIsAnimating] = useState(false);
+const truncateText = (text, limit) => {
+  const words = text.split(' ');
+  if (words.length > limit) {
+    return words.slice(0, limit).join(' ') + '...';
+  }
+  return text;
+};
+
+const Homecards = ({ product, isRestaurant, currencySymbol, isLoading }) => {
+  const { isLoggedIn } = useContext(LoginContext);
+  const [FavCount, SetFavCount] = useContext(FavCountContext);
+  console.log(product);
+  
+  
+
+  if (isLoading) {
+    return <ShimmerCard />;
+
+    console.log(product);
+    
+  }
 
   const {
     id,
     image,
     product_eng,
+    product_ar,
+    product_mal,
+    product_hin,
     menu_eng,
+    menu_ar,
+    menu_mal,
+    menu_hin,
     normal_price,
     offer_price,
+    is_favourite
+
   } = product;
 
-  const displayName = isRestaurant ? menu_eng : product_eng;
+  const [isFavorite, setIsFavorite] = useState(product.is_favourite === 1);
 
-  const checkUserToken = () => {
-    const token = localStorage.getItem('usertoken');
-    setIsLoggedIn(!!token);
-  };
-
-  useEffect(() => {
-    checkUserToken();
-    window.addEventListener('storage', checkUserToken);
-    return () => {
-      window.removeEventListener('storage', checkUserToken);
-    };
-  }, []);
+  const displayName = useLanguageText({
+    country_eng: isRestaurant ? menu_eng : product_eng,
+    country_ar: isRestaurant ? menu_ar : product_ar,
+    country_mal: isRestaurant ? menu_mal : product_mal,
+    country_hin: isRestaurant ? menu_hin : product_hin,
+  });
 
   const handleFavoriteClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!isLoggedIn) {
+      // Handle not logged in state (e.g., show login prompt)
       return;
     }
-
-    setIsAnimating(true);
 
     try {
       const token = localStorage.getItem('usertoken');
@@ -65,42 +84,33 @@ const Homecards = ({ product, isRestaurant, currencySymbol }) => {
         setIsFavorite(!isFavorite);
       }
     } catch (error) {
-      console.error("Error updating favorites:", error);
-    } finally {
-      setTimeout(() => setIsAnimating(false), 300);
+      console.error("Error updating favorite status:", error);
     }
   };
 
   return (
     <div className="card font-inter">
-      <Card
-        theme={Flowbitecard}
-        className="cardfl p-1 rounded-[10px]"
-      >
-       {!isRestaurant ? (
-         <Link 
-         to="/Shoppage"
-         state={{ productId:product.id }}  // Pass only the id as state
-         className="block"
-       >
-            <LazyImage
-              src={image}
+      <Card theme={Flowbitecard} className="cardfl p-1 rounded-[10px]">
+        {!isRestaurant ? (
+          <Link to="/Shoppage" state={{ productId: id }} className="block">
+            <img
+              src={`${API_BASE_URL}${image}`}
               alt={`Image of ${displayName}`}
-              className="w-full h-[300px]"
+              className="w-full h-[300px] Mobile:h-[150px] object-cover"
             />
           </Link>
         ) : (
-          <LazyImage
-            src={image}
+          <img
+            src={`${API_BASE_URL}${image}`}
             alt={`Image of ${displayName}`}
-            className="w-full h-[300px]"
+            className="w-full h-[300px] object-cover"
           />
         )}
         <div className="mb-2 flex items-center justify-between px-2">
-          <div className="">
+          <div className="w-full">
             <div className="mb-2 flex justify-between items-center">
-              <h5 className="text-[13px] font-bold tracking-tight text-gray-900 dark:text-white font-inter">
-                {displayName}
+              <h5 className="text-[13px] font-bold tracking-tight text-gray-900 dark:text-white font-inter h-[40px] overflow-hidden">
+                {truncateText(displayName, 3)}
               </h5>
             </div>
             <div className="flex gap-8 items-center">
@@ -114,11 +124,8 @@ const Homecards = ({ product, isRestaurant, currencySymbol }) => {
           </div>
           <div>
             {!isRestaurant && isLoggedIn && (
-              <div 
-                className={`favorite-icon ${isAnimating ? 'animate' : ''}`}
-                onClick={handleFavoriteClick}
-              >
-                {isFavorite ? 
+              <div className="favorite-icon" onClick={handleFavoriteClick}>
+                {isFavorite ?
                   <FaHeart className="h-10 w-10 text-[#DC143C]" />
                 :
                   <CiHeart className="h-10 w-10 text-[#DC143C]" />

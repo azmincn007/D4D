@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 import useLanguageText from '../Uselanguagetext';
 import { SelectedCategoryContext, SelectedSubCategoryContext } from '../../App'; // Adjust the import path as needed
 import { API_BASE_URL } from '../../config/config';
+import Loading from '../../api/Loading';
 
 function Categories({ selectedValue, onOptionClick, onSubcategoryClick, onCategoryClick, showInNavbar = false }) {
   const { selectedCategoryId, setSelectedCategoryId } = useContext(SelectedCategoryContext);
@@ -26,7 +27,6 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, onCatego
   const fetchSubcategories = async (categoryId) => {
     if (!categoryId) return [];
     const response = await axios.get(`${API_BASE_URL}/api/subcategories/${categoryId}`);
-    console.log('Subcategories API Response:', response.data.data.subcategories);
     return response.data.data.subcategories;
   };
 
@@ -52,7 +52,6 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, onCatego
     setSelectedSubCategoryId(subcategory.id);
     onSubcategoryClick();
   };
-  if (categoriesLoading) return <div>Loading categories...</div>;
   if (categoriesError) return <div>An error occurred while loading categories: {categoriesError.message}</div>;
  
 

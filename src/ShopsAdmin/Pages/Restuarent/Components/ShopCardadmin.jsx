@@ -21,7 +21,14 @@ const fetchProducts = async () => {
   return data.data.products;
 };
 
-const ShopCardAdmin = ({ currencySymbol, onEditProduct, selectedCategory, selectedSubcategory, onProductsLoad }) => {
+const ShopCardAdmin = ({  currencySymbol, 
+  onEditProduct, 
+  selectedCategory, 
+  selectedSubcategory, 
+  onProductsLoad,
+  maxItems,
+  onItemCountChange  }) => {
+    
   const { data: products, isLoading, isError, error, refetch } = useQuery('products', fetchProducts);
 
   useEffect(() => {
@@ -31,11 +38,17 @@ const ShopCardAdmin = ({ currencySymbol, onEditProduct, selectedCategory, select
         product_eng: item.product_eng
       }));
       onProductsLoad(productInfo);
+      try {
+        onItemCountChange(products.length);
+        console.log('Item count updated:', products.length);
+      } catch (error) {
+        console.error('Error updating item count:', error);
+      }
     }
-  }, [products, onProductsLoad]);
+  }, [products, onProductsLoad, onItemCountChange]);
 
   if (isLoading) return <div><Loading/></div>;
-  if (isError) return <div><Errorpage404/></div>;
+  // if (isError) return <div><Errorpage404/></div>;
 
   if (!Array.isArray(products)) {
     console.error('products is not an array:', products);
@@ -58,13 +71,13 @@ const ShopCardAdmin = ({ currencySymbol, onEditProduct, selectedCategory, select
       {filteredProducts.map((item, index) => (
         item ? (
           <ProductCard
-            key={item.id || index}
-            item={item}
-            currencySymbol={currencySymbol}
-            onEdit={onEditProduct}
-            onDeleteSuccess={handleDeleteSuccess}
-            refetch={refetch}
-          />
+          key={item.id || index}
+          item={item}
+          currencySymbol={currencySymbol}
+          onEdit={onEditProduct}
+          onDeleteSuccess={handleDeleteSuccess}
+          refetch={refetch}
+        />
         ) : null
       ))}
     </div>

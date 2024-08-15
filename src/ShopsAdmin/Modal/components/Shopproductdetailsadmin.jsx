@@ -4,7 +4,6 @@ import { Modal, Select } from "flowbite-react";
 
 function ShopProductDetailsAdmin({ isOpen, onClose, flyerToEdit,categories }) {
   const { register, handleSubmit, control, formState: { errors }, watch, reset } = useForm();
-console.log(categories);
   // ...
 
   const handleImageUploadSuccess = (file) => {

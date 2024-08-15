@@ -2,20 +2,22 @@ import React, { useState } from 'react';
 import MultiRangeSlider from 'multi-range-slider-react';
 import './Multirangeslider.css'
 
-const DualRangeSlider = () => {
-  const [minValue, setMinValue] = useState(199);
-  const [maxValue, setMaxValue] = useState(6000);
+const DualRangeSlider = ({ onRangeChange }) => {
+  const [minValue, setMinValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(100000);
+  const storedCurrencySymbol = localStorage.getItem('currencySymbol');
 
   const handleInput = (e) => {
     setMinValue(e.minValue);
     setMaxValue(e.maxValue);
+    onRangeChange(e.minValue, e.maxValue);
   };
 
   return (
     <div>
       <MultiRangeSlider
-        min={199}
-        max={6000}
+        min={0}
+        max={100000}
         onChange={handleInput}
         minValue={minValue}
         maxValue={maxValue}
@@ -24,7 +26,7 @@ const DualRangeSlider = () => {
         step={1}
       />
       <div>
-        AED: {minValue} - {maxValue}
+        {storedCurrencySymbol}: {minValue} - {maxValue}
       </div>
     </div>
   );

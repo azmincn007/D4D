@@ -103,7 +103,6 @@ function SignupdataUpload() {
       return responseData;
     },
     onSuccess: (data, variables) => {
-      console.log('API response:', data);
       navigate('/profileshow', { state: { formData: variables } });
     },
     onError: (error) => {

@@ -14,7 +14,6 @@ const LazyImage = ({ src, alt, className }) => {
       alt={alt}
       src={fullImageUrl}
       placeholderSrc='https://dummyimage.com/150x150/cccccc/000000.png&text=Placeholder'
-      effect="blur"
       height="auto"
       width="100%"
       className={className}

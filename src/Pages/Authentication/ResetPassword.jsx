@@ -22,14 +22,11 @@ const ResetPasswordModal = ({ isOpen, onClose, email }) => {
   const [error, setError] = useState('');
   const [, setAuthValue] = useContext(AuthContext);
 
-  console.log(email + "in reset");
 
   const resetPasswordMutation = useMutation(
-    (data) => axios.post(`${API_BASE_URL}//api/user/reset-user-psw`, data),
+    (data) => axios.post(`${API_BASE_URL}/api/user/reset-user-psw`, data),
     {
       onSuccess: () => {
-        console.log('Password reset successfully');
-        setAuthValue('login');
         onClose();
       },
       onError: (error) => {

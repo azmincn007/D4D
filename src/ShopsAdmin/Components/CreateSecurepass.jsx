@@ -1,12 +1,14 @@
-import { Button, Label } from "flowbite-react";
-import React from "react";
+import { Button, Label, Spinner } from "flowbite-react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import PasswordInputAdmin from "../../Components/authentication/Passwordinputadmin";
 import { IoIosClose } from "react-icons/io";
 import { useMutation } from "react-query";
 import axios from "axios";
 import { API_BASE_URL } from "../../config/config";
+import LoginSuccess from "../../Pages/Authentication/FramerMotions.jsx/LoginSuccess";
 
 function CreateSecurepassword({ email, onClose }) {
   const {
@@ -17,17 +19,25 @@ function CreateSecurepassword({ email, onClose }) {
   } = useForm();
 
   const newPassword = watch("newPassword");
+  const [passwordUpdateSuccess, setPasswordUpdateSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const resetPasswordMutation = useMutation(
     (data) => axios.post(`${API_BASE_URL}/api/reset-shop-psw`, data),
     {
       onSuccess: () => {
-        // Handle successful password reset
-        onClose();
+        setPasswordUpdateSuccess(true);
+        setTimeout(() => {
+          setPasswordUpdateSuccess(false);
+          onClose();
+        }, 2000);
       },
       onError: (error) => {
-        // Handle error
         console.error("Password reset failed:", error);
+        if (error.response && error.response.status !== 400) {
+          navigate('/error404');
+          return null;
+        }
       },
     }
   );
@@ -36,8 +46,18 @@ function CreateSecurepassword({ email, onClose }) {
     resetPasswordMutation.mutate({ email, password: data.newPassword });
   };
 
+  if (resetPasswordMutation.isError && resetPasswordMutation.error.response?.status !== 400) {
+    navigate('/error404');
+    return null;
+  }
+
   return (
     <div className="justify-center w-[100%] font-inter flex flex-col items-center min-w[400px] ">
+      {passwordUpdateSuccess && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <LoginSuccess successMessage="Password Updated Successfully!" />
+        </div>
+      )}
       <h1 className="text-[28px] font-semibold">Change Password</h1>
       <form
         className="flex min-w-[400px] flex-col p-6 rounded"
@@ -90,9 +110,16 @@ function CreateSecurepassword({ email, onClose }) {
           type="submit"
           disabled={resetPasswordMutation.isLoading}
         >
-          {resetPasswordMutation.isLoading ? "Resetting..." : "Submit new password"}
+          {resetPasswordMutation.isLoading ? (
+            <>
+              <Spinner size="sm" light={true} />
+              <span className="ml-2">Resetting...</span>
+            </>
+          ) : (
+            "Submit new password"
+          )}
         </Button>
-        {resetPasswordMutation.isError && (
+        {resetPasswordMutation.isError && resetPasswordMutation.error.response?.status === 400 && (
           <ErrorMessage message="Failed to reset password. Please try again." />
         )}
       </form>

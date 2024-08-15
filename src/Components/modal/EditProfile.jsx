@@ -18,7 +18,6 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
   const queryClient = useQueryClient();
   const [profileImage, setProfileImage] = useState(initialValues?.photo );
 
-  console.log(profileImage);
   useEffect(() => {
     if (isOpen && initialValues) {
       reset({

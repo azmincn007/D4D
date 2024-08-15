@@ -40,9 +40,9 @@ function Categorymap({ onEditCategory ,onCategoriesFetched}) {
     return <div><Loading/></div>;
   }
 
-  if (isError) {
-    return <div><Errorpage404/> </div>;
-  }
+  // if (isError) {
+  //   return <div><Errorpage404/> </div>;
+  // }
 
   const toggleVisibility = async (id, currentStatus) => {
     const token = localStorage.getItem('authToken');

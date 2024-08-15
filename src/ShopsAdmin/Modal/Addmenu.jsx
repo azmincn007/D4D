@@ -104,7 +104,6 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
       queryClient.resetQueries("tags");
 
       if (modalType === "Edit Menu" && itemToEdit) {
-        console.log(itemToEdit, "items");
         setValue("menu_eng", itemToEdit.menu_eng);
         setValue("menu_ar", itemToEdit.menu_ar);
         setValue("menu_hin", itemToEdit.menu_hin);

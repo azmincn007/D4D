@@ -6,7 +6,6 @@ import Logo from '../../assets/Logo.png';
 import '../../styles/nav.css';
 import Toggle from './navcomponents/Toggle';
 import Regiondropdown from './navcomponents/Regiondropdown';
-import { ModalAuth } from '../../Components/modal/Modallogin';
 import { Countrycontext, LanguageContext, LoginContext, RegionContext, UseridContext } from '../../App';
 import { AiOutlineLogin } from "react-icons/ai";
 import AvatarComponent from './navcomponents/AvatarComponent';
@@ -23,6 +22,11 @@ import { API_BASE_URL } from '../../config/config';
 import { MdOutlineFeedback } from "react-icons/md";
 import FeedbackModal from '../../Components/modal/FeedbackModal';
 import RegionModal from '../../Components/modal/RegionModal';
+import WatchTime from './navcomponents/WatchTime';
+import Loginpopup from '../Authentication/Loginpopup';
+import SignupPopup from '../Authentication/SignupPopup';
+import ForgotPasswordModal from '../Authentication/Forgetpassword';
+import { useQuery, useQueryClient } from 'react-query';
 
 export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const [openModal, setOpenModal] = useState(false);
@@ -30,7 +34,7 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
+  // const [userProfile, setUserProfile] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [Userid, setUserid] = useContext(UseridContext);
@@ -38,14 +42,21 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useContext(Countrycontext);
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
-
-
-  
-
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
 
   
+
+
+  const handleOpenForgotPasswordModal = () => {
+    setOpenModal(false); // Close the login modal
+    setIsForgotPasswordModalOpen(true);
+  };
  
-
+  const handleOpenSignupModal = () => {
+    setIsSignupModalOpen(true);
+    setOpenModal(false); // Close the login modal if it's open
+  };
   const handleCountryChange = (newCountry) => {
     setSelectedCountry(newCountry);
     setIsRegionModalOpen(true);
@@ -56,7 +67,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   };
 
   const handleRegionSelect = (region) => {
-    console.log("hiiii");
     setSelectedRegion(region);
     setIsRegionModalOpen(false);
   };
@@ -69,27 +79,32 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
     setIsFeedbackModalOpen(false);
   };
 
-  const fetchUserProfile = async () => {
-    const token = localStorage.getItem('usertoken');
-    if (!token) return;
+  const useUserProfile = () => {
+    const [, setUserid] = useContext(UseridContext);
   
-    try {
+    return useQuery('userProfile', async () => {
+      const token = localStorage.getItem('usertoken');
+      if (!token) throw new Error('No token found');
+  
       const response = await axios.get(`${API_BASE_URL}/api/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log(response.data.data.profile);
-      
-      setUserProfile(response.data.data.profile);
-      
-      if (response.data.data.profile && response.data.data.profile.id) {
-        setUserid(response.data.data.profile.id);
-      }
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-    }
+      return response.data.data.profile;
+    }, {
+    
+      onSuccess: (data) => {
+        if (data && data.id) {
+          setUserid(data.id);
+          localStorage.setItem('userId', data.id.toString());
+        }
+      },
+      enabled: !!localStorage.getItem('usertoken')
+    });
   };
+
+  const { data: userProfile, isLoading, isError } = useUserProfile();
 
   const handleProfileModalOpen = () => {
     setIsProfileModalOpen(true);
@@ -107,7 +122,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const handleModalClose = () => {
     setOpenModal(false);
   };
-
   const handleResize = () => {
     setTabscreen(window.innerWidth <= 820);
     if (window.innerWidth > 770) {
@@ -117,18 +131,34 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
 
   const handleLogout = () => {
     localStorage.removeItem('usertoken');
+    localStorage.removeItem('userId');  // Add this line
     setIsLoggedIn(false);
-    setUserProfile(null);
-    console.log('User logged out. Token removed.');
-    localStorage.removeItem('userLanguageSelected');
-    
+    setUserid(0);  // Reset the Userid state to 0
+    console.log('User logged out. Token and userId removed.');
   };
+
+  const queryClient = useQueryClient();
 
   const handleLoginSuccess = (token) => {
     setIsLoggedIn(true);
     setOpenModal(false);
-    fetchUserProfile();
+    queryClient.invalidateQueries('userProfile');
     console.log('Login successful. Token:', token);
+    
+    // Fetch the user profile immediately after login
+    axios.get(`${API_BASE_URL}/api/user/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).then(response => {
+      const userId = response.data.data.profile.id;
+      localStorage.setItem('userId', userId.toString());
+      setUserid(userId);
+      // Invalidate and refetch any queries that depend on the userId
+      queryClient.invalidateQueries('filter-products');
+    }).catch(error => {
+      console.error('Error fetching user profile:', error);
+    });
   };
 
   const toggleNavbar = () => {
@@ -157,7 +187,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
     const storedToken = localStorage.getItem('usertoken');
     if (storedToken) {
       setIsLoggedIn(true);
-      fetchUserProfile();
       console.log('Stored Token:', storedToken);
     }
 
@@ -182,10 +211,7 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
                   </NavbarBrand>
                 </div>
                 {isLoggedIn && (
-                  <div className='watchtime w-[177px] py-[4px] Tab:mt-[-15px] bg-[#232F3E] text-center text-white rounded-[1000px] Tab:w-[100px]'>
-                    <p className='text-small Tab:text-xs'>Watch Time</p>
-                    <p className='text-xs Tab:text-[6px]'>Last update yesterday 12:00 AM</p>
-                  </div>
+                 <WatchTime/>
                 )}
               </div>
             </div>
@@ -194,20 +220,20 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
             </div>
           </div>
 
-          <div className="right flex items-center gap-10">
+          <div className="right flex items-center gap-10 Mobile::gap-4">
             {!isLoggedIn && (
               <button
                 onClick={handleLanguageModalOpen}
                 className="mr-2"
                 style={{
-                  backgroundColor: '#F1F1F1',
+                  backgroundColor: 'transparant',
                   maxWidth: '145px',
                   height: '30px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   borderRadius: '4px',
-                  color: '#6D6D6D',
+                  color: 'white',
                   padding: '0 10px'
                 }}
               >
@@ -221,9 +247,11 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
             <div onClick={handleFeedbackClick} className="cursor-pointer">    
                         <MdOutlineFeedback className='text-white heart-icon' /> {/* Add the feedback icon here */}
             </div>
-            <div>
-              <FavoriteCounter onClick={onFavoriteClick} />
-            </div>
+            {isLoggedIn && (
+              <div>
+                <FavoriteCounter onClick={onFavoriteClick} />
+              </div>
+            )}
             <div className='log SmMobile:hidden'>
               {isLoggedIn ? (
                 <div onClick={handleProfileModalOpen}>
@@ -286,28 +314,51 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
           </div>
         </div>
         <div className='midle mx-auto '>
-          <div className="search items-center justify-center TabS:flex hidden">
+          <div className="search items-center justify-center w-[100%] mx-auto TabS:flex hidden">
             <Search onSearch={handleSearch} />
           </div>
         </div>
       </Navbar>
       {openModal && (
-        <ModalAuth
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          onClose={handleModalClose}
-          onLoginSuccess={handleLoginSuccess}
-        />
-      )}
+ <Loginpopup 
+ isOpen={openModal} 
+ onClose={() => setOpenModal(false)}
+ onLoginSuccess={handleLoginSuccess}
+ onOpenSignup={handleOpenSignupModal}
+ onOpenForgotPassword={handleOpenForgotPasswordModal}
+/>
+)}
+
+{isSignupModalOpen && (
+ <SignupPopup 
+ isOpen={isSignupModalOpen}
+ onClose={() => setIsSignupModalOpen(false)}
+ onSignupSuccess={() => {
+   setIsSignupModalOpen(false);
+   // Add any additional logic for successful signup
+ }}
+/>
+)}
+
+<ForgotPasswordModal 
+  isOpen={isForgotPasswordModalOpen}
+  onClose={() => setIsForgotPasswordModalOpen(false)}
+  onSubmit={(email, otp) => {
+    // Handle the successful OTP generation
+    console.log('OTP sent to', email);
+    setIsForgotPasswordModalOpen(false);
+    // You might want to open another modal for OTP verification here
+  }}
+/>
 
       {isProfileModalOpen && (
-        <ProfileModal
-          isOpen={isProfileModalOpen}
-          onClose={handleProfileModalClose}
-          handleLogout={handleLogout}
-          userProfile={userProfile}
-          refreshUserProfile={fetchUserProfile}
-        />
+       <ProfileModal
+       isOpen={isProfileModalOpen}
+       onClose={handleProfileModalClose}
+       handleLogout={handleLogout}
+       userProfile={userProfile}
+       refreshUserProfile={() => queryClient.invalidateQueries('userProfile')}
+     />
       )}
 
       <LanguageModal 

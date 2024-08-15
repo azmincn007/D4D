@@ -1,4 +1,4 @@
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { Button, Checkbox, Label, Modal, Spinner, TextInput } from "flowbite-react";
 import React, { useContext, useState } from "react";
 import flowbiteinput from "../../Themes/Flowbiteinput";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,26 +12,30 @@ import { useMutation } from "react-query";
 import axios from "axios";
 import PasswordInput from "../../Components/authentication/PassworInput";
 import { API_BASE_URL } from "../../config/config";
-import Loading from "../../api/Loading";
+import LoginSuccess from "./FramerMotions.jsx/LoginSuccess";
 
-function Loginpopup({ onClose, onLoginSuccess }) {
-  const [AuthValue, setAuthValue] = useContext(AuthContext);
+function Loginpopup({ isOpen, onClose, onLoginSuccess,onOpenSignup ,onOpenForgotPassword }) {
   const [visible, setvisible] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const navigate = useNavigate();
 
   const googleLoginMutation = useMutation(
     (userData) => axios.post(`${API_BASE_URL}/api/user/socialize-login`, userData),
     {
       onSuccess: (response) => {
-        console.log("Google Login successful:", response.data);
+        
+        ("Google Login successful:", response.data);
         if (response.data.data.token) {
           localStorage.setItem("usertoken", response.data.data.token);
-          if (onLoginSuccess && typeof onLoginSuccess === 'function') {
-            onLoginSuccess(response.data.data.token);
-          }
-          onClose();
-          navigate("/"); // Navigate to home page
+          setLoginSuccess(true);
+          setTimeout(() => {
+            if (onLoginSuccess && typeof onLoginSuccess === 'function') {
+              onLoginSuccess(response.data.data.token);
+            }
+            onClose();
+            navigate("/"); // Navigate to home page
+          }, 2000);
         } else {
           console.error("Invalid response data structure");
           setLoginError("An unexpected error occurred. Please try again.");
@@ -57,7 +61,6 @@ function Loginpopup({ onClose, onLoginSuccess }) {
         };
 
         const data = await fetchUserInfo(response.access_token);
-        console.log(data);
         
         // Send Google user data to your API
         googleLoginMutation.mutate({
@@ -93,11 +96,14 @@ function Loginpopup({ onClose, onLoginSuccess }) {
         console.log("Login successful:", response.data.data);
         if (response.data.data.token) {
           localStorage.setItem("usertoken", response.data.data.token);
-          if (onLoginSuccess && typeof onLoginSuccess === 'function') {
-            onLoginSuccess(response.data.data.token);
-          }
-          onClose();
-          navigate("/"); // Navigate to home page
+          setLoginSuccess(true);
+          setTimeout(() => {
+            if (onLoginSuccess && typeof onLoginSuccess === 'function') {
+              onLoginSuccess(response.data.data.token);
+            }
+            onClose();
+            navigate("/"); // Navigate to home page
+          }, 2000);
         } else {
           console.error("Invalid response data structure");
           setLoginError("An unexpected error occurred. Please try again.");
@@ -120,8 +126,11 @@ function Loginpopup({ onClose, onLoginSuccess }) {
   };
 
   const handleShowSignupModal = () => {
-    setAuthValue("signup");
+    onClose(); // Close the login modal
+    onOpenSignup(); // Open the signup modal
   };
+
+
 
   const handleLogin = (data) => {
     setLoginError(""); // Clear any previous error messages
@@ -131,21 +140,22 @@ function Loginpopup({ onClose, onLoginSuccess }) {
     });
   };
 
-  if (loginMutation.isError || googleLoginMutation.isError) {
+  if (loginMutation.isError && loginMutation.error.response?.status !== 400) {
     navigate('/error404');
     return null;
   }
-
-  if (loginMutation.isLoading || googleLoginMutation.isLoading) {
-    return (
-    
-          <Loading />
-       
-    );
-  }
-
   return (
-    <>
+    
+    <>  
+       
+          <Modal show={isOpen} onClose={onClose} size="md">
+    <Modal.Body>
+      <div className="flex flex-col items-center">
+            {loginSuccess && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center">
+              <LoginSuccess successMessage="Login Successful!" />
+            </div>
+          )}
       <h1 className="text-base font-semibold py-2">Login</h1>
 
       <div className="form py-5 w-[90%]">
@@ -187,15 +197,23 @@ function Loginpopup({ onClose, onLoginSuccess }) {
               </Label>
             </div>
             <div className="text-sm underline font-semibold">
-            <button type="button" onClick={handleForgotPasswordClick}>Forgot?</button>            </div>
+  <button type="button" onClick={onOpenForgotPassword}>Forgot?</button>
+</div>
           </div>
           <Button 
-            className="mt-4 bg-yellow auth-button" 
-            type="submit" 
-            disabled={loginMutation.isLoading}
-          >
-            {loginMutation.isLoading ? "Logging in..." : "Login"}
-          </Button>
+          className="mt-4 bg-yellow auth-button" 
+          type="submit" 
+          disabled={loginMutation.isLoading}
+        >
+          {loginMutation.isLoading ? (
+            <>
+              <Spinner size="sm" light={true} />
+              <span className="ml-2">Logging in...</span>
+            </>
+          ) : (
+            "Login"
+          )}
+        </Button>
         </form>
       </div>
       <div className="flex items-center w-[80%] pb-7 pt-3">
@@ -214,9 +232,12 @@ function Loginpopup({ onClose, onLoginSuccess }) {
       <div className="py-6">
         <p className="text-sm">
           Don't have an account yet?{" "}
-          <span className="font-semibold cursor-pointer underline" onClick={handleShowSignupModal}>
-            Sign Up
-          </span>
+          <span 
+  className="font-semibold cursor-pointer underline" 
+  onClick={onOpenSignup}
+>
+  Sign Up
+</span>
         </p>
       </div>
       <div className="absolute top-0 right-0 mt-3 mr-3">
@@ -224,6 +245,9 @@ function Loginpopup({ onClose, onLoginSuccess }) {
           <IoIosClose className="text-base cursor-pointer" onClick={handleClose} />
         </div>
       </div>
+      </div>
+      </Modal.Body>
+    </Modal>
     </>
   );
 }

@@ -28,8 +28,7 @@ function ResetPasswordadmin() {
       }),
     {
       onSuccess: (data, variables) => {
-        console.log("OTP sent successfully:", data);
-        console.log("backendOtp:"+ data.data.otp)
+        
         navigate('/verifyotp', { 
           state: { 
             email: variables,

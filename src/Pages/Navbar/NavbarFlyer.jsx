@@ -9,7 +9,7 @@ import InfoFlyer from '../../Components/modal/InfoFlyer';
 import Contentcopy from '../../Components/modal/Contentcopy';
 import { Link } from 'react-router-dom';
 
-function NavbarFlyer() {
+function NavbarFlyer({flyersData}) {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isContentCopyOpen, setIsContentCopyOpen] = useState(false);
 
@@ -39,9 +39,7 @@ function NavbarFlyer() {
 
             </Link>
           </div>
-          <div className='search flex items-center w-[400px] LgTab:hidden'>
-            <Search />
-          </div>
+        
         </div>
         <div className="right flex items-center">
           <div className='mr-8 Mobile:mr-3 flex text-white'>
@@ -58,11 +56,13 @@ function NavbarFlyer() {
         </div>
       </div>
       <div className='search hidden pt-2 items-center justify-center LgTab:flex LgTab:w-[90%] mx-auto'>
-        <Search />
       </div>
       <InfoFlyer isOpen={isInfoModalOpen} onClose={handleCloseInfoModal} />
-      <Contentcopy isOpen={isContentCopyOpen} onClose={handleCloseContentCopy} />
-    </div>
+      <Contentcopy 
+        isOpen={isContentCopyOpen} 
+        onClose={handleCloseContentCopy} 
+        flyersData={flyersData}
+      />    </div>
   );
 }
 

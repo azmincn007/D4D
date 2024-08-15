@@ -22,9 +22,9 @@ import MenuCardsAdmin from "./Components/Menucardicon";
 import ShopCardAdmin from "./Components/ShopCardadmin";
 import Flyercard from "./Components/Flyercard";
 
-
 import "./restuarentdashboard.css";
 import { API_BASE_URL } from "../../../config/config";
+import PlanComponent from "./PlanComponent";
 
 function RestuarentDashboard() {
   const navigate = useNavigate();
@@ -36,11 +36,11 @@ function RestuarentDashboard() {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isShopFlyerModalOpen, setIsShopFlyerModalOpen] = useState(false);
-  
+
   const [categoryToEdit, setCategoryToEdit] = useState(null);
   const [productToEdit, setProductToEdit] = useState(null);
   const [flyerToEdit, setFlyerToEdit] = useState(null);
-  
+
   const [restaurantCategories, setRestaurantCategories] = useState([]);
   const [shopCategories, setShopCategories] = useState([]);
   const [selectedRestaurantCategory, setSelectedRestaurantCategory] = useState("All");
@@ -49,6 +49,8 @@ function RestuarentDashboard() {
   const [subcategories, setSubcategories] = useState([]);
   const [allProductInfo, setAllProductInfo] = useState([]);
   const [isCategoryLoading, setIsCategoryLoading] = useState(true);
+  const [productCount, setProductCount] = useState(0);
+  const [flyerCount, setFlyerCount] = useState(0);
 
   const handleProductsLoad = useCallback((productInfo) => {
     setAllProductInfo(productInfo);
@@ -77,7 +79,6 @@ function RestuarentDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setRestaurantCategories(data.data.categories);
-      console.log("Fetched restaurant categories:", data.data.categories);
     } catch (error) {
       console.error("Error fetching restaurant categories:", error);
     } finally {
@@ -95,17 +96,14 @@ function RestuarentDashboard() {
     fetchRestaurantCategories();
   }, []);
 
-  
-
   useEffect(() => {
     const fetchSubcategories = async () => {
       if (selectedShopCategory !== "All") {
         try {
-          const category = shopCategories.find(cat => cat.cat_eng === selectedShopCategory);
+          const category = shopCategories.find((cat) => cat.cat_eng === selectedShopCategory);
           if (category) {
             const { data } = await axios.get(`${API_BASE_URL}/api/subcategories/${category.id}`);
             setSubcategories(data.data.subcategories);
-            console.log("Fetched subcategories:", data.data.subcategories);
           }
         } catch (error) {
           console.error("Error fetching subcategories:", error);
@@ -115,15 +113,14 @@ function RestuarentDashboard() {
       }
     };
     fetchSubcategories();
-  }, [selectedShopCategory, shopCategories]);   
-  
+  }, [selectedShopCategory, shopCategories]);
+
   useEffect(() => {
     const fetchShopCategories = async () => {
       setIsCategoryLoading(true);
       try {
         const { data } = await axios.get(`${API_BASE_URL}/api/categories`);
         setShopCategories(data.data.categories);
-        console.log("Fetched shop categories:", data.data.categories);
       } catch (error) {
         console.error("Error fetching shop categories:", error);
       } finally {
@@ -155,12 +152,26 @@ function RestuarentDashboard() {
     }
   };
 
-  const { data: profileData, isLoading: isProfileLoading, isError: isProfileError } = useQuery({
+  const fetchSubscriptionData = async () => {
+    const token = localStorage.getItem("authToken");
+    const response = await axios.get(`${API_BASE_URL}/api/shop/current-plan`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  };
+
+  const { data: subscriptionData, isLoading: isSubscriptionLoading, isError: isSubscriptionError } = useQuery("subscriptionData", fetchSubscriptionData);
+
+  const {
+    data: profileData,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useQuery({
     queryKey: ["restaurantProfile"],
     queryFn: fetchProfileData,
   });
 
-  const toggleModal = (setterFn) => () => setterFn(prev => !prev);
+  const toggleModal = (setterFn) => () => setterFn((prev) => !prev);
   const toggleMenuModal = toggleModal(setIsMenuModalOpen);
   const toggleCategoryModal = toggleModal(setIsCategoryModalOpen);
   const toggleProductModal = toggleModal(setIsProductModalOpen);
@@ -198,17 +209,23 @@ function RestuarentDashboard() {
   if (isProfileError) return <Errorpage404 />;
 
   const { shopname_eng, email, region, country, currency_symbol, type } = profileData || {};
-  console.log(profileData);
-  
 
   const backgroundHeight = type === "2" ? "400px" : "680px";
+  const remainingProducts = subscriptionData?.data?.plan?.product_num - productCount;
+  console.log(remainingProducts);
 
   return (
     <div>
       <ProfileModal isOpen={showProfileModal} onClose={handleProfileModalClose} onEditProfileClick={openEditDetailsModal} profileData={profileData} />
       <EditDetailsModal isOpen={isEditDetailsModalOpen} onClose={closeEditDetailsModal} profileData={profileData} />
       <Todayspecial currencySymbol={currency_symbol} isOpen={isMenuModalOpen} onClose={toggleMenuModal} modalType="Menu" />
-      <ShopFlyerAdmin isOpen={isShopFlyerModalOpen} onClose={toggleShopFlyerModal} flyerToEdit={flyerToEdit} categories={shopCategories} allProductInfo={allProductInfo} />
+      <ShopFlyerAdmin
+        isOpen={isShopFlyerModalOpen}
+        onClose={toggleShopFlyerModal}
+        flyerToEdit={flyerToEdit}
+        categories={shopCategories}
+        allProductInfo={allProductInfo}
+      />
       <CategoryAdmin
         isOpen={isCategoryModalOpen}
         onClose={() => {
@@ -229,7 +246,7 @@ function RestuarentDashboard() {
         className="dashrestbg relative flex flex-col justify-end min-h-[200px]"
         style={{
           backgroundImage: `url(${API_BASE_URL}/${profileData.background_img})`,
-          height: backgroundHeight
+          height: backgroundHeight,
         }}
       >
         <div className="bg-black bg-opacity-50 inline-block p-4 rounded font-inter ml-20 mb-20 text-white self-start">
@@ -240,11 +257,9 @@ function RestuarentDashboard() {
             <p>{country || "Country"}</p>
           </div>
         </div>
-        <div className="packagecard flex absolute top-12 right-16">
-          <IoStar className="w-6 h-6 text-[#FFD814] mr-2" />
-          <p className="text-[16px] font-semibold text-white">Premium Account</p>
-        </div>
-      </div>
+        {!isSubscriptionLoading && !isSubscriptionError && (
+  <PlanComponent subscriptionData={subscriptionData} userType={type} />
+)}      </div>
 
       <div className="addres py-8 mx-auto w-[80%]">
         {type === "2" ? (
@@ -267,7 +282,13 @@ function RestuarentDashboard() {
                 <p className="">Add Your Restaurant Menu</p>
                 <div className="flex items-center gap-4">
                   {!isCategoryLoading && (
-                    <Select id="restaurantCategories" className="categoryfilter" required value={selectedRestaurantCategory} onChange={handleRestaurantCategoryChange}>
+                    <Select
+                      id="restaurantCategories"
+                      className="categoryfilter"
+                      required
+                      value={selectedRestaurantCategory}
+                      onChange={handleRestaurantCategoryChange}
+                    >
                       <option value="All">All</option>
                       {restaurantCategories.map((category) => (
                         <option key={category.id} value={category.cat_eng}>
@@ -286,7 +307,7 @@ function RestuarentDashboard() {
           <>
             <div className="tdtags">
               <div className="flex justify-between items-center">
-                <p className="mb-4">Add your Products</p>
+                <p className="mb-4">Add your Products (Remaining: {subscriptionData?.data?.plan?.product_num - productCount})</p>
                 <div className="flex items-center gap-4">
                   {!isCategoryLoading && (
                     <>
@@ -310,25 +331,37 @@ function RestuarentDashboard() {
                       )}
                     </>
                   )}
-                  <IoMdAdd className="h-8 w-8 cursor-pointer" onClick={toggleProductModal} />
+                  <IoMdAdd
+                    className={`h-8 w-8 ${remainingProducts > 0 ? "cursor-pointer text-blue-500 hover:text-blue-700" : "cursor-not-allowed text-gray-400"}`}
+                    onClick={() => remainingProducts > 0 && toggleProductModal()}
+                  />{" "}
                 </div>
               </div>
-              <ShopCardAdmin 
-                currencySymbol={currency_symbol} 
-                onEditProduct={handleEditProduct} 
+              <ShopCardAdmin
+                currencySymbol={currency_symbol}
+                onEditProduct={handleEditProduct}
                 selectedCategory={selectedShopCategory}
                 selectedSubcategory={selectedSubcategory}
                 onProductsLoad={handleProductsLoad}
+                maxItems={subscriptionData?.data?.plan?.product_num}
+                onItemCountChange={setProductCount}
               />
             </div>
             <div className="tdtags">
               <div className="flex justify-between items-center">
-                <p className="mb-4">Add Flyers for Products</p>
+                <p className="mb-4">Add Flyers for Products (Remaining: {subscriptionData?.data?.plan?.offers - flyerCount})</p>
                 <div className="flex items-center gap-4">
-                  <IoMdAdd className="h-8 w-8 cursor-pointer" onClick={toggleShopFlyerModal} />
+                  <IoMdAdd
+                    className={`h-8 w-8 ${
+                      subscriptionData?.data?.plan?.offers - flyerCount > 0
+                        ? "cursor-pointer text-blue-500 hover:text-blue-700"
+                        : "cursor-not-allowed text-gray-400"
+                    }`}
+                    onClick={() => subscriptionData?.data?.plan?.offers - flyerCount > 0 && toggleShopFlyerModal()}
+                  />
                 </div>
               </div>
-              <Flyercard onEditFlyer={handleEditFlyer} />
+              <Flyercard onEditFlyer={handleEditFlyer} maxItems={subscriptionData?.data?.plan?.offers} onItemCountChange={setFlyerCount} />
             </div>
           </>
         )}

@@ -6,14 +6,10 @@ import '../../styles/Cards.css';
 import Homecards from '../../Components/Cards/Homecards';
 import { FavCountContext } from '../../App';
 import { API_BASE_URL } from '../../config/config';
-import Loading from '../../api/Loading';
-
-// Set the base URL for axios
 
 function FavoriteProducts() {
   const [FavCount, SetFavCount] = useContext(FavCountContext);
 
-  // Fetch favorite products from the API
   const fetchFavoriteProducts = async () => {
     const token = localStorage.getItem('usertoken');
     if (!token) {
@@ -31,30 +27,13 @@ function FavoriteProducts() {
 
   const { data, isLoading, error } = useQuery('favoriteProducts', fetchFavoriteProducts);
 
-  useEffect(() => {
-    if (data && data.data && data.data.favourite_products) {
-      const favCount = data.data.favourite_products.length;
-      SetFavCount(favCount);
-     
-    }
-  }, [data, SetFavCount]);
-
-  const currencySymbol = '$'; // You can change this as needed
-
  
+
   if (error) {
-    return navigate('/error404');
+    return <div>Error: {error.message}</div>;
   }
 
-  if (isLoading)  {
-    return (
-      
-          <Loading />
-  
-    );
-  }
-
-  const favoriteProducts = data?.data.favourite_products || [];
+  const favoriteProducts = data?.data?.favourite_products || [];
 
   return (
     <div className="mobileshop">
@@ -66,18 +45,24 @@ function FavoriteProducts() {
         </div>
         <div className="contentscards">
           <div className="cardcontainer">
-            {favoriteProducts.length > 0 ? (
+            {isLoading ? (
+              Array(12).fill().map((_, index) => (
+                <Homecards key={index} isLoading={true} />
+              ))
+            ) : favoriteProducts.length > 0 ? (
               favoriteProducts.map((product) => (
                 <Link key={product.id}>
                   <Homecards
                     product={product}
-                    currencySymbol={currencySymbol}
                     isRestaurant={false}
+                    isLoading={false}
                   />
                 </Link>
               ))
             ) : (
-              <p>No favorite products available</p>
+              <div className="w-full text-center py-4">
+                <p className='font-semibold'>No favorite products available</p>
+              </div>
             )}
           </div>
         </div>

@@ -8,15 +8,15 @@ const useLanguageText = (data) => {
   const getCountryText = () => {
     switch (selectedLanguage) {
       case 'English':
-        return data.country_eng || 'Default Language';
+        return data.country_eng ;
       case 'Arabic':
-        return data.country_ar || 'Default Language';
+        return data.country_ar ;
       case 'Malayalam':
-        return data.country_mal || 'Default Language';
+        return data.country_mal ;
       case 'Hindi':
-        return data.country_hin || 'Default Language';
+        return data.country_hin ;
       default:
-        return data.country_eng || 'Default Language';
+        return data.country_eng ;
     }
   };
 

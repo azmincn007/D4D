@@ -14,13 +14,11 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
   useEffect(() => {
     if (initialSelectedProducts.length > 0) {
       setSelectedValues(initialSelectedProducts);
-      console.log('Initial Selected Products:', initialSelectedProducts);
     }
   }, [initialSelectedProducts]);
 
   useEffect(() => {
     setFilteredOptions(allProductInfo);
-    console.log('Updated allProductInfo:', allProductInfo);
   }, [allProductInfo]);
 
   useEffect(() => {
@@ -44,7 +42,6 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
       );
       setFilteredOptions(filtered);
       setLoading(false);
-      console.log('Filtered Options:', filtered);
     }, 300);
   };
 
@@ -55,7 +52,6 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
         : [...prev, option];
       
       onChange(newValues.map(item => item[idKey]));
-      console.log('Selected Values:', newValues);
       
       return newValues;
     });

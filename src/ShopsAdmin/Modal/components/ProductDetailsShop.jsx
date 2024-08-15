@@ -140,13 +140,10 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
   }, []);
 
   const onSubmit = useCallback(async (data) => {
-    console.log("Form data before submission:", data);
-    console.log("Image file:", imageFile);
 
     // Remove dates_needed from the form data
     const { dates_needed, ...formDataWithoutDates } = data;
 
-    console.log("Form data without dates:", formDataWithoutDates);
 
     if (!imageFile && !isEditMode) {
       alert("Please upload an image before submitting.");

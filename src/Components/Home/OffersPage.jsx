@@ -5,13 +5,14 @@ import OfferCardComponent from '../Cards/OfferCard';
 import '../../styles/Cards.css';
 import { OfferContext } from '../../App';
 import { API_BASE_URL } from '../../config/config';
+import { ShimmerCard } from '../Cards/Shimmer/Shimmer';
+import ShimmerOfferCard from '../Cards/Shimmer/ShimmerOffercard';
 
 function OffersPage() {
   const [offerItems, setOfferItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { selectedOfferId } = useContext(OfferContext);
-
 
   useEffect(() => {
     const fetchOfferItems = async () => {
@@ -22,6 +23,9 @@ function OffersPage() {
       }
 
       try {
+        // Simulate a 10-second delay
+        // await new Promise(resolve => setTimeout(resolve, 10000));
+
         const response = await axios.get(`${API_BASE_URL}/api/offer-items/${selectedOfferId}`);
         setOfferItems(response.data.data.offer_items);
         setLoading(false);
@@ -34,7 +38,6 @@ function OffersPage() {
     fetchOfferItems();
   }, [selectedOfferId]);
 
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
@@ -47,7 +50,12 @@ function OffersPage() {
         </div>
         <div className="contentscards">
           <div className="cardcontainer">
-            {offerItems && offerItems.length > 0 ? (
+            {loading ? (
+              // Display ShimmerOfferCard components while loading
+              Array(8).fill().map((_, index) => (
+                <ShimmerOfferCard key={index} />
+              ))
+            ) : offerItems && offerItems.length > 0 ? (
               offerItems.map((item) => (
                 <Link key={item.id} to={`/offerdetails/${item.id}`}>
                   <OfferCardComponent image={item.image} />

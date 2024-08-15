@@ -40,7 +40,7 @@ const ProfileBanner = ({ circleImage, backgroundImage, showEditIcon, onImageChan
             className="absolute cursor-pointer"
             onClick={handleBackgroundIconClick}
           >
-            <FaCamera className="w-[60px] h-[60px] text-white opacity-70" />
+            <FaCamera className="w-[60px] h-[60px] text-black opacity-70" />
           </div>
         )}
       </div>

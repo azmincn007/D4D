@@ -17,6 +17,8 @@ export function ModalAuth({ openModal, setOpenModal, onClose, onLoginSuccess }) 
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
   const navigate = useNavigate();
 
+  
+
   const handleCloseModal = () => {
     setOpenModal(false);
     onClose();
@@ -37,16 +39,8 @@ export function ModalAuth({ openModal, setOpenModal, onClose, onLoginSuccess }) 
     setAuthValue("otp");
   };
 
-  const handleOtpSubmit = (otp, submittedEmail) => {
-    console.log("OTP submitted:", otp);
-    console.log("Email:", submittedEmail);
-    setAuthValue("reset");
-  };
+  
 
-  const handleResetPasswordSubmit = (newPassword) => {
-    console.log("Reset password for email:", email, "New password:", newPassword);
-    setAuthValue("login");
-  };
 
   const handleFavoriteModalClose = () => {
     setAuthValue("login");

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { IoIosClose } from 'react-icons/io';
 
 const FeedbackModal = ({ isOpen, onClose }) => {
   const navigate=useNavigate()
@@ -70,6 +71,11 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     <Modal show={isOpen} onClose={onClose} theme={modalthemeNational}>
       <Modal.Body>
         <div className="space-y-6 relative">
+        <div className="absolute top-0 right-0 ">
+                <div className="w-[24px] h-[24px] shadow-loginicon rounded-full flex justify-center items-center bg-white">
+                  <IoIosClose className="text-base cursor-pointer" onClick={onClose} />
+                </div>
+              </div>
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">Submit your feedback</h3>
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
@@ -94,7 +100,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
                 <TextInput
                   id="mobileNumber"
                   type="tel"
-                  placeholder="Mobile Number (e.g., +919633531411)"
+                  placeholder="Mobile Number (including country code)"
                   value={mobileNumber}
                   onChange={handleMobileNumberChange}
                   required
@@ -122,9 +128,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
               </button>
             </div>
           </form>
-          <div className='absolute top-2 right-3 bg-white rounded-full p-1 cursor-pointer' onClick={onClose}>
-            <IoCloseSharp size={24} />
-          </div>
+       
         </div>
       </Modal.Body>
       <AnimatePresence>

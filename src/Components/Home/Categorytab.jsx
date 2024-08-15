@@ -1,19 +1,33 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import { OfferContext } from '../../App'; // Adjust the import path as needed
+import { OfferContext } from '../../App';
 import { API_BASE_URL } from '../../config/config';
+import Loading from '../../api/Loading';
+import useLanguageText from '../Uselanguagetext';
 
 function Categorytab({ resetToAllOffers }) {
   const [activeTab, setActiveTab] = useState(0);
   const { selectedOfferId, setSelectedOfferId } = useContext(OfferContext);
 
   const fetchCategories = async () => {
+    const cachedData = localStorage.getItem('categoryTabs');
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
     const response = await axios.get(`${API_BASE_URL}/api/offers`);
+    localStorage.setItem('categoryTabs', JSON.stringify(response.data.data.offers));
     return response.data.data.offers;
   };
 
-  const { data: caTabs, isLoading, error } = useQuery('offers', fetchCategories);
+  const { data: caTabs, isLoading, error } = useQuery('offers', fetchCategories, {
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    cacheTime: 1000 * 60 * 30, // 30 minutes
+    initialData: () => {
+      const cachedData = localStorage.getItem('categoryTabs');
+      return cachedData ? JSON.parse(cachedData) : undefined;
+    },
+  });
 
   useEffect(() => {
     if (caTabs) {
@@ -30,7 +44,6 @@ function Categorytab({ resetToAllOffers }) {
     setSelectedOfferId(offerId);
   };
 
-  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
 
   return (
@@ -48,7 +61,12 @@ function Categorytab({ resetToAllOffers }) {
           }}
           onClick={() => handleTabClick(index, obj.id)}
         >
-          {obj.offer_title_eng}
+          {useLanguageText({
+            country_eng: obj.offer_title_eng,
+            country_ar: obj.offer_title_ar,
+            country_mal: obj.offer_title_mal,
+            country_hin: obj.offer_title_hin
+          })}
         </div>
       ))}
     </div>
