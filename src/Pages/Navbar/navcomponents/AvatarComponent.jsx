@@ -1,22 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import avatar from '../../../assets/avatarboys.png';
 import avt2 from '../../../assets/avt2.png';
 import { API_BASE_URL } from '../../../config/config';
 
 function AvatarComponent({ height, width, showAvatar, profileLogo, src }) {
-  let avatarImage;
+  const [avatarImage, setAvatarImage] = useState(null);
+  const [imageError, setImageError] = useState(false);
 
-  
+  useEffect(() => {
+    let newAvatarImage;
+    if (src) {
+      newAvatarImage = src;
+    } else if (profileLogo) {
+      newAvatarImage = `${API_BASE_URL}${profileLogo}`;
+    } else {
+      newAvatarImage = showAvatar ? avt2 : avatar;
+    }
+    setAvatarImage(newAvatarImage);
+    setImageError(false);
+  }, [src, profileLogo, showAvatar]);
 
-
-  if (src) {
-    avatarImage = src;
-  } else if (profileLogo) {
-    avatarImage = `${API_BASE_URL}${profileLogo}`;
-  } else {
-    avatarImage = showAvatar ? avt2 : avatar;
-  }
-
+  const handleImageError = () => {
+    console.error('Error loading image:', avatarImage);
+    setImageError(true);
+    setAvatarImage(showAvatar ? avt2 : avatar);
+  };
 
   return (
     <div
@@ -30,10 +38,7 @@ function AvatarComponent({ height, width, showAvatar, profileLogo, src }) {
       <img
         src={avatarImage}
         alt="User Avatar"
-        onError={(e) => {
-          console.error('Error loading image:', e);
-          e.target.src = showAvatar ? avt2 : avatar;
-        }}
+        onError={handleImageError}
         style={{
           width: '100%',
           height: '100%',
@@ -41,6 +46,7 @@ function AvatarComponent({ height, width, showAvatar, profileLogo, src }) {
           objectPosition: 'center',
         }}
       />
+      {imageError && <div style={{ color: 'red', fontSize: '10px' }}>Failed to load image</div>}
     </div>
   );
 }
