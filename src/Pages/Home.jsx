@@ -33,6 +33,8 @@ const fetchRegions = async (countryId) => {
 };
 
 function Home() {
+  console.log("hi");
+  
   const [showFavoriteModal, setShowFavoriteModal] = useContext(showFavmodal);
 
   const [showLanguageModal, setShowLanguageModal] = useState(false);
