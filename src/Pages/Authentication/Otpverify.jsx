@@ -62,7 +62,6 @@ function Otpverify({ isOpen, onClose, email, otpResponse, onSubmit, setOtpRespon
     if (isValid) {
       setIsLoading(true);
       const enteredOtp = parseInt(otp.join(""), 10);
-      console.log("Entered OTP:", enteredOtp);
       
       if (enteredOtp === parseInt(otpResponse, 10)) {
         setOtpVerified(true);
@@ -108,7 +107,7 @@ function Otpverify({ isOpen, onClose, email, otpResponse, onSubmit, setOtpRespon
         console.error("Error resending OTP:", error);
         setError("Failed to resend OTP. Please try again.");
         if (error.response && error.response.status !== 400) {
-          navigate('/error404');
+          navigate('/404error');
           return null;
         }
       } finally {

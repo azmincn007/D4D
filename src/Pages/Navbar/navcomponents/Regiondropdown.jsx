@@ -4,6 +4,7 @@ import { Dropdown } from 'flowbite-react';
 import { Countrycontext, NationalityContext, RegionContext } from '../../../App';
 import flowbiteDrop from '../../../Themes/Flowbitedrop';
 import { API_BASE_URL } from '../../../config/config';
+import useLanguageText from '../../../Components/Uselanguagetext';
 
 function Regiondropdown() {
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
@@ -23,7 +24,7 @@ function Regiondropdown() {
     setSelectedCountry(country);
     localStorage.setItem('userCountrySelected', JSON.stringify(country));
     window.dispatchEvent(new Event('userCountryUpdated'));
-    setSelectedRegion("")
+    setSelectedRegion("");
     localStorage.removeItem('userRegionSelected');
   };
 
@@ -50,7 +51,12 @@ function Regiondropdown() {
             outline: 'none',
             ':focus': { outline: 'none', border: 'none' },
           }}
-          label={selectedCountry?.country_eng || 'Select Country'}
+          label={useLanguageText({
+            country_eng: selectedCountry?.country_eng,
+            country_ar: selectedCountry?.country_ar,
+            country_mal: selectedCountry?.country_mal,
+            country_hin: selectedCountry?.country_hin
+          }) || 'Select Country'}
         >
           {remainingCountries.map((country, index) => (
             <Dropdown.Item
@@ -58,7 +64,12 @@ function Regiondropdown() {
               key={index}
               onClick={() => handleCountrySelect(country)}
             >
-              {country.country_eng}
+              {useLanguageText({
+                country_eng: country.country_eng,
+                country_ar: country.country_ar,
+                country_mal: country.country_mal,
+                country_hin: country.country_hin
+              })}
             </Dropdown.Item>
           ))}
         </Dropdown>

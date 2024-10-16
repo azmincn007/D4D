@@ -71,7 +71,6 @@ function Loginpopup({ isOpen, onClose, onLoginSuccess,onOpenSignup ,onOpenForgot
         });
 
       } catch (error) {
-        console.log("Error fetching user info:", error);
         setLoginError("An error occurred during Google login. Please try again.");
       }
     },
@@ -93,7 +92,6 @@ function Loginpopup({ isOpen, onClose, onLoginSuccess,onOpenSignup ,onOpenForgot
       axios.post(`${API_BASE_URL}/api/user/login`, credentials),
     {
       onSuccess: (response) => {
-        console.log("Login successful:", response.data.data);
         if (response.data.data.token) {
           localStorage.setItem("usertoken", response.data.data.token);
           setLoginSuccess(true);
@@ -141,7 +139,7 @@ function Loginpopup({ isOpen, onClose, onLoginSuccess,onOpenSignup ,onOpenForgot
   };
 
   if (loginMutation.isError && loginMutation.error.response?.status !== 400) {
-    navigate('/error404');
+    navigate('/404error');
     return null;
   }
   return (

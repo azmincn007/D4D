@@ -9,7 +9,6 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
   const wrapperRef = useRef(null);
 
   // Log incoming props
-  console.log('MultiSelectSearch Props:', { allProductInfo, initialSelectedProducts, valueKey, idKey });
 
   useEffect(() => {
     if (initialSelectedProducts.length > 0) {
@@ -61,7 +60,6 @@ const MultiSelectSearch = ({ allProductInfo, onChange, initialSelectedProducts =
     setSelectedValues((prev) => {
       const newValues = prev.filter((item) => item[idKey] !== id);
       onChange(newValues.map(item => item[idKey]));
-      console.log('Values after removal:', newValues);
       return newValues;
     });
   };

@@ -9,11 +9,11 @@ import ImageUpload from './Imageupload';
 import MultiSelectSearch from '../../Components/MultiSelectSearch';
 import { API_BASE_URL } from '../../../config/config';
 
-
 const formatDate = (date) => {
-  if (!date) return '';
+  if (!date) return "";
   const d = new Date(date);
-  return d.toISOString().split('T')[0];
+  d.setDate(d.getDate() + 1); // Add one day to the date
+  return d.toISOString().split("T")[0];
 };
 
 const getAuthToken = () => {
@@ -29,7 +29,7 @@ const checkAuthToken = () => {
   return true;
 };
 
-function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
+function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo, setFlyerToEdit }) {
   const { register, handleSubmit, control, formState: { errors }, reset, setValue, watch } = useForm({
     defaultValues: {
       valid_from: null,
@@ -60,7 +60,6 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
       },
       onError: (error) => {
         console.error('Error adding flyer:', error);
-        alert('Error adding flyer. Please try again.');
       }
     }
   );
@@ -79,19 +78,16 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
       },
       onError: (error) => {
         console.error('Error updating flyer:', error);
-        alert('Error updating flyer. Please try again.');
       }
     }
   );
 
-  // New query to fetch offers
   const { data: offersData } = useQuery('offers', async () => {
     const response = await axios.get(`${API_BASE_URL}/api/shop/offers`, {
       headers: {
         'Authorization': `Bearer ${getAuthToken()}`
       }
     });
-    
     return response.data.data.offers;
   });
 
@@ -133,8 +129,9 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
     });
     setImageFile(null);
     setIsEditMode(false);
+    setFlyerToEdit(null);
     onClose();
-  }, [reset, onClose]);
+  }, [reset, onClose, setFlyerToEdit]);
 
   const handleImageUploadSuccess = useCallback((file) => {
     setImageFile(file);
@@ -150,35 +147,34 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
 
   const onSubmit = async (data) => {
     if (!checkAuthToken()) return;
-  
+
     setIsSubmitting(true);
-  
+
     const formData = new FormData();
     if (data.dates_needed === 'yes') {
-      formData.append('valid_from', data.valid_from);
-      formData.append('valid_to', data.valid_to);
+      formData.append('valid_from', formatDate(data.valid_from));
+      formData.append('valid_to', formatDate(data.valid_to));
     }
     formData.append('products', data.products.join(','));
     formData.append('offers', data.offers.join(','));
-  
+
     if (imageFile) {
       formData.append('image', imageFile);
     }
-  
+
     if (isEditMode) {
       formData.append('flyer_id', flyerToEdit.id);
     }
-  
+
     try {
       if (isEditMode) {
         await updateFlyerMutation.mutateAsync(formData);
       } else {
         await addFlyerMutation.mutateAsync(formData);
       }
-      alert(isEditMode ? "Flyer updated successfully!" : "Flyer added successfully!");
+      // The modal will be closed automatically due to the onSuccess callbacks in the mutations
     } catch (error) {
       console.error(isEditMode ? "Error updating flyer:" : "Error adding flyer:", error);
-      alert(isEditMode ? "Error updating flyer. Please try again." : "Error adding flyer. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -224,8 +220,8 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
                   <Datepicker
                     id="valid_from"
                     className="w-full"
-                    onSelectedDateChanged={(date) => field.onChange(formatDate(date))}
-                    selected={field.value ? new Date(field.value) : null}
+                    onSelectedDateChanged={(date) => field.onChange(date)}
+                    selected={field.value}
                   />
                 )}
               />
@@ -240,8 +236,8 @@ function ShopFlyerAdmin({ isOpen, onClose, flyerToEdit, allProductInfo }) {
                   <Datepicker
                     id="valid_to"
                     className="w-full"
-                    onSelectedDateChanged={(date) => field.onChange(formatDate(date))}
-                    selected={field.value ? new Date(field.value) : null}
+                    onSelectedDateChanged={(date) => field.onChange(date)}
+                    selected={field.value}
                   />
                 )}
               />

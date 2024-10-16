@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../../../../config/config';
 
 function ConfirmDeleteModal({ isOpen, onClose, onDeleteSuccess, itemName, itemId, itemType }) {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleDelete = async () => {
     try {
@@ -42,14 +43,17 @@ function ConfirmDeleteModal({ isOpen, onClose, onDeleteSuccess, itemName, itemId
     } catch (error) {
       console.error(`Error deleting ${itemType}:`, error);
       if (error.response && error.response.status === 403 && itemType === 'category') {
-        setIsErrorModalOpen(true);
+        setErrorMessage('Can\'t delete when products are in that category.');
+      } else {
+        setErrorMessage(error.response?.data?.message || 'An error occurred while deleting the item.');
       }
+      setIsErrorModalOpen(true);
+      onClose(); // Close the confirm delete modal
     }
   };
 
   const closeErrorModal = () => {
     setIsErrorModalOpen(false);
-    onClose();
   };
 
   return (
@@ -70,15 +74,11 @@ function ConfirmDeleteModal({ isOpen, onClose, onDeleteSuccess, itemName, itemId
       </Modal>
 
       <Modal show={isErrorModalOpen} onClose={closeErrorModal}>
-        <Modal.Header>Cannot Delete Category</Modal.Header>
+        <Modal.Header>Error</Modal.Header>
         <Modal.Body>
-          <p>Can't delete when products are in that category.</p>
+          <p>{errorMessage}</p>
         </Modal.Body>
-        <Modal.Footer>
-          <Button color="gray" onClick={closeErrorModal}>
-            Close
-          </Button>
-        </Modal.Footer>
+        
       </Modal>
     </>
   );

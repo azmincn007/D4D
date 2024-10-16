@@ -40,9 +40,9 @@ function Signupcomp() {
 
   const mutation = useMutation(sendOTP, {
     onSuccess: (data) => {
-      console.log("OTP sent successfully", data.data.otp);
       const updatedData = data.formData;
       localStorage.setItem("signupData", JSON.stringify(updatedData));
+      console.log("Sent OTP:", data.data.otp);
       navigate("/verifyotp", {
         state: {
           ...updatedData,

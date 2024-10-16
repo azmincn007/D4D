@@ -25,9 +25,11 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSubmit }) => {
     (email) => axios.post(`${API_BASE_URL}/api/user/reset-psw-otp`, { email }),
     {
       onSuccess: (response) => {
-        setOtpResponse(response.data.data.otp);
-        console.log(response.data.data.otp);
+        const otp = response.data.data.otp;
+        setOtpResponse(otp);
         
+        console.log("OTP:", otp); // Log the OTP to the console
+
         setForgetPasswordSuccess(true);
         setTimeout(() => {
           setIsOtpModalOpen(true);
@@ -66,7 +68,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSubmit }) => {
   };
 
   if (resetPasswordMutation.isError && resetPasswordMutation.error.response?.status !== 400) {
-    navigate('/error404');
+    navigate('/404error');
     return null;
   }
 
@@ -82,7 +84,11 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSubmit }) => {
             )}
             <h2 className="text-[22px] font-semibold mb-16">Reset Password Request</h2>
             <form onSubmit={handleSubmit} className="w-[90%]">
-              <div className='mb-2'><p className='text-[#6D6D6D] text-[14px]'>Please fill out your email. An OTP to reset password will be sent there.</p></div>
+              <div className='mb-2'>
+                <p className='text-[#6D6D6D] text-[14px]'>
+                  Please fill out your email. An OTP to reset your password will be sent there.
+                </p>
+              </div>
               <div className="mb-16">
                 <TextInput
                   theme={flowbiteinput}

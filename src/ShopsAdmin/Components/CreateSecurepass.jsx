@@ -35,7 +35,7 @@ function CreateSecurepassword({ email, onClose }) {
       onError: (error) => {
         console.error("Password reset failed:", error);
         if (error.response && error.response.status !== 400) {
-          navigate('/error404');
+          navigate('/404error');
           return null;
         }
       },
@@ -47,7 +47,7 @@ function CreateSecurepassword({ email, onClose }) {
   };
 
   if (resetPasswordMutation.isError && resetPasswordMutation.error.response?.status !== 400) {
-    navigate('/error404');
+    navigate('/404error');
     return null;
   }
 

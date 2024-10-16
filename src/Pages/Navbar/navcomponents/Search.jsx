@@ -101,7 +101,7 @@ const Search = ({ onSearch }) => {
           {searchResults.map((product, index) => (
             <li key={index}>
               <Link
-                to="/Shoppage"
+             to={`/Shop-page/${product.id}`}
                 state={{ productId: product.id }}
                 className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 onClick={() => {

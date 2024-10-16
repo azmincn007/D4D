@@ -1,5 +1,5 @@
-import React , { useEffect, useState } from "react";
-import { Label, Modal, TextInput, Button, Textarea } from "flowbite-react";
+import React, { useEffect, useState } from "react";
+import { Label, Modal, TextInput, Button, Textarea, Spinner } from "flowbite-react";
 import ProfileBanner from "../Components/Profilebanner";
 import { useForm } from "react-hook-form";
 import "./Modalsprofile.css";
@@ -9,15 +9,18 @@ import { modalshop, modalthemeNational } from "../../Themes/Modaltheme";
 import ErrorMessage from "../../Pages/Authentication/ErrorValidation";
 import axios from "axios";
 import { TbFileCertificate } from "react-icons/tb";
-import { useQueryClient } from 'react-query';
+import { useQueryClient, useMutation } from 'react-query';
 import { API_BASE_URL } from "../../config/config";
+import { IoCloseSharp } from "react-icons/io5";
 
-function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
+function EditDetailsModal({ isOpen, onClose, profileData }) {
   const [wordCount, setWordCount] = useState(0);
-  const [logo, setLogo] = useState(profileData?.logo || null);
-  const [backgroundImage, setBackgroundImage] = useState(profileData?.background_img || null);
+  const [logo, setLogo] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
+  const [certificateFilename, setCertificateFilename] = useState(null);
 
   const queryClient = useQueryClient();
+  console.log(profileData);
 
   const {
     register,
@@ -27,16 +30,16 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      desc: profileData?.desc || "",
-      shopname_eng: profileData?.shopname_eng || "",
-      shopname_ar: profileData?.shopname_ar || "",
-      shopname_mal: profileData?.shopname_mal || "",
-      shopname_hin: profileData?.shopname_hin || "",
-      alternate_num: profileData?.alternate_num || "",
-      contact_num: profileData?.contact_num || "",
-      logo: profileData?.logo || null,
-      certificate: profileData?.certificate || null,
-      background_img: profileData?.background_img || null,
+      desc: "",
+      shopname_eng: "",
+      shopname_ar: "",
+      shopname_mal: "",
+      shopname_hin: "",
+      alternate_num: "",
+      contact_num: "",
+      logo: null,
+      certificate: null,
+      background_img: null,
     },
   });
 
@@ -49,11 +52,19 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
       setValue("shopname_hin", profileData.shopname_hin || "");
       setValue("alternate_num", profileData.alternate_num || "");
       setValue("contact_num", profileData.contact_num || "");
-      setValue("logo", profileData.logo || null);
-      setValue("certificate", profileData.certificate || null);
-      setValue("background_img", profileData.background_img || null);
+      
       setLogo(profileData.logo || null);
       setBackgroundImage(profileData.background_img || null);
+      
+      if (profileData.certificate) {
+        setCertificateFilename(profileData.certificate.split('/').pop().split('\\').pop());
+      } else {
+        setCertificateFilename(null);
+      }
+    } else {
+      setLogo(null);
+      setBackgroundImage(null);
+      setCertificateFilename(null);
     }
   }, [profileData, setValue]);
 
@@ -68,73 +79,57 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
     };
   }, [logo, backgroundImage]);
 
-  const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
-      
-      const fieldsToInclude = [
-        'logo', 'certificate', 'contact_num', 'alternate_num', 
-        'desc', 'shopname_eng', 'shopname_ar', 'shopname_hin', 'shopname_mal', 'background_img'
-      ];
-  
-      const dataToLog = {};
-  
-      fieldsToInclude.forEach(key => {
-        if (data[key] !== undefined && data[key] !== null) {
-          if (key === 'logo' || key === 'certificate' || key === 'background_img') {
-            if (data[key] instanceof FileList && data[key].length > 0) {
-              formData.append(key, data[key][0], data[key][0].name);
-              dataToLog[key] = data[key][0].name;
-            } else if (data[key] instanceof File) {
-              formData.append(key, data[key], data[key].name);
-              dataToLog[key] = data[key].name;
-            } else if (typeof data[key] === 'string') {
-              formData.append(key, data[key]);
-              dataToLog[key] = data[key];
-            }
-          } else {
-            formData.append(key, data[key]);
-            dataToLog[key] = data[key];
-          }
-        }
-      });
-  
-      console.log("Data being sent to the backend:", dataToLog);
-  
+  const updateProfileMutation = useMutation(
+    async (formData) => {
       const token = localStorage.getItem('authToken');
-  
       const response = await axios.post(`${API_BASE_URL}/api/restaurent/edit-profile`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
-  
-      console.log("Profile updated successfully:", response.data);
-      queryClient.invalidateQueries(["restaurantProfile"]);
-      
-      onProfileUpdate({
-        ...profileData,
-        ...data,
-        logo: logo,
-        background_img: backgroundImage,
-      });
-
-      console.log("Attempting to close modal");
-      onClose();
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      if (error.response) {
-        console.error("Error response data:", error.response.data);
-        console.error("Error response status:", error.response.status);
-      } else if (error.request) {
-        console.error("Error request:", error.request);
-      } else {
-        console.error("Error message:", error.message);
-      }
-      console.log("Attempting to close modal after error");
-      onClose();
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["restaurantProfile"]);
+        onClose();
+      },
+      onError: (error) => {
+        console.error("Error updating profile:", error);
+        onClose();
+      },
     }
+  );
+
+  const onSubmit = (data) => {
+    const formData = new FormData();
+    const fieldsToInclude = [
+      'logo', 'certificate', 'contact_num', 'alternate_num', 
+      'desc', 'shopname_eng', 'shopname_ar', 'shopname_hin', 'shopname_mal', 'background_img'
+    ];
+
+    fieldsToInclude.forEach(key => {
+      if (data[key] !== undefined && data[key] !== null) {
+        if (key === 'logo' || key === 'certificate' || key === 'background_img') {
+          if (data[key] instanceof FileList && data[key].length > 0) {
+            formData.append(key, data[key][0], data[key][0].name);
+          } else if (data[key] instanceof File) {
+            formData.append(key, data[key], data[key].name);
+          } else if (typeof data[key] === 'string') {
+            formData.append(key, data[key]);
+          }
+        } else {
+          formData.append(key, data[key]);
+        }
+      }
+    });
+
+    updateProfileMutation.mutate(formData);
+  };
+
+  const handleCloseModal = () => {
+    onClose();
   };
 
   const description = watch("desc", "");
@@ -161,6 +156,16 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
     }
   };
 
+  const handleCertificateChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCertificateFilename(file.name);
+      setValue("certificate", file);
+    } else {
+      setCertificateFilename(null);
+      setValue("certificate", null);
+    }
+  };
 
   return (
     <Modal 
@@ -184,10 +189,10 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
         />
         <div className="flex flex-col items-center mt-16">
           <React.Fragment>
-            <div className="text-sm font-semibold mb-1">{profileData.shopname_eng}</div>
-            <div className="text-[#696969] text-xs font-semibold mb-1">{profileData.email}</div>
+            <div className="text-sm font-semibold mb-1">{profileData?.shopname_eng || ""}</div>
+            <div className="text-[#696969] text-xs font-semibold mb-1">{profileData?.email || ""}</div>
             <div className="text-[#696969] text-xs flex font-semibold mb-4">
-              <div>{profileData.country},{profileData.region}</div>
+              <div>{profileData?.country || ""},{profileData?.region || ""}</div>
             </div>
           </React.Fragment>
         </div>
@@ -204,24 +209,29 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
             <div className="w-[50%] mx-auto formtext Mobile:w-[70%]">
               <div className="mb-4">
                 <Label className="flex text-[16px] font-semibold">Upload Certification (Optional)</Label>
-                <div className="file-upload">
+                <div className="file-upload relative">
                   <input 
                     type="file" 
                     id="certificate" 
                     className="file-input" 
-                    {...register("certificate")}
+                    onChange={handleCertificateChange}
+                    accept=".pdf,.doc,.docx"
                   />
                   <label htmlFor="certificate" className="file-label">
-                    <span className="placeholder"></span>
+                    <span className={`placeholder ${certificateFilename ? 'text-green-500' : ''}`}>
+                      {certificateFilename || "Choose a file"}
+                    </span>
                     <span>
                       <TbFileCertificate />
                     </span>
                   </label>
                 </div>
               </div>
+
               <div className="mb-4">
-                <div className="mb-1 flex justify-start">
+                <div className="mb-1 flex flex-col justify-start">
                   <Label htmlFor="mobileNumber" value="Mobile Number" className="labelstyle text-[16px]" />
+                  <span className="text-xs text-gray-500 font-semibold">Include country code</span>
                 </div>
                 <div className="flex">
                   <div className="w-[100%]">
@@ -233,10 +243,6 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
                       inputMode="numeric"
                       {...register("contact_num", {
                         required: "Mobile Number is required",
-                        pattern: {
-                          value: /^\+\d+$/,
-                          message: "Mobile Number must include country code (e.g., +123456789)",
-                        },
                       })}
                     />
                     <div className="flex justify-start">{errors.contact_num && <ErrorMessage message={errors.contact_num.message} />}</div>
@@ -245,8 +251,9 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
               </div>
 
               <div className="mb-4">
-                <div className="mb-1 flex justify-start">
+                <div className="mb-1 flex flex-col justify-start">
                   <Label htmlFor="AlternativeNumber" value="Alternative Number" className="labelstyle text-[16px]" />
+                  <span className="text-xs text-gray-500 font-semibold">Include country code</span>
                 </div>
                 <div className="flex">
                   <div className="w-[100%]">
@@ -254,14 +261,10 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
                       className="form-today"
                       id="AlternativeNumber"
                       type="tel"
-                      placeholder="Enter Alternative Number"
+                      placeholder="Enter Whatsupp Number"
                       inputMode="numeric"
                       {...register("alternate_num", {
                         required: "Alternative Number is required",
-                        pattern: {
-                          value: /^\+\d+$/,
-                          message: "Alternative Number must include country code (e.g., +123456789)",
-                        },
                       })}
                     />
                     {errors.alternate_num && <ErrorMessage message={errors.alternate_num.message} />}
@@ -290,13 +293,27 @@ function EditDetailsModal({ isOpen, onClose, profileData, onProfileUpdate }) {
               </div>
 
               <div>
-                <Button className="mt-4 bg-yellow text-white auth-button w-full" type="submit">
-                  Update Profile
+                <Button
+                  className="mt-4 bg-yellow text-white auth-button w-full"
+                  type="submit"
+                  disabled={updateProfileMutation.isLoading}
+                >
+                  {updateProfileMutation.isLoading ? (
+                    <>
+                      <Spinner size="sm" light={true} />
+                      <span className="ml-2">Updating...</span>
+                    </>
+                  ) : (
+                    "Update Profile"
+                  )}
                 </Button>
               </div>
             </div>
           </div>
         </form>
+        <div className='absolute top-2 right-3 bg-white rounded-full' onClick={handleCloseModal}>
+          <IoCloseSharp />
+        </div>
       </Modal.Body>
     </Modal>
   );

@@ -11,13 +11,23 @@ import Categorydropdown from './Components/CategoryDropdown';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import useLanguageText from '../Uselanguagetext';
-import { SelectedCategoryContext, SelectedSubCategoryContext } from '../../App'; // Adjust the import path as needed
+import { SelectedCategoryContext, SelectedSubCategoryContext } from '../../App';
 import { API_BASE_URL } from '../../config/config';
-import Loading from '../../api/Loading';
+import { useNavigate } from 'react-router-dom';
+
+// Shimmer component for loading state
+const Shimmer = ({ count }) => (
+  <>
+    {[...Array(count)].map((_, index) => (
+      <div key={index} className="animate-pulse bg-[#232F3E] h-12 mb-2 rounded"></div>
+    ))}
+  </>
+);
 
 function Categories({ selectedValue, onOptionClick, onSubcategoryClick, onCategoryClick, showInNavbar = false }) {
   const { selectedCategoryId, setSelectedCategoryId } = useContext(SelectedCategoryContext);
   const { selectedSubCategoryId, setSelectedSubCategoryId } = useContext(SelectedSubCategoryContext);
+  const navigate = useNavigate();
 
   const fetchCategories = async () => {
     const response = await axios.get(`${API_BASE_URL}/api/categories`);
@@ -52,8 +62,11 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, onCatego
     setSelectedSubCategoryId(subcategory.id);
     onSubcategoryClick();
   };
-  if (categoriesError) return <div>An error occurred while loading categories: {categoriesError.message}</div>;
- 
+
+  if (categoriesError || subcategoriesError) {
+    navigate('/404error');
+    return null;
+  }
 
   return (
     <div
@@ -81,67 +94,69 @@ function Categories({ selectedValue, onOptionClick, onSubcategoryClick, onCatego
         Categories
       </div>
       <div className="categoriesdropdown py-1 w-[95%]">
-        {categories && categories.map((category) => {
-          const categoryName = useLanguageText({
-            country_eng: category.cat_eng,
-            country_ar: category.cat_ar,
-            country_mal: category.cat_mal,
-            country_hin: category.cat_hin
-          });
+        {categoriesLoading ? (
+          <Shimmer count={20} />
+        ) : (
+          categories && categories.map((category) => {
+            const categoryName = useLanguageText({
+              country_eng: category.cat_eng,
+              country_ar: category.cat_ar,
+              country_mal: category.cat_mal,
+              country_hin: category.cat_hin
+            });
 
-          return (
-            <Accordion
-              key={category.id}
-              expanded={selectedCategoryId === category.id}
-              onChange={() => handleCategoryClick(category.id)}
-              sx={{
-                color: 'white',
-                margin:'6px 0px',
-                backgroundColor:'#232F3E'
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
-                aria-controls="panel1-content"
-                id="panel1-header"
+            return (
+              <Accordion
+                key={category.id}
+                expanded={selectedCategoryId === category.id}
+                onChange={() => handleCategoryClick(category.id)}
                 sx={{
-                  '&.Mui-expanded': { minHeight: '48px' },
-                  '.MuiAccordionSummary-content.Mui-expanded': { margin: '12px 0' },
-                  cursor: 'pointer',
+                  color: 'white',
+                  margin:'6px 0px',
+                  backgroundColor:'#232F3E'
                 }}
               >
-                {categoryName}
-              </AccordionSummary>
-              <AccordionDetails sx={{ paddingLeft: '26px'}}>
-                {subcategoriesLoading ? (
-                  <div>Loading subcategories...</div>
-                ) : subcategoriesError ? (
-                  <div>Error loading subcategories: {subcategoriesError.message}</div>
-                ) : (
-                  <ul>
-                    {subcategories && subcategories.map((subcategory) => {
-                      const subcategoryName = useLanguageText({
-                        country_eng: subcategory.subcat_eng,
-                        country_ar: subcategory.subcat_ar,
-                        country_mal: subcategory.subcat_mal,
-                        country_hin: subcategory.subcat_hin
-                      });
-                      return (
-                        <li
-                          className={`pb-4 cursor-pointer ${selectedSubCategoryId === subcategory.id ? 'font-bold' : ''}`}
-                          key={subcategory.id}
-                          onClick={() => handleSubcategoryClick(subcategory)}
-                        >
-                          {subcategoryName}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
+                  aria-controls="panel1-content"
+                  id="panel1-header"
+                  sx={{
+                    '&.Mui-expanded': { minHeight: '48px' },
+                    '.MuiAccordionSummary-content.Mui-expanded': { margin: '12px 0' },
+                    cursor: 'pointer',
+                  }}
+                >
+                  {categoryName}
+                </AccordionSummary>
+                <AccordionDetails sx={{ paddingLeft: '26px'}}>
+                  {subcategoriesLoading ? (
+                    <Shimmer count={3} />
+                  ) : (
+                    <ul>
+                      {subcategories && subcategories.map((subcategory) => {
+                        const subcategoryName = useLanguageText({
+                          country_eng: subcategory.subcat_eng,
+                          country_ar: subcategory.subcat_ar,
+                          country_mal: subcategory.subcat_mal,
+                          country_hin: subcategory.subcat_hin
+                        });
+                        return (
+                          <li
+                            className={`pb-4 cursor-pointer ${selectedSubCategoryId === subcategory.id ? 'font-bold' : ''}`}
+                            key={subcategory.id}
+                            onClick={() => handleSubcategoryClick(subcategory)}
+                          >
+                            {subcategoryName}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </AccordionDetails>
+              </Accordion>
+            );
+          })
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import '../../styles/Cards.css';
@@ -9,6 +9,7 @@ import { API_BASE_URL } from '../../config/config';
 
 function FavoriteProducts() {
   const [FavCount, SetFavCount] = useContext(FavCountContext);
+  const navigate = useNavigate();
 
   const fetchFavoriteProducts = async () => {
     const token = localStorage.getItem('usertoken');
@@ -27,11 +28,8 @@ function FavoriteProducts() {
 
   const { data, isLoading, error } = useQuery('favoriteProducts', fetchFavoriteProducts);
 
- 
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  if (error) return navigate('/404error');
 
   const favoriteProducts = data?.data?.favourite_products || [];
 
@@ -44,13 +42,15 @@ function FavoriteProducts() {
           </div>
         </div>
         <div className="contentscards">
-          <div className="cardcontainer">
-            {isLoading ? (
-              Array(12).fill().map((_, index) => (
+          {isLoading ? (
+            <div className="cardcontainer">
+              {Array(12).fill().map((_, index) => (
                 <Homecards key={index} isLoading={true} />
-              ))
-            ) : favoriteProducts.length > 0 ? (
-              favoriteProducts.map((product) => (
+              ))}
+            </div>
+          ) : favoriteProducts.length > 0 ? (
+            <div className="cardcontainer">
+              {favoriteProducts.map((product) => (
                 <Link key={product.id}>
                   <Homecards
                     product={product}
@@ -58,13 +58,13 @@ function FavoriteProducts() {
                     isLoading={false}
                   />
                 </Link>
-              ))
-            ) : (
-              <div className="w-full text-center py-4">
-                <p className='font-semibold'>No favorite products available</p>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex justify-center items-center h-64">
+              <p className='font-semibold text-lg text-gray-600'>No favorite products available</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

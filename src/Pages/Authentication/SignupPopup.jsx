@@ -17,7 +17,6 @@ import { showFavmodal } from "../../App";
 // API function
 const registerUser = async (userData) => {
   const response = await axios.post(`${API_BASE_URL}/api/user/register`, userData);
-  console.log(response.data.data.token);
   return response.data;
 };
 
@@ -25,9 +24,6 @@ function SignupPopup({ onClose, onSignupSuccess, isOpen }) {
   const navigate = useNavigate();
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [showFavoriteModal, setShowFavoriteModal] = useContext(showFavmodal);
-  
-  
-
 
   const {
     register,
@@ -43,7 +39,6 @@ function SignupPopup({ onClose, onSignupSuccess, isOpen }) {
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
-      console.log("Signup successful:", data);
       if (data.data && data.data.token) {
         localStorage.setItem('usertoken', data.data.token);
         window.dispatchEvent(new Event('tokenUpdated'));
@@ -55,7 +50,6 @@ function SignupPopup({ onClose, onSignupSuccess, isOpen }) {
         setSignupSuccess(false);
         onSignupSuccess();
         setShowFavoriteModal(true); // Triggering FavoriteModal
-        console.log("Setting showFavoriteModal to true");
       }, 2000);
     },
     onError: (error) => {
@@ -85,9 +79,10 @@ function SignupPopup({ onClose, onSignupSuccess, isOpen }) {
   };
   
   if (mutation.isError && mutation.error.response?.status !== 400) {
-    navigate('/error404');
+    navigate('/404error');
     return null;
   }
+
   return (
     <>        
       <Modal show={isOpen} onClose={onClose} size="md">
@@ -131,7 +126,13 @@ function SignupPopup({ onClose, onSignupSuccess, isOpen }) {
                     register={register}
                     name="password"
                     placeholder="Password"
-                    rules={{ required: "Password is required" }}
+                    rules={{ 
+                      required: "Password is required",
+                      minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters long"
+                      }
+                    }}
                     error={errors.password}
                   />
                   <div className={`${errors.password ? 'mb-2' : 'mb-4'} block`}></div>
@@ -168,7 +169,7 @@ function SignupPopup({ onClose, onSignupSuccess, isOpen }) {
                     theme={flowbiteinput}
                     id="mobile"
                     type="tel"
-                    placeholder="Mobile Number"
+                    placeholder="Mobile Number (including country Code)"
                     {...register("mobile", { 
                       required: "Mobile Number is required",
                       pattern: {
@@ -215,8 +216,6 @@ function SignupPopup({ onClose, onSignupSuccess, isOpen }) {
           </div>
         </Modal.Body>
       </Modal>
-
-      
     </>
   );
 }

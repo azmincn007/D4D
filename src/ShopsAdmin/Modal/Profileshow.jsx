@@ -12,6 +12,7 @@ function ProfileShow({ isOpen, onClose, onEditProfileClick }) {
   const location = useLocation();
   const formData = location.state?.formData;
   console.log(formData);
+  
 
   const handleCloseModal = () => {
     onClose();

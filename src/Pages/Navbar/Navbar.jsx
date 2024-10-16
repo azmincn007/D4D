@@ -1,10 +1,9 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarToggle } from 'flowbite-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/Logo.png';
 import '../../styles/nav.css';
-import Toggle from './navcomponents/Toggle';
 import Regiondropdown from './navcomponents/Regiondropdown';
 import { Countrycontext, LanguageContext, LoginContext, RegionContext, UseridContext } from '../../App';
 import { AiOutlineLogin } from "react-icons/ai";
@@ -27,6 +26,12 @@ import Loginpopup from '../Authentication/Loginpopup';
 import SignupPopup from '../Authentication/SignupPopup';
 import ForgotPasswordModal from '../Authentication/Forgetpassword';
 import { useQuery, useQueryClient } from 'react-query';
+import Errorpage404 from '../../api/Errorpage404';
+
+// Shimmer component
+const Shimmer = () => (
+  <div className="animate-pulse bg-Navbarbg h-[100px] w-full"></div>
+);
 
 export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const [openModal, setOpenModal] = useState(false);
@@ -34,7 +39,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const { isLoggedIn, setIsLoggedIn } = useContext(LoginContext);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  // const [userProfile, setUserProfile] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useContext(LanguageContext);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [Userid, setUserid] = useContext(UseridContext);
@@ -44,19 +48,19 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
-
-  
+  const navigate = useNavigate();
 
 
   const handleOpenForgotPasswordModal = () => {
-    setOpenModal(false); // Close the login modal
+    setOpenModal(false);
     setIsForgotPasswordModalOpen(true);
   };
  
   const handleOpenSignupModal = () => {
     setIsSignupModalOpen(true);
-    setOpenModal(false); // Close the login modal if it's open
+    setOpenModal(false);
   };
+
   const handleCountryChange = (newCountry) => {
     setSelectedCountry(newCountry);
     setIsRegionModalOpen(true);
@@ -93,7 +97,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
       });
       return response.data.data.profile;
     }, {
-    
       onSuccess: (data) => {
         if (data && data.id) {
           setUserid(data.id);
@@ -122,6 +125,7 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   const handleModalClose = () => {
     setOpenModal(false);
   };
+
   const handleResize = () => {
     setTabscreen(window.innerWidth <= 820);
     if (window.innerWidth > 770) {
@@ -131,10 +135,9 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
 
   const handleLogout = () => {
     localStorage.removeItem('usertoken');
-    localStorage.removeItem('userId');  // Add this line
+    localStorage.removeItem('userId');
     setIsLoggedIn(false);
-    setUserid(0);  // Reset the Userid state to 0
-    console.log('User logged out. Token and userId removed.');
+    setUserid(0);
   };
 
   const queryClient = useQueryClient();
@@ -143,9 +146,7 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
     setIsLoggedIn(true);
     setOpenModal(false);
     queryClient.invalidateQueries('userProfile');
-    console.log('Login successful. Token:', token);
     
-    // Fetch the user profile immediately after login
     axios.get(`${API_BASE_URL}/api/user/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -154,7 +155,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
       const userId = response.data.data.profile.id;
       localStorage.setItem('userId', userId.toString());
       setUserid(userId);
-      // Invalidate and refetch any queries that depend on the userId
       queryClient.invalidateQueries('filter-products');
     }).catch(error => {
       console.error('Error fetching user profile:', error);
@@ -179,7 +179,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
   };
 
   const handleSearch = (searchKey) => {
-    console.log('Search button clicked. Search key:', searchKey);
     // Add your search logic here
   };
 
@@ -187,7 +186,6 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
     const storedToken = localStorage.getItem('usertoken');
     if (storedToken) {
       setIsLoggedIn(true);
-      console.log('Stored Token:', storedToken);
     }
 
     window.addEventListener('resize', handleResize);
@@ -197,6 +195,15 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  if (isLoading) {
+    return <Shimmer />;
+  }
+
+  if (isError) {
+    return navigate ('404error');
+  }
+
 
   return (
     <div>
@@ -245,7 +252,7 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
             <Regiondropdown onRegionSelect={handleRegionSelect} />
             </div>
             <div onClick={handleFeedbackClick} className="cursor-pointer">    
-                        <MdOutlineFeedback className='text-white heart-icon' /> {/* Add the feedback icon here */}
+                        <MdOutlineFeedback className='text-white heart-icon' />
             </div>
             {isLoggedIn && (
               <div>
@@ -320,45 +327,44 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
         </div>
       </Navbar>
       {openModal && (
- <Loginpopup 
- isOpen={openModal} 
- onClose={() => setOpenModal(false)}
- onLoginSuccess={handleLoginSuccess}
- onOpenSignup={handleOpenSignupModal}
- onOpenForgotPassword={handleOpenForgotPasswordModal}
-/>
-)}
+        <Loginpopup 
+          isOpen={openModal} 
+          onClose={() => setOpenModal(false)}
+          onLoginSuccess={handleLoginSuccess}
+          onOpenSignup={handleOpenSignupModal}
+          onOpenForgotPassword={handleOpenForgotPasswordModal}
+        />
+      )}
 
-{isSignupModalOpen && (
- <SignupPopup 
- isOpen={isSignupModalOpen}
- onClose={() => setIsSignupModalOpen(false)}
- onSignupSuccess={() => {
-   setIsSignupModalOpen(false);
-   // Add any additional logic for successful signup
- }}
-/>
-)}
+      {isSignupModalOpen && (
+        <SignupPopup 
+          isOpen={isSignupModalOpen}
+          onClose={() => setIsSignupModalOpen(false)}
+          onSignupSuccess={() => {
+            setIsSignupModalOpen(false);
+            // Add any additional logic for successful signup
+          }}
+        />
+      )}
 
-<ForgotPasswordModal 
-  isOpen={isForgotPasswordModalOpen}
-  onClose={() => setIsForgotPasswordModalOpen(false)}
-  onSubmit={(email, otp) => {
-    // Handle the successful OTP generation
-    console.log('OTP sent to', email);
-    setIsForgotPasswordModalOpen(false);
-    // You might want to open another modal for OTP verification here
-  }}
-/>
+      <ForgotPasswordModal 
+        isOpen={isForgotPasswordModalOpen}
+        onClose={() => setIsForgotPasswordModalOpen(false)}
+        onSubmit={(email, otp) => {
+          // Handle the successful OTP generation
+          setIsForgotPasswordModalOpen(false);
+          // You might want to open another modal for OTP verification here
+        }}
+      />
 
       {isProfileModalOpen && (
-       <ProfileModal
-       isOpen={isProfileModalOpen}
-       onClose={handleProfileModalClose}
-       handleLogout={handleLogout}
-       userProfile={userProfile}
-       refreshUserProfile={() => queryClient.invalidateQueries('userProfile')}
-     />
+        <ProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={handleProfileModalClose}
+          handleLogout={handleLogout}
+          userProfile={userProfile}
+          refreshUserProfile={() => queryClient.invalidateQueries('userProfile')}
+        />
       )}
 
       <LanguageModal 
@@ -367,17 +373,17 @@ export function NavbarComponent({ hideToggle, onFavoriteClick }) {
         onSelect={handleLanguageSelect}
       />
 
-<FeedbackModal
-      isOpen={isFeedbackModalOpen}
-      onClose={handleFeedbackModalClose}
-    />
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={handleFeedbackModalClose}
+      />
 
-<RegionModal
-  isOpen={isRegionModalOpen}
-  onClose={handleRegionModalClose}
-  onSelect={handleRegionSelect}
-  setIsOpen={setIsRegionModalOpen}  // Add this line
-/>
+      <RegionModal
+        isOpen={isRegionModalOpen}
+        onClose={handleRegionModalClose}
+        onSelect={handleRegionSelect}
+        setIsOpen={setIsRegionModalOpen}
+      />
     </div>
   );
 }

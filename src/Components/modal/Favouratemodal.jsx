@@ -18,10 +18,6 @@ function FavoriteModal({ isOpen, onClose, onSubmit }) {
     setUserToken(token);
   }, []);
 
-  useEffect(() => {
-    console.log("FavoriteModal isOpen:", isOpen);
-  }, [isOpen]);
-
   const fetchTags = async () => {
     const response = await fetch(`${API_BASE_URL}/api/tags`);
     if (!response.ok) {
@@ -67,7 +63,7 @@ function FavoriteModal({ isOpen, onClose, onSubmit }) {
     onError: (error) => {
       console.error('Error updating tags:', error);
       if (error.response && error.response.status !== 400) {
-        navigate('/error404');
+        navigate('/404error');
       }
     },
   });

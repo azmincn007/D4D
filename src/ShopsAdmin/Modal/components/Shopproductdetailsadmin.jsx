@@ -7,7 +7,6 @@ function ShopProductDetailsAdmin({ isOpen, onClose, flyerToEdit,categories }) {
   // ...
 
   const handleImageUploadSuccess = (file) => {
-    console.log("Image upload success, file:", file.name);
     setImageFile(file);
     setImageUploaded(true);
   };

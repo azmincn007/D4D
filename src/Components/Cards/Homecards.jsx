@@ -21,15 +21,9 @@ const truncateText = (text, limit) => {
 const Homecards = ({ product, isRestaurant, currencySymbol, isLoading }) => {
   const { isLoggedIn } = useContext(LoginContext);
   const [FavCount, SetFavCount] = useContext(FavCountContext);
-  console.log(product);
   
-  
-
   if (isLoading) {
     return <ShimmerCard />;
-
-    console.log(product);
-    
   }
 
   const {
@@ -46,10 +40,9 @@ const Homecards = ({ product, isRestaurant, currencySymbol, isLoading }) => {
     normal_price,
     offer_price,
     is_favourite
-
   } = product;
 
-  const [isFavorite, setIsFavorite] = useState(product.is_favourite === 1);
+  const [isFavorite, setIsFavorite] = useState(is_favourite === 1);
 
   const displayName = useLanguageText({
     country_eng: isRestaurant ? menu_eng : product_eng,
@@ -92,7 +85,7 @@ const Homecards = ({ product, isRestaurant, currencySymbol, isLoading }) => {
     <div className="card font-inter">
       <Card theme={Flowbitecard} className="cardfl p-1 rounded-[10px]">
         {!isRestaurant ? (
-          <Link to="/Shoppage" state={{ productId: id }} className="block">
+          <Link to={`/Shop-page/${id}`} className="block">
             <img
               src={`${API_BASE_URL}${image}`}
               alt={`Image of ${displayName}`}

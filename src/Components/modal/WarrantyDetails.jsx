@@ -111,7 +111,7 @@ const WarrantyCardsModal = ({ isOpen, onClose }) => {
  
 
   if (isError || uploadMutation.isError || deleteMutation.isError) {
-    return navigate('/error404');
+    return navigate('/404error');
   }
 
   if (isLoading || uploadMutation.isLoading || deleteMutation.isLoading) {

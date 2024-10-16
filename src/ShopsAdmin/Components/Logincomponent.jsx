@@ -40,7 +40,6 @@ function LoginComponent() {
     onError: (error) => {
       console.error('API error:', error);
       if (error.status === 400) {
-        console.log(error.data.message);
       } else {
         navigate('/404error', { state: { message: error.message || "An unexpected error occurred" } });
       }

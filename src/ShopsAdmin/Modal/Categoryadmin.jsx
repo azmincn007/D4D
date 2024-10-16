@@ -22,7 +22,6 @@ function CategoryAdmin({ isOpen, onClose, onCategoryAdded, categoryToEdit }) {
 
   useEffect(() => {
     if (categoryToEdit) {
-      console.log("Category data for editing:", categoryToEdit);
       reset(categoryToEdit);
     } else {
       reset({});
@@ -55,7 +54,6 @@ function CategoryAdmin({ isOpen, onClose, onCategoryAdded, categoryToEdit }) {
     },
     onSuccess: (response) => {
       if (response.status === 200) {
-        console.log("Response:", response.data);
         queryClient.invalidateQueries("categories");
         onCategoryAdded();
         reset({}); // Clear the form

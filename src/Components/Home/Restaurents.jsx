@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/categories.css';
 import Homecards from '../Cards/Homecards';
 import SingleDishModalDetails from '../modal/SingleDishModaldetails';
@@ -7,6 +7,13 @@ import { Button } from 'flowbite-react';
 function Restuarents({ menus, currencySymbol, isLoading }) {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [displayCount, setDisplayCount] = useState(12);
+  const [hasReceivedData, setHasReceivedData] = useState(false);
+
+  useEffect(() => {
+    if (menus.length > 0 || !isLoading) {
+      setHasReceivedData(true);
+    }
+  }, [menus, isLoading]);
 
   const handleCardClick = (menu) => {
     setSelectedMenu(menu);
@@ -30,25 +37,32 @@ function Restuarents({ menus, currencySymbol, isLoading }) {
         </div>
       </div>
       <div className="contentscards-resto">
-        <div className="cardcontainer-resto ">
-          {isLoading
-            ? Array(12).fill().map((_, index) => (
-                <Homecards key={index} isLoading={true} isRestaurant={true} />
-              ))
-            : menus.slice(0, displayCount).map((menu, index) => (
-                <div key={index} onClick={() => handleCardClick(menu)}>
-                  <Homecards
-                    product={menu}
-                    currencySymbol={currencySymbol}
-                    isRestaurant={true}
-                    isLoading={false}
-                  />
-                </div>
-              ))
-          }
-        </div>
+        {isLoading ? (
+          <div className="cardcontainer-resto">
+            {Array(12).fill().map((_, index) => (
+              <Homecards key={index} isLoading={true} isRestaurant={true} />
+            ))}
+          </div>
+        ) : hasReceivedData && (!menus || menus.length === 0) ? (
+          <div className="flex justify-center items-center h-64">
+            <p className='font-semibold text-lg text-gray-600'>No Food items available</p>
+          </div>
+        ) : (
+          <div className="cardcontainer-resto">
+            {menus.slice(0, displayCount).map((menu, index) => (
+              <div key={index} onClick={() => handleCardClick(menu)}>
+                <Homecards
+                  product={menu}
+                  currencySymbol={currencySymbol}
+                  isRestaurant={true}
+                  isLoading={false}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      {!isLoading && displayCount < menus.length && (
+      {!isLoading && menus && menus.length > 0 && displayCount < menus.length && (
         <div className="flex justify-center mt-4">
           <Button onClick={handleShowMore}>Show More</Button>
         </div>

@@ -3,30 +3,32 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 import { OfferContext } from '../../App';
 import { API_BASE_URL } from '../../config/config';
-import Loading from '../../api/Loading';
 import useLanguageText from '../Uselanguagetext';
+import { useNavigate } from 'react-router-dom';
+
+// Shimmer effect component
+const ShimmerEffect = () => (
+  <div className="w-full bg-darkblue flex justify-center py-2 animate-pulse">
+    {[...Array(5)].map((_, index) => (
+      <div key={index} className="h-8 bg-darkblue rounded mx-2 w-20"></div>
+    ))}
+  </div>
+);
 
 function Categorytab({ resetToAllOffers }) {
   const [activeTab, setActiveTab] = useState(0);
   const { selectedOfferId, setSelectedOfferId } = useContext(OfferContext);
+  const navigate = useNavigate();
 
   const fetchCategories = async () => {
-    const cachedData = localStorage.getItem('categoryTabs');
-    if (cachedData) {
-      return JSON.parse(cachedData);
-    }
     const response = await axios.get(`${API_BASE_URL}/api/offers`);
-    localStorage.setItem('categoryTabs', JSON.stringify(response.data.data.offers));
     return response.data.data.offers;
   };
 
   const { data: caTabs, isLoading, error } = useQuery('offers', fetchCategories, {
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    cacheTime: 1000 * 60 * 30, // 30 minutes
-    initialData: () => {
-      const cachedData = localStorage.getItem('categoryTabs');
-      return cachedData ? JSON.parse(cachedData) : undefined;
-    },
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    cacheTime: 0,
   });
 
   useEffect(() => {
@@ -44,7 +46,8 @@ function Categorytab({ resetToAllOffers }) {
     setSelectedOfferId(offerId);
   };
 
-  if (error) return <div>An error occurred: {error.message}</div>;
+  if (error) return navigate('/404error');
+    if (isLoading) return <ShimmerEffect />;
 
   return (
     <div className='w-full bg-darkblue flex justify-center text-white py-2 Mobile:text-[8px] Tab:text-xs text-small font-inter'>

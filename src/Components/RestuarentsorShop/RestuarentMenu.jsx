@@ -88,7 +88,6 @@ function RestuarentMenu() {
     .filter((category) => category.menus.length > 0) || [];
 
 
-    console.log(filteredMenus);
     
 
   return (

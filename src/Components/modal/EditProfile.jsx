@@ -12,11 +12,11 @@ import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { API_BASE_URL } from "../../config/config";
 
-const EditProfile = ({ isOpen, onClose, initialValues }) => {
+const EditProfile = ({ isOpen, onClose, initialValues ,onProfileUpdate}) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const countries = useMemo(() => countryList().getData(), []);
   const queryClient = useQueryClient();
-  const [profileImage, setProfileImage] = useState(initialValues?.photo );
+  const [profileImage, setProfileImage] = useState(initialValues?.photo);
 
   useEffect(() => {
     if (isOpen && initialValues) {
@@ -34,6 +34,7 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
   const editProfileMutation = useMutation(
     (data) => {
       const token = localStorage.getItem("usertoken");
+      console.log("Full payload being sent:", data);
       return axios.post(`${API_BASE_URL}/api/user/edit-profile`, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -57,6 +58,7 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
       const token = localStorage.getItem("usertoken");
       const formData = new FormData();
       formData.append("img", file);
+      console.log("FormData being sent:", formData);
       return axios.post(`${API_BASE_URL}/api/user/edit-photo`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -76,12 +78,14 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
   );
 
   const onSubmit = (data) => {
+    console.log("Data being sent to backend:", data);
     editProfileMutation.mutate(data);
   };
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      console.log("Image file being sent:", file);
       setProfileImage(URL.createObjectURL(file));
       editPhotoMutation.mutate(file);
     }
@@ -95,13 +99,14 @@ const EditProfile = ({ isOpen, onClose, initialValues }) => {
             {/* Avatar section */}
             <div>
               <div className="relative w-[120px] h-[120px] mx-auto">
-              <AvatarComponent 
-  height={120} 
-  width={120} 
-  src={profileImage && !profileImage.startsWith('blob:') 
-    ? `${API_BASE_URL}/${profileImage}` 
-    : profileImage} 
-/>               <div className="absolute bottom-2 right-[18px] -mb-1 -mr-4 bg-gray-900 text-gray-50 rounded-full p-2 flex items-center justify-center dark:bg-gray-50 dark:text-gray-900">
+                <AvatarComponent 
+                  height={120} 
+                  width={120} 
+                  src={profileImage && !profileImage.startsWith('blob:') 
+                    ? `${API_BASE_URL}/${profileImage}` 
+                    : profileImage} 
+                />
+                <div className="absolute bottom-2 right-[18px] -mb-1 -mr-4 bg-gray-900 text-gray-50 rounded-full p-2 flex items-center justify-center dark:bg-gray-50 dark:text-gray-900">
                   <label htmlFor="profileImageInput" className="cursor-pointer">
                     <GrEdit />
                   </label>

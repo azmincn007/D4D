@@ -1,38 +1,37 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import '../../styles/marquee.css';
 import { GiFlowerStar } from "react-icons/gi";
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import useLanguageText from '../Uselanguagetext';
-import { LanguageContext } from "../../App";
 import { API_BASE_URL } from '../../config/config';
-import Loading from '../../api/Loading';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const fetchFlashNews = async () => {
-  const cachedData = localStorage.getItem('flashNews');
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
   const response = await axios.get(`${API_BASE_URL}/api/flash-news`);
-  localStorage.setItem('flashNews', JSON.stringify(response.data.data.flash_news));
   return response.data.data.flash_news;
 };
 
+// Shimmer effect component
+const ShimmerEffect = () => (
+  <div className="containers font-inter animate-pulse ">
+    <div className="scroll py-[12px] bg-darkblue  ">
+      <div className="h-[14px] bg-gray-300 w-full animate-pulse"></div>
+    </div>
+  </div>
+);
+
 const MarqueeComponent = () => {
-  const navigate=useNavigate();
-  const [selectedLanguage] = useContext(LanguageContext);
+  const navigate = useNavigate();
+
   const { data, isLoading, isError } = useQuery('flashNews', fetchFlashNews, {
-    staleTime: 1000 * 60 * 60, // 1 hour
-    cacheTime: 1000 * 60 * 60 * 2, // 2 hours
-    initialData: () => {
-      const cachedData = localStorage.getItem('flashNews');
-      return cachedData ? JSON.parse(cachedData) : undefined;
-    },
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    cacheTime: 0,
   });
 
-  if (isLoading) return <div><Loading/></div>;
-  if (isError) return navigate('/error404');
+  if (isLoading) return <ShimmerEffect />;
+  if (isError) return navigate('/404error');
 
   const newsText = data ? data.map(item =>
     useLanguageText({

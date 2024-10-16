@@ -7,7 +7,6 @@ import { API_BASE_URL } from '../../config/config'
 export default function SingleDishModalDetails({ menu, onClose, currencySymbol, isFromRestoCard = false }) {
   const [openModal, setOpenModal] = useState(true)
 
-  console.log(menu);
   
   useEffect(() => {
     setOpenModal(true)

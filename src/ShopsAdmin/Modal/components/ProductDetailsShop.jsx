@@ -11,14 +11,14 @@ import ErrorMessage from "../../../Pages/Authentication/ErrorValidation";
 import ImageUpload from "./Imageupload";
 import { API_BASE_URL } from "../../../config/config";
 
-
 const formatDate = (date) => {
   if (!date) return "";
   const d = new Date(date);
+  d.setDate(d.getDate() + 1); // Add one day to the date
   return d.toISOString().split("T")[0];
 };
 
-function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
+function ProductDetailsShop({ isOpen, onClose, productToEdit, setProductToEdit, categories }) {
   const {
     register,
     handleSubmit,
@@ -29,8 +29,8 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
   } = useForm({
     defaultValues: {
       dates_needed: "no",
-    }
-  });  
+    },
+  });
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -80,10 +80,10 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
         fetchSubcategories(productToEdit.cat_id).then(() => {
           reset((formValues) => ({
             ...formValues,
-            subcat_id: productToEdit.subcat_id
+            subcat_id: productToEdit.subcat_id,
           }));
         });
-      } else {
+      } else if (!productToEdit) {
         // Add mode
         setIsEditMode(false);
         reset({
@@ -131,23 +131,47 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
     setSelectedCategory("");
     setImageFile(null);
     setIsEditMode(false);
-    onClose();
+    onClose(null); // Pass null to onClose to reset productToEdit
   }, [onClose, reset]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setProductToEdit(null); // Set productToEdit to null when the modal is closed
+    }
+  }, [isOpen, setProductToEdit]);
+
   const handleImageUploadSuccess = useCallback((file) => {
-    console.log("Image upload success, file:", file);
     setImageFile(file);
   }, []);
 
   const onSubmit = useCallback(async (data) => {
-
     // Remove dates_needed from the form data
     const { dates_needed, ...formDataWithoutDates } = data;
 
+    const formData = new FormData();
+    Object.entries(formDataWithoutDates).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+
+    // Add validFrom and validTo to the formData
+    if (data.dates_needed === "yes") {
+      formData.append("valid_from", formatDate(validFrom));
+      formData.append("valid_to", formatDate(validTo));
+    }
 
     if (!imageFile && !isEditMode) {
       alert("Please upload an image before submitting.");
       return;
+    }
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    if (isEditMode) {
+      formData.append("product_id", productToEdit.id);
     }
 
     setIsSubmitting(true);
@@ -159,27 +183,15 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
       return;
     }
 
-    const formData = new FormData();
-    Object.entries(formDataWithoutDates).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, value);
-      }
-    });
-    
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
-    
-    if (isEditMode) {
-      formData.append("product_id", productToEdit.id);
+    // Log the form data using for...of loop
+    console.log("Form data:");
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
     }
 
-    console.log("FormData contents:");
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
-    const url = isEditMode ? `${API_BASE_URL}/api/restaurent/edit-product` : `${API_BASE_URL}/api/restaurent/add-product`;
+    const url = isEditMode
+      ? `${API_BASE_URL}/api/restaurent/edit-product`
+      : `${API_BASE_URL}/api/restaurent/add-product`;
 
     try {
       const response = await axios.post(url, formData, {
@@ -189,16 +201,25 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
         },
       });
 
-      console.log(isEditMode ? "Product updated successfully:" : "Product added successfully:", response.data);
+      // Log the response
+      console.log("Response:", response.data);
+
       handleCloseModal();
       queryClient.invalidateQueries("products");
     } catch (error) {
-      console.error(isEditMode ? "Error updating product:" : "Error adding product:", error);
-      alert(isEditMode ? "Error updating product. Please try again." : "Error adding product. Please try again.");
+      console.error(
+        isEditMode ? "Error updating product:" : "Error adding product:",
+        error
+      );
+      alert(
+        isEditMode
+          ? "Error updating product. Please try again."
+          : "Error adding product. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
-  }, [imageFile, isEditMode, productToEdit, handleCloseModal, queryClient]);
+  }, [imageFile, isEditMode, productToEdit, validFrom, validTo, handleCloseModal, queryClient]);
 
   const watchCategory = watch("cat_id");
 
@@ -216,8 +237,10 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
       setIsFocused(isEditMode);
     }, [isEditMode]);
 
-    const focusedClassName = 'absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1';
-    const defaultClassName = 'text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]';
+    const focusedClassName =
+      "absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 px-2 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1";
+    const defaultClassName =
+      "text-gray-500 dark:text-gray-400 -translate-y-1/2 scale-100 top-1/2 left-1/2 -translate-x-1/2 w-[95%]";
 
     return (
       <div className="mb-4 relative">
@@ -228,7 +251,7 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
           placeholder=" "
           onFocus={() => setIsFocused(true)}
           onBlur={(e) => {
-            if (e.target.value === '' && !isEditMode) {
+            if (e.target.value === "" && !isEditMode) {
               setIsFocused(false);
             }
           }}
@@ -255,8 +278,8 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
   const formFields = useMemo(() => {
     return (
       <>
-        {['eng', 'ar', 'hin', 'mal'].map(lang => (
-          <FormFieldShop 
+        {["eng", "ar", "hin", "mal"].map((lang) => (
+          <FormFieldShop
             key={`product-${lang}`}
             name="Product Name"
             language={lang}
@@ -266,12 +289,12 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
             isEditMode={isEditMode}
           />
         ))}
-        {['eng', 'ar', 'hin', 'mal'].map(lang => (
-          <FormFieldDescription 
+        {["eng", "ar", "hin", "mal"].map((lang) => (
+          <FormFieldDescription
             key={`desc-${lang}`}
-            language={lang} 
-            register={register} 
-            errors={errors} 
+            language={lang}
+            register={register}
+            errors={errors}
             isEditMode={isEditMode}
           />
         ))}
@@ -330,13 +353,13 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
                 {errors.subcat_id && <ErrorMessage message={errors.subcat_id.message} />}
               </div>
 
-              <PriceInput 
+              <PriceInput
                 id="normalPrice"
                 placeholder="Normal Price"
                 registerName="normal_price"
               />
 
-              <PriceInput 
+              <PriceInput
                 id="offerPrice"
                 placeholder="Offer Price"
                 registerName="offer_price"
@@ -346,21 +369,13 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
                 <Label>Expiry Date Needed?</Label>
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center">
-                    <Radio
-                      id="dates-yes"
-                      value="yes"
-                      {...register("dates_needed")}
-                    />
+                    <Radio id="dates-yes" value="yes" {...register("dates_needed")} />
                     <Label htmlFor="dates-yes" className="ml-2">
                       Yes
                     </Label>
                   </div>
                   <div className="flex items-center">
-                    <Radio
-                      id="dates-no"
-                      value="no"
-                      {...register("dates_needed")}
-                    />
+                    <Radio id="dates-no" value="no" {...register("dates_needed")} />
                     <Label htmlFor="dates-no" className="ml-2">
                       No
                     </Label>
@@ -391,23 +406,31 @@ function ProductDetailsShop({ isOpen, onClose, productToEdit, categories }) {
                   </div>
                 </div>
               )}
- 
-              <ImageUpload 
+
+              <ImageUpload
                 title="Upload Image"
                 index="product"
                 register={register}
                 onUploadSuccess={handleImageUploadSuccess}
-                initialImage={isEditMode && productToEdit?.image ? `${API_BASE_URL}}${productToEdit.image}` : null}
+                initialImage={
+                  isEditMode && productToEdit?.image
+                    ? `${API_BASE_URL}${productToEdit.image}`
+                    : null
+                }
               />
             </div>
 
             <div className="mt-8 w-[50%] mx-auto">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full py-2 bg-yellow text-black rounded"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : (isEditMode ? "Update Product" : "Add Product")}
+                {isSubmitting
+                  ? "Submitting..."
+                  : isEditMode
+                  ? "Update Product"
+                  : "Add Product"}
               </Button>
             </div>
           </form>

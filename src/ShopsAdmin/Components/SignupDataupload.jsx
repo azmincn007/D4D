@@ -18,6 +18,7 @@ function SignupdataUpload() {
   const [typingTimer, setTypingTimer] = useState(null);
   const [phoneError, setPhoneError] = useState("");
   const [fileName, setFileName] = useState("");
+  const [certificateFile, setCertificateFile] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ function SignupdataUpload() {
       padding: "8px 12px",
       width: "100%",
     },
-  }; 
+  };
 
   const {
     register,
@@ -72,7 +73,7 @@ function SignupdataUpload() {
       setTypingTimer(setTimeout(() => {
         setIsTyping(false);
         trigger("confirmPassword");
-      }, 1000)); // Wait for 1 second after typing stops
+      }, 1000));
     }
     return () => clearTimeout(typingTimer);
   }, [password, confirmPassword, isTyping, trigger, typingTimer]);
@@ -86,9 +87,15 @@ function SignupdataUpload() {
       const formData = new FormData();
      
       for (const key in data) {
-        formData.append(key, data[key]);
+        if (key === 'certificate' && data[key] instanceof File) {
+          formData.append(key, data[key], data[key].name);
+        } else {
+          formData.append(key, data[key]);
+        }
       }
       
+      console.log("Data being sent to API:", Object.fromEntries(formData));
+
       const response = await fetch(`${API_BASE_URL}/api/register-shop`, {
         method: 'POST',
         body: formData,
@@ -108,7 +115,7 @@ function SignupdataUpload() {
     onError: (error) => {
       console.error('API error:', error);
       if (error.status === 400) {
-        console.log("400 error:", error.data.message);
+        // Handle 400 error
       } else {
         navigate('/404error', { state: { message: error.data?.message || "An unexpected error occurred" } });
       }
@@ -116,14 +123,6 @@ function SignupdataUpload() {
   });
 
   const handleSubmitsignup = (data) => {
-    const {
-      countryCodeAlt,
-      countryCodeMobile,
-      alternate_num,
-      MobileNumber,
-      ...restData
-    } = data;
-
     const finalData = {
       shopname_eng: signupData.shopname_eng,
       email: signupData.email,
@@ -131,17 +130,25 @@ function SignupdataUpload() {
       shop_type: data.shop_type,
       country: data.country,
       region: data.region,
-      certificate: data.certificate[0],
+      certificate: certificateFile,
       proprietor: data.proprietor,
       contact_num: signupData.contact_num,
-      alternate_num: alternate_num.phone,
+      alternate_num: data.alternate_num.phone,
       desc: data.desc,
     };
 
-    console.log('Data being sent to API:', finalData);
+    console.log("Final data being sent:", finalData);
     registerShopMutation.mutate(finalData);
     
     localStorage.removeItem('signupData');
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      setCertificateFile(file);
+    }
   };
 
   return (
@@ -178,26 +185,20 @@ function SignupdataUpload() {
               type="file" 
               id="certificate" 
               className="file-input" 
-              {...register("certificate")}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  setFileName(file.name);
-                }
-              }}
+              onChange={handleFileChange}
             />
             <label htmlFor="certificate" className="file-label">
-              <span className="placeholder">{fileName || ""}</span>
+              <span className="placeholder">{fileName || "Choose a file"}</span>
               <span>
-                <TbFileCertificate  className="text-black h-[16px] w-[16px]"/>
+                <TbFileCertificate className="text-black h-[16px] w-[16px]"/>
               </span>
             </label>
           </div>
         </div>
 
-        <div className={`flex flex-col items-baseline ${errors.email ? "mb-1" : "mb-2"}`}>
+        <div className={`flex flex-col items-baseline ${errors.alternate_num ? "mb-1" : "mb-2"}`}>
           <div className="mb-1">
-            <Label htmlFor=" Alternate Number" value="Alternate Number" className="labelstyle text-[16px]" />
+            <Label htmlFor="Whatsup Number" value="Alternate Number" className="labelstyle text-[16px]" />
           </div>
 
           <div className="w-[100%]">
@@ -218,23 +219,22 @@ function SignupdataUpload() {
             }}
             render={({ field: { onChange, value } }) => (
               <PhoneInput
-              country={"in"}
-              value={value?.phone || ''}
-              onChange={(phone, country) => {
-                onChange({ phone, country });
-              }}
-              inputClass="form-today"
-              containerClass="w-full"
-              inputStyle={phoneInputStyle.inputStyle}
-              containerStyle={phoneInputStyle.containerStyle}
-              buttonStyle={phoneInputStyle.buttonStyle}
-            />
+                country={"in"}
+                value={value?.phone || ''}
+                onChange={(phone, country) => {
+                  onChange({ phone, country });
+                }}
+                inputClass="form-today"
+                containerClass="w-full"
+                inputStyle={phoneInputStyle.inputStyle}
+                containerStyle={phoneInputStyle.containerStyle}
+                buttonStyle={phoneInputStyle.buttonStyle}
+              />
             )}
           />
         </div>
         {errors.alternate_num && <ErrorMessage message={errors.alternate_num.message} />}
-
-          </div>
+        </div>
 
         <div className="mb-4 relative">
           <div className="mb-1 flex justify-start">
@@ -295,7 +295,7 @@ function SignupdataUpload() {
               rules={{
                 required: "Confirm Password is required",
                 validate: (value) => {
-                  if (isTyping) return true; // Skip validation while typing
+                  if (isTyping) return true;
                   return value === password || "Passwords do not match";
                 }
               }}

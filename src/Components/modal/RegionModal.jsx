@@ -4,6 +4,8 @@ import { Countrycontext, RegionContext } from '../../App';
 import useLanguageText from '../Uselanguagetext';
 
 const RegionModal = ({ isOpen, onClose, onSelect ,regions}) => {
+  console.log(regions);
+  
   const [selectedCountry] = useContext(Countrycontext);
   const [selectedRegion, setSelectedRegion] = useContext(RegionContext);
 

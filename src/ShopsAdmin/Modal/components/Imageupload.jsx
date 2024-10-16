@@ -33,7 +33,6 @@ const ImageUpload = ({ title, index, register, onUploadSuccess, initialImage }) 
       setFileName(file.name);
       register('image', { value: file });
       setError('');
-      console.log("Calling onUploadSuccess with file:", file); // Add this line
       onUploadSuccess(file);
     } else {
       setError('Please select an image to upload.');

@@ -86,7 +86,6 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
     },
     {
       onSuccess: (data) => {
-        console.log("Mutation successful. Response data:", data);
         queryClient.invalidateQueries("menuItems");
         handleCloseModal();
       },
@@ -143,7 +142,6 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
         formData.append("menu_id", itemToEdit.id);
       }
 
-      console.log("Form data before sending:", Object.fromEntries(formData));
 
       await mutation.mutateAsync(formData);
     } catch (error) {
@@ -337,7 +335,7 @@ function Todayspecial({ isOpen, onClose, modalType, itemToEdit, currencySymbol }
               index={0}
               register={register}
               onUploadSuccess={() => setImageUploaded(true)}
-              initialImage={itemToEdit?.image ? `${BASE_URL}${itemToEdit.image}` : null}
+              initialImage={itemToEdit?.image ? `${API_BASE_URL}${itemToEdit.image}` : null}
             />
           </div>
 

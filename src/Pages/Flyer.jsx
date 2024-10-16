@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import NavbarFlyer from './Navbar/NavbarFlyer';
 import { A11y, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -13,13 +13,14 @@ import comingsoon from '../assets/coming.jpg';
 const LoadingPlaceholder = () => (
   <div className="w-full h-0 pb-[133.33%] relative bg-gray-300 animate-pulse">
     <div className="absolute inset-0 flex items-center justify-center">
-    
+      {/* You can add a loading spinner or text here if desired */}
     </div>
   </div>
 );
 
 function Flyer() {
   const location = useLocation();
+  const { id } = useParams(); // Get the id from the URL
   const [flyersData, setFlyersData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,14 +32,21 @@ function Flyer() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setTimeout(() => {
-        setFlyersData(location.state?.flyers || []);
+      setIsLoading(true);
+      try {
+        // You can use the id to fetch flyer data if needed
+        // For now, we'll use the data from location.state
+        const data = location.state?.flyers || [];
+        setFlyersData(data);
+      } catch (error) {
+        console.error("Error fetching flyer data:", error);
+      } finally {
         setIsLoading(false);
-      });
+      }
     };
 
     fetchData();
-  }, [location.state]);
+  }, [id, location.state]);
 
   useEffect(() => {
     if (swiper) {

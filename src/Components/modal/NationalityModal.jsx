@@ -25,6 +25,16 @@ const NationalityModal = ({ isOpen, onClose, onSelect }) => {
     onClose();
   };
 
+  // Pre-process the country names
+  const countryNames = Nationalities.map(nation => 
+    useLanguageText({
+      country_eng: nation.country_eng,
+      country_ar: nation.country_ar,
+      country_mal: nation.country_mal,
+      country_hin: nation.country_hin
+    })
+  );
+
   return (
     <Modal theme={modalthemeNational} show={isOpen} onClose={onClose}>
       <Modal.Body>
@@ -32,21 +42,12 @@ const NationalityModal = ({ isOpen, onClose, onSelect }) => {
           <div className='flex flex-col justify-center items-center'>
             <div className='py-6 text-sm text-[#6D6D6D] font-semibold'>Popular Countries</div>
             <div className="grid grid-cols-4 gap-x-16 gap-y-5 Tab:grid-cols-3 LgMobile:grid-cols-2">
-              {Nationalities.map((nation, index) => {
-                const countryName = useLanguageText({
-                  country_eng: nation.country_eng,
-                  country_ar: nation.country_ar,
-                  country_mal: nation.country_mal,
-                  country_hin: nation.country_hin
-                });
-
-                return (
-                  <div key={index} className="flex flex-col items-center cursor-pointer" onClick={() => handleCountrySelect(nation)}>
-                    <img src={`${API_BASE_URL}/${nation.image}`} alt={nation.name} className="w-[100px] h-[75px] mb-1" />
-                    <span className='text-sm flex justify-center'>{countryName}</span>
-                  </div>
-                );
-              })}
+              {Nationalities.map((nation, index) => (
+                <div key={index} className="flex flex-col items-center cursor-pointer" onClick={() => handleCountrySelect(nation)}>
+                  <img src={`${API_BASE_URL}/${nation.image}`} alt={nation.name} className="w-[100px] h-[75px] mb-1" />
+                  <span className='text-sm flex justify-center'>{countryNames[index]}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

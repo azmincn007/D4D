@@ -304,6 +304,7 @@ function ShopMenu() {
                     className="shop-menu-card"
                     isLoading={false}
                     showVegIcon={false} 
+                    isShop = {true}
                   />
                 ))}
           </div>

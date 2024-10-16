@@ -12,9 +12,7 @@ function AddOfferType({ isOpen, onClose }) {
   };
 
   const onSubmit = (data) => {
-    console.log("saadasdasdsad");
-    console.log('Form submitted. Data:', data);
-    // Here you would typically handle form submission
+    
     onClose();
   };
 

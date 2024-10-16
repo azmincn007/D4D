@@ -57,7 +57,7 @@ function OffersPage() {
               ))
             ) : offerItems && offerItems.length > 0 ? (
               offerItems.map((item) => (
-                <Link key={item.id} to={`/offerdetails/${item.id}`}>
+                <Link >
                   <OfferCardComponent image={item.image} />
                 </Link>
               ))

@@ -10,11 +10,10 @@ import { API_BASE_URL } from '../../config/config';
 
 SwiperCore.use([Navigation]);
 
-function Shopswiper({ data, Type }) {
+function Shopswiper({ data, Type, isLoading }) {
   const swiperRef = useRef(null);
   const navigate = useNavigate();
 
-  console.log(data);
 
   const goToNext = () => {
     if (swiperRef.current && swiperRef.current.swiper) {
@@ -40,7 +39,7 @@ function Shopswiper({ data, Type }) {
     }
   };
 
-  const isLoading = !data || data.length === 0;
+  const noDataAvailable = !isLoading && (!data || data.length === 0);
 
   // Function to repeat data to fill the swiper
   const repeatData = (originalData, minCount) => {
@@ -53,7 +52,15 @@ function Shopswiper({ data, Type }) {
   };
 
   // Ensure we have at least 14 items (or more if needed)
-  const repeatedData = isLoading ? [] : repeatData(data, 14);
+  const repeatedData = isLoading || noDataAvailable ? [] : repeatData(data, 14);
+
+  if (noDataAvailable) {
+    return (
+      <div className="py-3 px-5 font-inter font-semibold text-sm Mobile:py-2 Tab:px-0 flex justify-center items-center h-32">
+        <p className="text-gray-600">No shops available in this location</p>
+      </div>
+    );
+  }
 
   return (
     <div className="py-3 px-5 font-inter font-semibold text-sm Mobile:py-2 Tab:px-0" style={{ position: 'relative' }}>
@@ -82,7 +89,7 @@ function Shopswiper({ data, Type }) {
           // Render shimmer effect slides while loading
           Array(14).fill().map((_, index) => (
             <SwiperSlide key={index}>
-              <div className="swipercard my-2">
+              <div className="swipercard">
                 <div className="w-[90px] h-[90px] rounded-full bg-gray-200 animate-pulse"></div>
                 <div className="h-4 bg-gray-200 rounded w-3/4 mt-2 animate-pulse"></div>
               </div>
@@ -105,7 +112,7 @@ function Shopswiper({ data, Type }) {
                     src={item.logo ? `${API_BASE_URL}${item.logo}` : '/path_to_default_image'}
                     alt={name}
                   />
-                  <p className="flex justify-center pt-1 text-[14px] Mobile:text-[8px] text-center">
+                  <p className="flex w-[90px] justify-center pt-1 text-[14px] Mobile:text-[8px] text-center">
                     {name}
                   </p>
                 </div>

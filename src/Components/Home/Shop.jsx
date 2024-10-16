@@ -14,10 +14,14 @@ function Shop({ products, currencySymbol, isLoading }) {
   const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
   const storedCurrencySymbol = localStorage.getItem('currencySymbol');
   const [displayCount, setDisplayCount] = useState(15);
+  const [hasReceivedData, setHasReceivedData] = useState(false);
 
   useEffect(() => {
+    if (products.length > 0 || !isLoading) {
+      setHasReceivedData(true);
+    }
     filterAndSortProducts();
-  }, [products, sortOption, priceRange]);
+  }, [products, sortOption, priceRange, isLoading]);
 
   const handleCloseFilter = () => {
     setFilterActive(false);
@@ -83,24 +87,32 @@ function Shop({ products, currencySymbol, isLoading }) {
           </div>
         </div>
         <div className="contentscards">
-          <div className="cardcontainer">
-            {isLoading
-              ? Array(15).fill().map((_, index) => (
-                  <Homecards key={index} isLoading={true} />
-                ))
-              : filteredProducts.slice(0, displayCount).map((product, index) => (
-                  <Link key={index}>
-                    <Homecards
-                      product={product}
-                      currencySymbol={storedCurrencySymbol}
-                      isRestaurant={false}
-                      isLoading={false}
-                    />
-                  </Link>
-                ))}
-          </div>
+          {isLoading ? (
+            <div className="cardcontainer">
+              {Array(15).fill().map((_, index) => (
+                <Homecards key={index} isLoading={true} />
+              ))}
+            </div>
+          ) : hasReceivedData && filteredProducts.length === 0 ? (
+            <div className="flex justify-center items-center h-64">
+              <p className='font-semibold text-lg text-gray-600'>No products available</p>
+            </div>
+          ) : (
+            <div className="cardcontainer">
+              {filteredProducts.slice(0, displayCount).map((product, index) => (
+                <Link key={index}>
+                  <Homecards
+                    product={product}
+                    currencySymbol={storedCurrencySymbol}
+                    isRestaurant={false}
+                    isLoading={false}
+                  />
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
-        {!isLoading && displayCount < filteredProducts.length && (
+        {!isLoading && filteredProducts.length > 0 && displayCount < filteredProducts.length && (
           <div className="flex justify-center mt-4">
             <Button onClick={handleShowMore}>Show More</Button>
           </div>

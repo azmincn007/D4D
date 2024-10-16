@@ -1,3 +1,6 @@
+
+
+
 import React, { useState, useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
@@ -12,7 +15,6 @@ import ErrorMessage from '../../../../Pages/Authentication/ErrorValidation';
 import LazyImage from '../../../../api/Lazyimage';
 import { API_BASE_URL } from '../../../../config/config';
 
-
 const fetchMenuItems = async () => {
   const authToken = localStorage.getItem('authToken');
   const { data } = await axios.get(`${API_BASE_URL}/api/restaurent/all-menu`, {
@@ -20,7 +22,6 @@ const fetchMenuItems = async () => {
       'Authorization': `Bearer ${authToken}`
     }
   });
-  console.log(data.data.menu);
   return data.data.menu;
 };
 
@@ -67,92 +68,79 @@ const CardWithEyeIcon = React.memo(({ item, onEditClick, onDeleteClick, updateSp
     );
   }, [isSpecial, item.id, updateSpecialMutation]);
 
-
   const cardClassName = useMemo(() => `w-full max-w-sm rounded-lg shadow-lg cardmenu ${
-    isSpecial ? 'border-[2px] border-green-500 ':''
+    isSpecial ? 'border-[2px] border-green-500' : ''
   }`, [isSpecial]);
 
   return (
     <Card className={cardClassName} style={{ opacity: item.status === 'Active' ? 1 : 0.5 }}>
-      <div className="relative">
-      <LazyImage
-          src={item.image}
-          alt={item.menu_eng}
-          className="h-56 w-full rounded-t-lg object-cover"
-        />
-        <div className="absolute top-4 right-4 flex items-center gap-2 ">
-          <Button size="sm" className="rounded-full buttononmenu" onClick={() => onEditClick(item)}>
-            <MdEdit className="h-5 w-5 text-muted-foreground" />
-            <span className="sr-only">Edit</span>
-          </Button>
-          <Button size="sm" className="rounded-full buttononmenu" onClick={() => onDeleteClick(item)}>
-            <RiDeleteBin6Fill className="h-5 w-5 text-muted-foreground" />
-            <span className="sr-only">Delete</span>
-          </Button>
-        </div>
-        {isSpecial && (
-          <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-            Today's Special
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="text-sm font-medium text-muted-foreground">{item.cat_eng}</span>
-          <Button
-            size="sm"
-            className={`rounded-full  ${isSpecial ? 'bg-yellow text-white' : 'border-2 border-yellow bg-transparent text-black'}`}
-            onClick={handleTodaySpecialClick}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Loading...' : (isSpecial ? 'Remove Special' : 'Make Special')}
-          </Button>
-        </div>
-        <h3 className="mb-2 text-lg font-bold">{item.menu_eng}</h3>
-        <div className="mb-4 flex items-center justify-between">
-          <div>
-            <span className="text-2xl font-bold text-[#4BB543]">{currencySymbol}{item.offer_price}</span>
-            <span className="ml-2 text-sm font-medium text-muted-foreground line-through text-[#ff3333]">{currencySymbol}{item.normal_price}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button color="gray" size="sm" className="rounded-full" onClick={handleStatusToggle}>
-              {item.status === 'Active' ? (
-                <FaEye className="h-5 w-5 text-muted-foreground" />
-              ) : (
-                <FaEyeSlash className="h-5 w-5 text-muted-foreground" />
-              )}
-            </Button>
-          </div>
-        </div>
-      </div>
-    </Card>
+
+<div className="relative">
+<LazyImage
+  src={item.image}
+  alt={item.menu_eng}
+  className="h-56 w-full rounded-t-lg object-cover"
+/>
+<div className="absolute top-4 right-4 flex items-center gap-2 ">
+  <Button size="sm" className="rounded-full buttononmenu" onClick={() => onEditClick(item)}>
+    <MdEdit className="h-5 w-5 text-muted-foreground" />
+    <span className="sr-only">Edit</span>
+  </Button>
+  <Button size="sm" className="rounded-full buttononmenu" onClick={() => onDeleteClick(item)}>
+    <RiDeleteBin6Fill className="h-5 w-5 text-muted-foreground" />
+    <span className="sr-only">Delete</span>
+  </Button>
+</div>
+{isSpecial && (
+  <div className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+    Today's Special
+  </div>
+)}
+</div>
+<div className="p-4">
+<div className="mb-2 flex items-center justify-between">
+  <span className="text-sm font-medium text-muted-foreground">{item.cat_eng}</span>
+  <Button
+    size="sm"
+    className={`rounded-full ${isSpecial ? 'bg-yellow text-white' : 'border-2 border-yellow bg-transparent text-black'}`}
+    onClick={handleTodaySpecialClick}
+    disabled={isLoading}
+  >
+    {isLoading ? 'Loading...' : (isSpecial ? 'Remove Special' : 'Make Special')}
+  </Button>
+</div>
+<h3 className="mb-2 text-lg font-bold">{item.menu_eng}</h3>
+<div className="mb-4 flex items-center justify-between">
+  <div>
+    <span className="text-2xl font-bold text-[#4BB543]">{currencySymbol}{item.offer_price}</span>
+    <span className="ml-2 text-sm font-medium text-muted-foreground line-through text-[#ff3333]">{currencySymbol}{item.normal_price}</span>
+  </div>
+  <div className="flex items-center gap-2">
+    <Button color="gray" size="sm" className="rounded-full buttonss" onClick={handleStatusToggle}>
+      {item.status === 'Active' ? (
+        <FaEye className="h-5 w-5 text-muted-foreground" />
+      ) : (
+        <FaEyeSlash className="h-5 w-5 text-muted-foreground" />
+      )}
+    </Button>
+  </div>
+</div>
+</div>    </Card>
   );
 });
 
 const MenuCardsAdmin = ({ currencySymbol, selectedCategory }) => {
   const queryClient = useQueryClient();
 
-  const { data: foodItems, isLoading, isError, error, refetch } = useQuery({
+  const { data: foodItems, isLoading, isError, error } = useQuery({
     queryKey: ['menuItems'],
     queryFn: fetchMenuItems,
   });
 
   const updateSpecialMutation = useMutation(updateTodaySpecial, {
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(['menuItems'], (oldData) => {
-        return oldData.map(item => 
-          item.id === variables.menu_id ? { ...item, is_special: variables.is_special } : item
-        );
-      });
-
-      queryClient.setQueryData(['todaySpecial'], (oldData) => {
-        if (variables.is_special) {
-          const updatedItem = foodItems.find(item => item.id === variables.menu_id);
-          return [...(oldData || []), updatedItem];
-        } else {
-          return oldData ? oldData.filter(item => item.id !== variables.menu_id) : [];
-        }
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries(['menuItems']);
+      queryClient.invalidateQueries(['todaySpecial']);
     },
   });
 
@@ -176,10 +164,15 @@ const MenuCardsAdmin = ({ currencySymbol, selectedCategory }) => {
     setItemToDelete(null);
   }, []);
 
+  const invalidateQueries = useCallback(() => {
+    queryClient.invalidateQueries('menuItems');
+    queryClient.invalidateQueries('todaySpecial');
+  }, [queryClient]);
+
   const onDeleteSuccess = useCallback(() => {
-    refetch();
+    invalidateQueries();
     closeDeleteModal();
-  }, [refetch, closeDeleteModal]);
+  }, [invalidateQueries, closeDeleteModal]);
 
   const handleStatusToggle = useCallback(async (menuId, newStatus) => {
     try {
@@ -189,17 +182,17 @@ const MenuCardsAdmin = ({ currencySymbol, selectedCategory }) => {
         { menu_id: menuId, status: newStatus },
         { headers: { 'Authorization': `Bearer ${authToken}` } }
       );
-      
-      // Update the local data
-      queryClient.setQueryData(['menuItems'], (oldData) => {
-        return oldData.map(item => 
-          item.id === menuId ? { ...item, status: newStatus } : item
-        );
-      });
+      invalidateQueries();
     } catch (error) {
       console.error('Error toggling status:', error);
     }
-  }, [queryClient]);
+  }, [invalidateQueries]);
+
+  const closeEditModal = useCallback(() => {
+    setIsEditModalOpen(false);
+    setEditingItem(null);
+    invalidateQueries();
+  }, [invalidateQueries]);
 
   const memoizedFoodItems = useMemo(() => foodItems || [], [foodItems]);
   const filteredFoodItems = useMemo(() => {
@@ -234,7 +227,7 @@ const MenuCardsAdmin = ({ currencySymbol, selectedCategory }) => {
       ))}
       <Todayspecial
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={closeEditModal}
         modalType="Edit Menu"
         itemToEdit={editingItem}
       />

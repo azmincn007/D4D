@@ -12,6 +12,7 @@ import FavoriteItems from '../../ShopsAdmin/Components/FavourateList';
 import OffersPage from './OffersPage';
 import { API_BASE_URL } from '../../config/config';
 import SearchProduct from './SearchProduct';
+import { useNavigate } from 'react-router-dom';
 
 
 function Homecontainer({ onDataFetched, setResetToAllOffers }) {
@@ -25,11 +26,12 @@ function Homecontainer({ onDataFetched, setResetToAllOffers }) {
  const { showSearchProducts, setShowSearchProducts } = useContext(SearchContext);
  const [showFavorites, setShowFavorites] = useContext(FavCountContext);
  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+ const navigate = useNavigate();
 
- console.log(showFavorites);
+ 
+
  
  
-console.log(Userid +"id");
 
  
 
@@ -45,7 +47,7 @@ console.log(Userid +"id");
   let endpoint;
   let data;
   if (selectedValue === "Restaurant") {
-    endpoint = `${API_BASE_URL}/api/public/restaurent/home/4`;
+    endpoint = `${API_BASE_URL}/api/public/restaurent/home/${selectedRegion.id}`;
     const response = await axios.get(endpoint);
     data = response.data.data;
   } else {
@@ -134,16 +136,12 @@ const { data, isLoading, error, refetch } = useQuery(
     setShowSearchProducts(false); 
   };
 
-  
+  if (error) return navigate('/404error');
 
   return (
     <div className="homecontainer w-100 flex Tab:flex-col relative">
       
-      {error && (
-        <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-80 z-10">
-          <div>Error: {error.message}</div>
-        </div>
-      )}
+      
       <div className="dropdowncontents hidden Tab:block py-4 w-[95%] mx-auto">
      
           <Categorydropdown

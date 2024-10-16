@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavbarComponent } from './Pages/Navbar/Navbar';
-import { useLocation } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom';
 import NavbarFlyer from './Pages/Navbar/NavbarFlyer';
 
 const routesWithoutNavbar = [
@@ -12,7 +12,8 @@ const routesWithoutNavbar = [
   '/securepass',
   '/profileshow',
   '/subscription',
-  '/Restorentdashboard'
+  '/Restorentdashboard',
+  '/404error'
 ];
 
 function Layout({ children, onFavoriteClick }) {
@@ -20,11 +21,12 @@ function Layout({ children, onFavoriteClick }) {
   const flyersData = location.state?.flyers;
 
   const shouldShowNavbar = !routesWithoutNavbar.includes(location.pathname);
+  const isFlyerRoute = matchPath("/Shop-page/:productId/flyer/:id", location.pathname);
 
   return (
-    <div>
+    <div className='h-[100%]'>
       {shouldShowNavbar && (
-        location.pathname === '/flyer' ? (
+        isFlyerRoute ? (
           <NavbarFlyer flyersData={flyersData} />
         ) : (
           <NavbarComponent onFavoriteClick={onFavoriteClick} />

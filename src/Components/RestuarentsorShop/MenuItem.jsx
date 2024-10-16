@@ -2,7 +2,6 @@ import React from 'react';
 import './Menuitem.css'
 
 const MenuItemList = ({ menuCategory ,title}) => {
-  console.log(menuCategory);
   return (
     <div className=" mx-auto text-white">
       <p className='font-semibold  text-[26px]'>{title}</p>

@@ -49,7 +49,6 @@ function VerifyOtp() {
       const enteredOTP = Number(otp.join('')); 
       
       if (enteredOTP === backendOTP) {
-        console.log('OTP matched');
         if (formData.isSignup) {
           navigate('/signupupload', { state: { signupData: localStorage.getItem('signupData') } });
         } else {
@@ -67,7 +66,6 @@ function VerifyOtp() {
       setIsRunning(true);
       try {
         const response = await axios.post(`${API_BASE_URL}/api/send-reg-otp`, { email });
-        console.log('New OTP sent successfully', response.data.data.otp);
         setBackendOTP(response.data.data.otp);
         setError('');
       } catch (error) {

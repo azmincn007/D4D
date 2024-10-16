@@ -14,35 +14,21 @@ import Loading from "../api/Loading";
 import { useNavigate } from "react-router-dom";
 import FavoriteModal from "../Components/modal/Favouratemodal";
 
-const NATIONALITIES_CACHE_KEY = 'nationalities';
-const REGIONS_CACHE_KEY = 'regions';
-
 const fetchNationalities = async () => {
-  const cachedData = localStorage.getItem(NATIONALITIES_CACHE_KEY);
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
   const response = await fetch(`${API_BASE_URL}/api/countries`);
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }
-  const data = await response.json();
-  localStorage.setItem(NATIONALITIES_CACHE_KEY, JSON.stringify(data));
-  return data;
+  return response.json();
 };
 
 const fetchRegions = async (countryId) => {
-  const cacheKey = `${REGIONS_CACHE_KEY}_${countryId}`;
-  const cachedData = localStorage.getItem(cacheKey);
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
   const response = await fetch(`${API_BASE_URL}/api/regions/${countryId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch regions');
   }
   const data = await response.json();
-  localStorage.setItem(cacheKey, JSON.stringify(data));
+  console.log(data);
   return data;
 };
 
@@ -65,21 +51,15 @@ function Home() {
 
   const [regions, setRegions] = useState([]);
   const [currencySymbol, setCurrencySymbol] = useState('');
-  const navigate =useNavigate();
+  const navigate = useNavigate();
   const [FavCount, SetFavCount] = useContext(FavCountContext);
-
-  console.log(showFavoriteModal);
-  
-
 
   const queryClient = useQueryClient();
 
   const { data: nationalities, isLoading: nationalitiesLoading, isError: nationalitiesError } = useQuery(
-    NATIONALITIES_CACHE_KEY, 
+    'nationalities', 
     fetchNationalities, 
     {
-      staleTime: 1000 * 60 * 60 * 24, // 24 hours
-      cacheTime: 1000 * 60 * 60 * 24, // 24 hours
       onSuccess: (data) => {
         setNationalities(data.data.countries);
       },
@@ -87,12 +67,10 @@ function Home() {
   );
 
   const { data: regionsData, isLoading: regionsLoading, isError: regionsError } = useQuery(
-    [REGIONS_CACHE_KEY, selectedCountry?.id], 
+    ['regions', selectedCountry?.id], 
     () => selectedCountry ? fetchRegions(selectedCountry.id) : null, 
     {
       enabled: !!selectedCountry,
-      staleTime: 1000 * 60 * 60, // 1 hour
-      cacheTime: 1000 * 60 * 60, // 1 hour
       onSuccess: (data) => {
         setRegions(data.data.regions);
       },
@@ -101,7 +79,7 @@ function Home() {
 
   useEffect(() => {
     if (selectedCountry) {
-      queryClient.invalidateQueries([REGIONS_CACHE_KEY, selectedCountry.id]);
+      queryClient.invalidateQueries(['regions', selectedCountry.id]);
     }
   }, [selectedCountry, queryClient]);
 
@@ -116,20 +94,26 @@ function Home() {
     const storedLanguage = localStorage.getItem('userLanguageSelected');
     const storedCountry = localStorage.getItem('userCountrySelected');
     const storedRegion = localStorage.getItem('userRegionSelected');
-  
+
+    console.log('Stored Country:', storedCountry);
+    console.log('Stored Region:', storedRegion);
+
     if (storedLanguage) {
       setSelectedLanguage(storedLanguage);
     } else {
       setShowLanguageModal(true);
     }
-  
+
     if (storedCountry) {
       const parsedCountry = JSON.parse(storedCountry);
       setSelectedCountry(parsedCountry);
+      console.log('Parsed Country:', parsedCountry);
     }
-  
+
     if (storedRegion) {
-      setSelectedRegion(JSON.parse(storedRegion));
+      const parsedRegion = JSON.parse(storedRegion);
+      setSelectedRegion(parsedRegion);
+      console.log('Parsed Region:', parsedRegion);
     }
   }, [setSelectedLanguage, setSelectedCountry, setSelectedRegion]);
 
@@ -141,6 +125,11 @@ function Home() {
       }
     }
   }, [selectedLanguage, selectedCountry]);
+
+  useEffect(() => {
+    console.log('Selected Country:', selectedCountry);
+    console.log('Selected Region:', selectedRegion);
+  }, [selectedCountry, selectedRegion]);
 
   useEffect(() => {
     if (selectedCountry) {
@@ -191,16 +180,9 @@ function Home() {
     };
   }, [setIsLoggedIn]);
 
-
-
-  // if (nationalitiesLoading || regionsLoading) return <p><Loading/></p>;
-
- 
-
   return (
     <div>
-
-<FavoriteModal
+      <FavoriteModal
         isOpen={showFavoriteModal}
         onClose={() => {
           setShowFavoriteModal(false);
@@ -210,7 +192,6 @@ function Home() {
           navigate('/');
         }}
       />
-
 
       <LanguageModal 
         isOpen={showLanguageModal} 

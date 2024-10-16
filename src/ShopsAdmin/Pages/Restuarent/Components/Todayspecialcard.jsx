@@ -1,10 +1,11 @@
 import React from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { Card } from 'flowbite-react';
 import LazyImage from '../../../../api/Lazyimage';
 import { API_BASE_URL } from '../../../../config/config';
-
+import Loading from '../../../../api/Loading';
+import ErrorMessage from '../../../../Pages/Authentication/ErrorValidation';
 
 const fetchTodaySpecial = async () => {
   const authToken = localStorage.getItem('authToken');
@@ -13,22 +14,31 @@ const fetchTodaySpecial = async () => {
       'Authorization': `Bearer ${authToken}`
     }
   });
+  console.log(data.data.todays_special);
   return data.data.todays_special;
 };
 
 const TodaySpecialCards = ({ currencySymbol }) => {
+  const queryClient = useQueryClient();
+
   const { data: specialItems, isLoading, isError, error } = useQuery({
     queryKey: ['todaySpecial'],
     queryFn: fetchTodaySpecial,
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+  if (isLoading) return <Loading />;
+  if (isError) return <ErrorMessage message={error.message} />;
+
+  const activeSpecialItems = specialItems.filter(item => item.status === 'Active');
+
+  if (!Array.isArray(activeSpecialItems) || activeSpecialItems.length === 0) {
+    return <div>No active special items available today.</div>;
+  }
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-      {specialItems.map((item, index) => (
-        <Card key={index} className="w-full max-w-sm rounded-lg shadow-lg cardmenu">
+      {activeSpecialItems.map((item) => (
+        <Card key={item.id} className="w-full max-w-sm rounded-lg shadow-lg cardmenu">
           <div className="relative">
             <LazyImage
               src={item.image ? `${item.image}` : "/placeholder.svg"}
